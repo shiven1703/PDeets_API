@@ -1,0 +1,10 @@
+const app = require("../app");
+const config = require('config')
+
+const port = process.env.PORT || config.get("app.port");
+
+(async () => {
+  app.listen(port, () => {
+    console.log(`Server started on port ${port}`);
+  });
+})();

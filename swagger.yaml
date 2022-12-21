@@ -1,0 +1,20 @@
+openapi: "3.0.0"
+
+info:
+  title: PDeets app poc api
+  description: This documentation contains information regarding the available endpoints for poc app of planspiel project.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:{port}/
+    variables:
+      port:
+        enum:
+          - "5000"
+        default: "5000"
+    description: Localhost API endpoint
+  # - url: https://agile-plains-29279.herokuapp.com/
+  #   description: Production API endpoint
+
+
+

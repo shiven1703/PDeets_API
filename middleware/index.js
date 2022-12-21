@@ -3,9 +3,8 @@ const cors = require('cors')
 const helmet = require('helmet')
 
 module.exports = (app) => {
-
   // handles security related config
-  app.use(helmet()) 
+  app.use(helmet())
 
   app.use(cors())
 

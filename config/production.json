@@ -1,5 +1,17 @@
 {
     "app": {
         "port": 4000
+    },
+    "modules": {
+        "patient": {
+            "tokens": {
+                "access_token": {
+                    "exp_time": "1d"
+                },
+                "refresh_token": {
+                    "exp_time": "30d"
+                }
+            }
+        }
     }
 }

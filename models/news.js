@@ -25,11 +25,5 @@ module.exports = (sequelize) => {
     }
   })
 
-  news.registerRelationships = (model) => {
-    news.hasMany(model.news_category, {
-      foreignKey: 'news_category_id'
-    })
-  }
-
   return news
 }

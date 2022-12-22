@@ -16,5 +16,11 @@ module.exports = (sequelize) => {
     }
   })
 
+  newsCategories.registerRelationships = (model) => {
+    newsCategories.hasMany(model.news, {
+      foreignKey: 'news_category_id'
+    })
+  }
+
   return newsCategories
 }

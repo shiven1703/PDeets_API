@@ -9,7 +9,8 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USERNAME, pr
   dialect: process.env.DB_DIALECT,
   benchmark: true,
   define: {
-    freezeTableName: true
+    freezeTableName: true,
+    underscored: true
   },
   pool: {
     max: Number(process.env.POOL_SIZE),

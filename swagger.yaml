@@ -17,4 +17,118 @@ servers:
   #   description: Production API endpoint
 
 
+# reuseable components
+components:
+  responses:
+    UnknownServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: 
+                type: string
+
+
+
+
+paths:
+  # api doc endpoint
+  /api-docs:
+    get:
+      tags:
+        - Documentation
+      summary: Route on which swagger documentation is served
+      responses:
+        '200':
+          description: OK
+
+  # patient registration 
+  /patient/register:
+    post:
+      tags:
+        - Patient
+      summary: Allows patient registration
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName: 
+                  type: string
+                  required: true
+                lastName:
+                  type: string
+                  required: true
+                email:
+                  type: string
+                phoneNumber:
+                  type: string
+                  required: true
+                gender:
+                  type: string
+                  description: 'male, female, other'
+                dateOfBirth:
+                  type: 'string'
+                  description: 'Date with timezone. i.e 1994-11-05T08:15:30-05:00'
+                password:
+                  type: 'string'
+                  required: true
+      responses:
+        '201':
+          description: Patient registration successful. Will return newly registed patient.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          fist_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                          phone_number:
+                            type: string
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                          last_login:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+
+        '400':
+          description: JSON payload validation error | Unqiue phone number error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+
 

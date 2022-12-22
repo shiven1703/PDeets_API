@@ -20,11 +20,12 @@ module.exports = (sequelize) => {
     },
     phone_number: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     gender: {
       type: DataTypes.ENUM,
-      values: ['men', 'women', 'other']
+      values: ['male', 'female', 'other']
     },
     date_of_birth: {
       type: DataTypes.DATE

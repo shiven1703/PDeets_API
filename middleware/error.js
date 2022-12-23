@@ -15,6 +15,11 @@ const globalErrorHandler = (err, req, res, next) => {
       return res.status(500).json({
         error: err.message
       })
+    case 'SyntaxError':
+      res.status(401).json({
+        error: 'Malformed json payload'
+      })
+      break
     default:
       return res.status(500).json({
         error: 'Something went wrong...please try again'

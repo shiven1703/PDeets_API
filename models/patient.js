@@ -52,10 +52,6 @@ module.exports = (sequelize) => {
       foreignKey: 'patient_id'
     })
 
-    patient.hasMany(models.patient_session, {
-      foreignKey: 'patient_id'
-    })
-
     patient.hasMany(models.callback_request, {
       foreignKey: 'patient_id'
     })

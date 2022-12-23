@@ -6,13 +6,13 @@ info:
   version: 1.0.0
 
 servers:
-  - url: http://localhost:{port}/
+  - url: http://18.184.191.74/
     variables:
       port:
         enum:
-          - "5000"
-        default: "5000"
-    description: Localhost API endpoint
+          - "80"
+        default: "80"
+    description: Development server API endpoint
   # - url: https://agile-plains-29279.herokuapp.com/
   #   description: Production API endpoint
 

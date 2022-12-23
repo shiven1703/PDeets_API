@@ -1,9 +1,16 @@
 // model imports
 const { db } = require('../../db')
 
+// lib imports
+const { DateTime } = require('luxon')
+const config = require('config')
+
 // helpers imports
 const encrypter = require('../../utils/encryption')
-const { DatabaseError } = require('../../utils/customErrors')
+const tokenHelper = require('../../utils/token')
+
+// custom errors
+const { DatabaseError, InvalidUser, UnknownServerError } = require('../../utils/customErrors')
 
 const addPatient = async ({ firstName, lastName, email, phoneNumber, gender, dateOfBirth, password }) => {
   try {
@@ -29,13 +36,76 @@ const addPatient = async ({ firstName, lastName, email, phoneNumber, gender, dat
   } catch (err) {
     // handling unique db error - need unique phone number
     if (err.name === 'SequelizeUniqueConstraintError') {
-      throw new DatabaseError(err.errors[0].message)
+      throw new DatabaseError(`Patient account already exist with the given phone number. ${err.errors[0].message}`)
     } else {
       throw err
     }
   }
 }
 
+const validatePatientLogin = async ({ email = null, phoneNumber = null, password }) => {
+  try {
+    const findQuery = email ? { email } : { phone_number: phoneNumber }
+
+    const foundPatient = await db.patient.findOne({
+      where: findQuery
+    })
+    if (foundPatient) {
+      const isPasswordValid = await validatePatientPassword(password, foundPatient.password)
+      if (isPasswordValid) {
+        const tokens = generateTokens(foundPatient.id)
+        await updatePatientLastLogin(foundPatient.id)
+        return tokens
+      }
+    }
+    throw new InvalidUser('Invalid username or password.')
+  } catch (err) {
+    if (!err.name === 'InvalidUser') {
+      throw new UnknownServerError()
+    } else {
+      throw err
+    }
+  }
+}
+
+const validatePatientPassword = async (password, passwordHash) => {
+  const isValidPassword = await encrypter.validateHash(
+    password,
+    passwordHash
+  )
+  return isValidPassword
+}
+
+const updatePatientLastLogin = async (patientId) => {
+  await db.patient.update({ last_login: DateTime.now().setZone(config.get('app.timezone')).toISO() }, {
+    where: {
+      id: patientId
+    }
+  })
+}
+
+const generateTokens = async (patientId) => {
+  const accessToken = await tokenHelper.generateAccessToken({
+    patientId
+  })
+
+  const refreshToken = await tokenHelper.generateRefreshToken({
+    patientId
+  })
+
+  return {
+    accessToken,
+    refreshToken
+  }
+}
+
+const issueNewTokenPair = async ({ patientId }) => {
+  const newTokens = await generateTokens(patientId)
+  return newTokens
+}
+
 module.exports = {
-  addPatient
+  addPatient,
+  validatePatientLogin,
+  issueNewTokenPair
 }

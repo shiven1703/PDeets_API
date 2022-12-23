@@ -44,7 +44,7 @@ paths:
         '200':
           description: OK
 
-  # patient registration 
+  # patient registration endpoint
   /patient/register:
     post:
       tags:
@@ -129,6 +129,123 @@ paths:
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
+  
+  # patient login endpoint
+  /patient/login:
+    post:
+      tags:
+        - Patient
+      summary: Allows patient to login
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                phoneNumber:
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Patient login successful. Will return access and refresh tokens.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      tokens:
+                        type: object
+                        properties:
+                          accessToken:
+                            type: string
+                          refreshToken:
+                            type: string
+        '401':
+          description: Invalid username or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+  
+  # token refresh endpoint
+  /patient/token/refresh:
+    post:
+      tags:
+        - Patient
+      summary: Allows patient tokens to be refreshed (will issue new pair of access and refresh tokens on access token expiration)
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the refresh token
+          required: true
+
+      responses:
+        '200':
+          description: Token refreshed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      tokens:
+                        type: object
+                        properties:
+                          accessToken:
+                            type: string
+                          refreshToken:
+                            type: string
+        '401':
+          description: JWT token realted errors : invalid token, Token expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
 
 
 

@@ -108,6 +108,7 @@ const patientPasswordActionHandler = async (req, res, next) => {
 }
 
 const patientErrorHandler = (err, req, res, next) => {
+  // console.log(err)
   switch (err.name) {
     case 'DbError':
       res.status(400).json({

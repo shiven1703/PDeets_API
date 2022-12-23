@@ -26,6 +26,7 @@ const generateRefreshToken = async (data) => {
 }
 
 const generatePasswordResetToken = async (data) => {
+  data.isResetToken = true
   const resetToken = await jwtSignAsync(
     data,
     process.env.ACCESS_TOKEN_KEY,

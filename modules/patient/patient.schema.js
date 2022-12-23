@@ -80,7 +80,7 @@ const patientPasswordUpdateSchema = {
   properties: {
     action: {
       type: 'string',
-      enum: ['change_password', 'reset_password', 'get_password_reset_token']
+      enum: ['change_password', 'reset_password']
     },
     email: {
       type: 'string',

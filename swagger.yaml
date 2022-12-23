@@ -247,5 +247,129 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
+  # password reset token endpoint
+  /patient/token/password_reset:
+    post:
+      tags:
+        - Patient
+      summary: Will issue a jwt token and send an email to the user with reset code. pass the reset token in authorization header while resetting the password.
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  description: email or phoneNumber, supply one of them (working)
+                  required: true
+                phoneNumber:
+                  type: string
+                  description: email or phoneNumber, supply one of them (not implimented)
+                  required: true
+
+      responses:
+        '200':
+          description: Password reset token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      resetToken:
+                        type: string
+
+        '400':
+          description: JSON payload validation error - invalid email or phoneNumber
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # change & reset password endpoint
+  /patient/password:
+    post:
+      tags:
+        - Patient
+      summary: Will allow to change and reset the password.
+      parameters:
+        - in: header
+          name: Authorization
+          description: when action is set to change_password - (token represents current login session) and when action is set to reset_password - (supply reset token)
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action: 
+                  type: string
+                  description: supply "change_password" or "reset_password"
+                  required: true
+                email:
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                phoneNumber:
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                oldPassword:
+                  type: string
+                  description: reqired while action is set to "change_password"
+                  require: true
+                newPassword:
+                  type: string
+                  description: reqired while action is set to "change_password" and "reset_password"
+                  require: true
+                validationCode:
+                  type: string
+                  description: reqired while action is set to "reset_password"
+                  require: true
+
+      responses:
+        '200':
+          description: Successful password change | Successful password reset.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+
+        '400':
+          description: JSON payload validation error - missing required params (see schema)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
 
 

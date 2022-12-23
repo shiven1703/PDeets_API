@@ -8,6 +8,8 @@ const config = require('config')
 // helpers imports
 const encrypter = require('../../utils/encryption')
 const tokenHelper = require('../../utils/token')
+const mailer = require('../../utils/mailer')
+const { PasswordActionEnum } = require('../../utils/enums')
 
 // custom errors
 const { DatabaseError, InvalidUser, UnknownServerError } = require('../../utils/customErrors')
@@ -104,8 +106,70 @@ const issueNewTokenPair = async ({ patientId }) => {
   return newTokens
 }
 
+const performPasswordAction = async ({ action, email, phoneNumber, suppliedValidationCode, actualValidationCode, oldPassword, newPassword }) => {
+  const findQuery = email ? { email } : { phone_number: phoneNumber }
+
+  const foundPatient = await db.patient.findOne({
+    where: findQuery
+  })
+
+  if (!foundPatient) { throw new DatabaseError('Invalid email or phone number supplied.') }
+
+  switch (action) {
+    // change password
+    case PasswordActionEnum.change_password:{
+      if (!(oldPassword && newPassword)) { throw new DatabaseError('Missing oldpassword or newPassword param') }
+      // checking if old password is valid
+      if (await validatePatientPassword(oldPassword, foundPatient.password)) {
+        // updating password
+        await db.patient.update({
+          password: await encrypter.makeHash(newPassword)
+        }, { where: findQuery })
+        return 'Password successfully updated'
+      } else {
+        throw new DatabaseError('Invalid old password.')
+      }
+    }
+    // password reset token generation
+    case PasswordActionEnum.get_password_reset_token: {
+      const validationCode = await generateResetPasswordValidationCode()
+      const passwordResetToken = tokenHelper.generatePasswordResetToken({
+        patientId: foundPatient.id,
+        email: foundPatient.email,
+        phoneNumber: foundPatient.phone_number,
+        validationCode
+      })
+      // sending email with validation code
+      await mailer.sendEmail(foundPatient.email, 'PDeets: Password reset code', `<h3>Reset Code : ${validationCode}</h3>`)
+      return passwordResetToken
+    }
+    // resetting password using reset token
+    case PasswordActionEnum.reset_password: {
+      console.log(typeof suppliedValidationCode, typeof actualValidationCode)
+      if (suppliedValidationCode === actualValidationCode) {
+        await db.patient.update({
+          password: await encrypter.makeHash(newPassword)
+        }, { where: findQuery })
+        return 'Password reset successful. Please login again using new password'
+      } else {
+        throw new DatabaseError('Invalid reset password validation code received.')
+      }
+    }
+
+    default:
+      throw new DatabaseError('Invalid password action requested.')
+  }
+}
+
+const generateResetPasswordValidationCode = async () => {
+  const min = 10000
+  const max = 1000000000000
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
+
 module.exports = {
   addPatient,
   validatePatientLogin,
-  issueNewTokenPair
+  issueNewTokenPair,
+  performPasswordAction
 }

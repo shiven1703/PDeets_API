@@ -11,6 +11,11 @@ module.exports = () => {
         req.patient = {
           id: accessToken.patientId
         }
+        if (accessToken.isResetToken) {
+          req.patient.email = accessToken.email
+          req.patient.phoneNumber = accessToken.phoneNumber
+          req.patient.validationCode = accessToken.validationCode
+        }
         return next()
       } else {
         res.status(401).json({

@@ -25,6 +25,16 @@ const generateRefreshToken = async (data) => {
   return refreshToken
 }
 
+const generatePasswordResetToken = async (data) => {
+  data.isResetToken = true
+  const resetToken = await jwtSignAsync(
+    data,
+    process.env.ACCESS_TOKEN_KEY,
+    { expiresIn: '15m' }
+  )
+  return resetToken
+}
+
 const verifyAccessToken = async (token) => {
   try {
     const accessToken = await jwtVerifyAsync(
@@ -68,6 +78,7 @@ const verifyRefreshToken = async (token) => {
 module.exports = {
   generateAccessToken,
   generateRefreshToken,
+  generatePasswordResetToken,
   verifyAccessToken,
   verifyRefreshToken
 }

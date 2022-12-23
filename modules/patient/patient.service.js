@@ -1,9 +1,15 @@
 // model imports
 const { db } = require('../../db')
 
+// lib imports
+const { DateTime } = require('luxon')
+const config = require('config')
+
 // helpers imports
 const encrypter = require('../../utils/encryption')
 const tokenHelper = require('../../utils/token')
+
+// custom errors
 const { DatabaseError, InvalidUser, UnknownServerError } = require('../../utils/customErrors')
 
 const addPatient = async ({ firstName, lastName, email, phoneNumber, gender, dateOfBirth, password }) => {
@@ -48,6 +54,7 @@ const validatePatientLogin = async ({ email = null, phoneNumber = null, password
       const isPasswordValid = await validatePatientPassword(password, foundPatient.password)
       if (isPasswordValid) {
         const tokens = generateTokens(foundPatient.id)
+        await updatePatientLastLogin(foundPatient.id)
         return tokens
       }
     }
@@ -67,6 +74,14 @@ const validatePatientPassword = async (password, passwordHash) => {
     passwordHash
   )
   return isValidPassword
+}
+
+const updatePatientLastLogin = async (patientId) => {
+  await db.patient.update({ last_login: DateTime.now().setZone(config.get('app.timezone')).toISO() }, {
+    where: {
+      id: patientId
+    }
+  })
 }
 
 const generateTokens = async (patientId) => {

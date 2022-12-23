@@ -3,5 +3,12 @@ const YAML = require('yamljs')
 const swaggerDocument = YAML.load('swagger.yaml')
 
 module.exports = (app) => {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, {
+    swaggerOptions: {
+      requestInterceptor: (request) => {
+        request.header.origin = `http://localhost:${process.env.PORT}`
+        return request
+      }
+    }
+  }))
 }

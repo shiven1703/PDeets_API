@@ -7,12 +7,12 @@ const docs = require('./docs')
 
 const app = express()
 
+crons()
+
 middleware(app)
 
 docs(app)
 
 routes(app)
-
-crons()
 
 module.exports = app

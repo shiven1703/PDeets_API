@@ -2,6 +2,7 @@ const schema = require('./patient.schema')
 const validator = require('../../utils/schemaValidator')
 const patientService = require('./patient.service')
 const tokenHelper = require('../../utils/token')
+const { PasswordActionEnum } = require('../../utils/enums')
 
 const registerPatient = async (req, res, next) => {
   try {
@@ -56,6 +57,56 @@ const refreshTokens = async (req, res, next) => {
   }
 }
 
+const passwordResetToken = async (req, res, next) => {
+  try {
+    const patient = await validator.validate(schema.passwordResetTokenSchema, req.body)
+    patient.action = PasswordActionEnum.get_password_reset_token
+
+    const token = await patientService.performPasswordAction(patient)
+
+    res.status(200).json({
+      message: 'Token generated',
+      data: {
+        resetToken: token
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const patientPasswordActionHandler = async (req, res, next) => {
+  try {
+    const patient = await validator.validate(schema.patientPasswordUpdateSchema, req.body)
+
+    // appending reset token data to patient
+    if (patient.action === PasswordActionEnum.reset_password) {
+      patient.email = req.patient.email
+      patient.phoneNumber = req.patient.phoneNumber
+      patient.suppliedValidationCode = patient.validationCode
+      patient.actualValidationCode = req.patient.validationCode.toString()
+    }
+
+    const actionResult = await patientService.performPasswordAction(patient)
+
+    switch (patient.action) {
+      case PasswordActionEnum.change_password:
+        res.status(200).json({
+          message: actionResult,
+          data: {}
+        })
+        break
+      case PasswordActionEnum.reset_password:
+        res.status(200).json({
+          message: actionResult,
+          data: {}
+        })
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
 const patientErrorHandler = (err, req, res, next) => {
   switch (err.name) {
     case 'DbError':
@@ -77,5 +128,7 @@ module.exports = {
   registerPatient,
   patientLogin,
   refreshTokens,
+  passwordResetToken,
+  patientPasswordActionHandler,
   patientErrorHandler
 }

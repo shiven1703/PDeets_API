@@ -9,7 +9,10 @@ module.exports = () => {
       if (receivedToken) {
         const accessToken = await token.verifyAccessToken(receivedToken)
         req.patient = {
-          id: accessToken.patientId
+          id: accessToken.patientId,
+          email: accessToken.email,
+          phoneNumber: accessToken.phoneNumber,
+          validationCode: accessToken.validationCode
         }
         return next()
       } else {

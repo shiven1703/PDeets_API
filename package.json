@@ -7,10 +7,10 @@
     "node": "18.x"
   },
   "scripts": {
-    "start": "node -r dotenv/config ./bin/www",
-    "start-production": "sudo node -r dotenv/config ./bin/www",
-    "start-dev": "nodemon -r dotenv/config ./bin/www",
-    "debug": "node -r dotenv/config ./bin/www",
+    "start": "node ./bin/www",
+    "start-production": "pm2 start ./bin/www --name='pdeets_poc_api'",
+    "start-dev": "nodemon ./bin/www",
+    "debug": "node ./bin/www",
     "test": "mocha ./components --recursive --timeout 10000 -r dotenv/config",
     "lint": "eslint .  --ext .js",
     "lint-fix": "eslint --fix .  --ext .js"

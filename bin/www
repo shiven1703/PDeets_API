@@ -1,3 +1,6 @@
+// loading .env file
+require('dotenv').config()
+
 const app = require('../app')
 const config = require('config')
 const database = require('../db')

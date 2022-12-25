@@ -49,15 +49,23 @@ const validatePatientLogin = async ({ email = null, phoneNumber = null, password
   try {
     const findQuery = email ? { email } : { phone_number: phoneNumber }
 
-    const foundPatient = await db.patient.findOne({
+    let foundPatient = await db.patient.findOne({
       where: findQuery
     })
+
     if (foundPatient) {
       const isPasswordValid = await validatePatientPassword(password, foundPatient.password)
       if (isPasswordValid) {
-        const tokens = generateTokens(foundPatient.id)
+        const tokens = await generateTokens(foundPatient.id)
         await updatePatientLastLogin(foundPatient.id)
-        return tokens
+
+        foundPatient = foundPatient.toJSON()
+        delete foundPatient.password
+
+        return {
+          tokens,
+          foundPatient
+        }
       }
     }
     throw new InvalidUser('Invalid username or password.')

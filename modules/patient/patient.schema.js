@@ -36,22 +36,17 @@ const patientLoginSchema = {
   type: 'object',
   properties: {
     email: {
-      type: 'string',
-      format: 'email'
+      type: 'string'
     },
     phoneNumber: {
       type: 'string',
-      minLength: 10,
       maxLength: 13
     },
     password: {
       type: 'string'
     }
   },
-  oneOf: [
-    { required: ['email', 'password'] },
-    { required: ['phoneNumber', 'password'] }
-  ],
+  required: ['email', 'phoneNumber', 'password'],
   additionalProperties: false
 }
 

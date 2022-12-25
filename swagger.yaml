@@ -91,6 +91,10 @@ paths:
                   data:
                     type: object
                     properties:
+                      tokens:
+                        type: object
+                        nullable: true
+  
                       patient:
                         type: object
                         properties:
@@ -153,6 +157,7 @@ paths:
                   required: true
                 password:
                   type: string
+                  required: true
       responses:
         '200':
           description: Patient login successful. Will return access and refresh tokens.
@@ -173,6 +178,29 @@ paths:
                           accessToken:
                             type: string
                           refreshToken:
+                            type: string
+                      patient:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          fist_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                          phone_number:
+                            type: string
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                          last_login:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
                             type: string
         '401':
           description: Invalid username or password.

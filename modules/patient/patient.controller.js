@@ -12,6 +12,7 @@ const registerPatient = async (req, res, next) => {
     res.status(201).json({
       message: 'Patient registration successful',
       data: {
+        tokens: null,
         patient: newlyAddedPatient
       }
     })
@@ -23,11 +24,12 @@ const registerPatient = async (req, res, next) => {
 const patientLogin = async (req, res, next) => {
   try {
     const patient = await validator.validate(schema.patientLoginSchema, req.body)
-    const tokens = await patientService.validatePatientLogin(patient)
+    const data = await patientService.validatePatientLogin(patient)
     res.status(200).json({
       message: 'Login successful',
       data: {
-        tokens
+        tokens: data.tokens,
+        patient: data.foundPatient
       }
     })
   } catch (err) {

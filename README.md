@@ -1,29 +1,24 @@
-# README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+# Pdeets app poc API
+The repository contains code for the backend API of planspiel poc app.
 
-### What is this repository for? ###
+## Commands
+- npm run start-dev
+- npm run start
+- npm run lint
+- npm run lint-fix
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+## Docker
+- docker build . -t pdeets_poc_api:latest
+- docker run -p 4000:4000  pdeets_poc_api
 
-### How do I get set up? ###
+## Documentation url
+- /api-docs
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+## Environment
+- Node.js 18.x
+- Express
+- Eslint
 
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+## Development Notes
+- Always run "npm run lint" && "npm run lint-fix" commands before pushing the commit. This is to mainly maintain overall code style in the project.

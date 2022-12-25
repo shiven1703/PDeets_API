@@ -1,0 +1,375 @@
+openapi: "3.0.0"
+
+info:
+  title: PDeets app poc api
+  description: This documentation contains information regarding the available endpoints for poc app of planspiel project.
+  version: 1.0.0
+
+servers:
+  - url: http://18.184.191.74/
+    variables:
+      port:
+        enum:
+          - "80"
+        default: "80"
+    description: Development server API endpoint
+  # - url: https://agile-plains-29279.herokuapp.com/
+  #   description: Production API endpoint
+
+
+# reuseable components
+components:
+  responses:
+    UnknownServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: 
+                type: string
+
+
+
+
+paths:
+  # api doc endpoint
+  /api-docs:
+    get:
+      tags:
+        - Documentation
+      summary: Route on which swagger documentation is served
+      responses:
+        '200':
+          description: OK
+
+  # patient registration endpoint
+  /patient/register:
+    post:
+      tags:
+        - Patient
+      summary: Allows patient registration
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName: 
+                  type: string
+                  required: true
+                lastName:
+                  type: string
+                  required: true
+                email:
+                  type: string
+                phoneNumber:
+                  type: string
+                  required: true
+                gender:
+                  type: string
+                  description: 'male, female, other'
+                dateOfBirth:
+                  type: 'string'
+                  description: 'Date with timezone. i.e 1994-11-05T08:15:30-05:00'
+                password:
+                  type: 'string'
+                  required: true
+      responses:
+        '201':
+          description: Patient registration successful. Will return newly registed patient.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          fist_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                          phone_number:
+                            type: string
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                          last_login:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+
+        '400':
+          description: JSON payload validation error | Unqiue phone number error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+  
+  # patient login endpoint
+  /patient/login:
+    post:
+      tags:
+        - Patient
+      summary: Allows patient to login
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                phoneNumber:
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Patient login successful. Will return access and refresh tokens.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      tokens:
+                        type: object
+                        properties:
+                          accessToken:
+                            type: string
+                          refreshToken:
+                            type: string
+        '401':
+          description: Invalid username or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+  
+  # token refresh endpoint
+  /patient/token/refresh:
+    post:
+      tags:
+        - Patient
+      summary: Allows patient tokens to be refreshed (will issue new pair of access and refresh tokens on access token expiration)
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the refresh token
+          required: true
+
+      responses:
+        '200':
+          description: Token refreshed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      tokens:
+                        type: object
+                        properties:
+                          accessToken:
+                            type: string
+                          refreshToken:
+                            type: string
+        '401':
+          description: JWT token realted errors : invalid token, Token expired.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # password reset token endpoint
+  /patient/token/password_reset:
+    post:
+      tags:
+        - Patient
+      summary: Will issue a jwt token and send an email to the user with reset code. pass the reset token in authorization header while resetting the password.
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  description: email or phoneNumber, supply one of them (working)
+                  required: true
+                phoneNumber:
+                  type: string
+                  description: email or phoneNumber, supply one of them (not implimented)
+                  required: true
+
+      responses:
+        '200':
+          description: Password reset token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      resetToken:
+                        type: string
+
+        '400':
+          description: JSON payload validation error - invalid email or phoneNumber
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # change & reset password endpoint
+  /patient/password:
+    post:
+      tags:
+        - Patient
+      summary: Will allow to change and reset the password.
+      parameters:
+        - in: header
+          name: Authorization
+          description: when action is set to change_password - (token represents current login session) and when action is set to reset_password - (supply reset token)
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action: 
+                  type: string
+                  description: supply "change_password" or "reset_password"
+                  required: true
+                email:
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                phoneNumber:
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                oldPassword:
+                  type: string
+                  description: reqired while action is set to "change_password"
+                  require: true
+                newPassword:
+                  type: string
+                  description: reqired while action is set to "change_password" and "reset_password"
+                  require: true
+                validationCode:
+                  type: string
+                  description: reqired while action is set to "reset_password"
+                  require: true
+
+      responses:
+        '200':
+          description: Successful password change | Successful password reset.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+
+        '400':
+          description: JSON payload validation error - missing required params (see schema)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+
+

@@ -1,0 +1,18 @@
+{
+    "app": {
+        "port": 4000,
+        "timezone": "Europe/Berlin"
+    },
+    "modules": {
+        "patient": {
+            "tokens": {
+                "access_token": {
+                    "exp_time": "1d"
+                },
+                "refresh_token": {
+                    "exp_time": "30d"
+                }
+            }
+        }
+    }
+}

@@ -3,7 +3,7 @@ const path = require('path')
 
 // loading .env.test file
 require('dotenv').config({ path: path.join(__dirname, '/.env') })
-const database = require('../db')
+const database = require('./db')
 
 // checking is NODE_ENV is set to test environment
 test('Is node_env set to test environment', () => {
@@ -14,3 +14,7 @@ test('Is node_env set to test environment', () => {
 test('Checking test db connection', async () => {
   await database.isConnected()
 })
+
+module.exports = {
+  database
+}

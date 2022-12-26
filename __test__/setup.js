@@ -5,6 +5,8 @@ const path = require('path')
 require('dotenv').config({ path: path.join(__dirname, '/.env') })
 const database = require('./db')
 
+jest.setTimeout(20000)
+
 // checking is NODE_ENV is set to test environment
 test('Is node_env set to test environment', () => {
   expect(process.env.NODE_ENV).toBe('test')

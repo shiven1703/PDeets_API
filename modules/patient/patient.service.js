@@ -153,7 +153,6 @@ const performPasswordAction = async ({ action, email, phoneNumber, suppliedValid
     }
     // resetting password using reset token
     case PasswordActionEnum.reset_password: {
-      console.log(typeof suppliedValidationCode, typeof actualValidationCode)
       if (suppliedValidationCode === actualValidationCode) {
         await db.patient.update({
           password: await encrypter.makeHash(newPassword)

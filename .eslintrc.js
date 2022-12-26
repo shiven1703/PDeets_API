@@ -11,6 +11,7 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   globals: {
+    jest: true,
     test: true,
     expect: true,
     describe: true,

@@ -10,6 +10,10 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest'
   },
+  globals: {
+    test: true,
+    expect: true
+  },
   rules: {
   }
 }

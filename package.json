@@ -11,21 +11,19 @@
     "start-production": "pm2 start ./bin/www --name='pdeets_poc_api'",
     "start-dev": "nodemon ./bin/www",
     "debug": "node ./bin/www",
-    "test": "mocha ./components --recursive --timeout 10000 -r dotenv/config",
+    "test": "jest --passWithNoTests --detectOpenHandles --runInBand --silent",
     "lint": "eslint .  --ext .js",
     "lint-fix": "eslint --fix .  --ext .js"
   },
   "author": "Shivam Patel",
   "license": "ISC",
   "devDependencies": {
-    "chai": "^4.3.6",
-    "chai-http": "^4.3.0",
     "eslint": "^8.30.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-promise": "^6.1.1",
-    "mocha": "^10.0.0",
+    "jest": "^29.3.1",
     "nodemon": "^2.0.20"
   },
   "dependencies": {

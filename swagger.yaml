@@ -399,5 +399,77 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
+  # appointment location listing
+  /appointment/locations:
+    post:
+      tags:
+        - Appointment
+      summary: Allows fetching of available locations
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filterBy: 
+                  type: string
+                  description: This is a gloabl filter. Pass the user input and search will be performed on location name, description, address, pincode and city columns
+  
+      responses:
+        '200':
+          description: List of locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      locations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            lan:
+                              type: string
+                            lon:
+                              type: string
+                            address:
+                              type: string
+                            pincode:
+                              type: string
+                            city:
+                              type: string
+                            createdAt:
+                              type: string
+                            updatedAt:
+                              type: string
+                          
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
 
 

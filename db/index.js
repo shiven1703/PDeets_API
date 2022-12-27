@@ -53,6 +53,16 @@ for (const modelName in modelList) {
   }
 })()
 
+// uncomment the below code to run default data imports
+// ;(async () => {
+//   try {
+//     const defaultDatabaseImports = require('./imports')
+//     await defaultDatabaseImports(sequelize, modelList)
+//   } catch (err) {
+//     console.log('Error while importing default database data...')
+//   }
+// })()
+
 const isConnected = async () => {
   await sequelize.authenticate()
   console.log('Connected with database...')

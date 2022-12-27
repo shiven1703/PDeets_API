@@ -6,4 +6,8 @@ const router = express.Router()
 
 router.get('/list', authMiddleware(), appointmentController.appointmentList)
 
+router.get('/locations', authMiddleware(), appointmentController.locations)
+
+router.use(appointmentController.locationModuleErrorHandler)
+
 module.exports = router

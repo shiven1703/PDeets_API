@@ -25,6 +25,9 @@ module.exports = (sequelize) => {
     },
     pincode: {
       type: DataTypes.STRING
+    },
+    city: {
+      type: DataTypes.STRING
     }
   })
 

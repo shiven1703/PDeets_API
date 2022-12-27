@@ -1,4 +1,6 @@
 const appointmentService = require('./appointment.service')
+const validator = require('../../utils/schemaValidator')
+const schema = require('./appointment.schema')
 
 const appointmentList = async (req, res, next) => {
   try {
@@ -15,6 +17,27 @@ const appointmentList = async (req, res, next) => {
   }
 }
 
+const locations = async (req, res, next) => {
+  try {
+    const filterBy = await validator.validate(schema.locationSchema, req.body)
+    const locationList = await appointmentService.getLocations(filterBy)
+    res.status(200).json({
+      message: 'Successfully fetched locations',
+      data: {
+        locations: locationList
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const locationModuleErrorHandler = (err, req, res, next) => {
+  next(err)
+}
+
 module.exports = {
-  appointmentList
+  appointmentList,
+  locations,
+  locationModuleErrorHandler
 }

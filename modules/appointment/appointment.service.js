@@ -2,6 +2,7 @@
 const { db } = require('../../db')
 
 // lib imports
+const { Op } = require('sequelize')
 
 // helpers imports
 
@@ -32,6 +33,52 @@ const showAppointments = async (patientId) => {
   }
 }
 
+const getLocations = async ({ filterBy }) => {
+  try {
+    let locations = []
+    if (filterBy) {
+      // setting up filter value (search value in all columns)
+      const where = {
+        [Op.or]: [{
+          name: {
+            [Op.iLike]: `%${filterBy}%`
+          }
+        },
+        {
+          description: {
+            [Op.iLike]: `%${filterBy}%`
+          }
+        },
+        {
+          address: {
+            [Op.iLike]: `%${filterBy}%`
+          }
+        },
+        {
+          pincode: {
+            [Op.iLike]: `%${filterBy}%`
+          }
+        },
+        {
+          city: {
+            [Op.iLike]: `%${filterBy}%`
+          }
+        }]
+      }
+      // fetching data
+      locations = await db.location.findAll({
+        where
+      })
+    } else {
+      locations = await db.location.findAll()
+    }
+    return locations
+  } catch (err) {
+    throw new DatabaseError(err.message)
+  }
+}
+
 module.exports = {
-  showAppointments
+  showAppointments,
+  getLocations
 }

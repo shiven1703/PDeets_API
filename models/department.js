@@ -23,14 +23,12 @@ module.exports = (sequelize) => {
 
     // many-to-many relationship with location table
     department.belongsToMany(models.location, {
-      through: 'location_has_department',
-      uniqueKey: 'department_id'
+      through: models.location_has_department
     })
 
     // many-to-many relationship with doctor table
     department.belongsToMany(models.doctor, {
-      through: 'department_has_doctor',
-      uniqueKey: 'department_id'
+      through: models.department_has_doctor
     })
   }
 

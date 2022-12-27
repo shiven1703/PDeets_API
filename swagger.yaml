@@ -472,4 +472,65 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError' 
 
+  # appointment department listing
+  /appointment/departments:
+    post:
+      tags:
+        - Appointment
+      summary: Allows fetching of available departments
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                  type: string
+                  required: true
+                filterBy: 
+                  type: string
+                  description: This is a gloabl filter. Pass the user input and search will be performed on department name and description
+  
+      responses:
+        '200':
+          description: List of departments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      departments:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            description:
+                              type: string
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
 

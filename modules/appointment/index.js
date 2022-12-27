@@ -8,6 +8,8 @@ router.get('/list', authMiddleware(), appointmentController.appointmentList)
 
 router.get('/locations', authMiddleware(), appointmentController.locations)
 
+router.get('/departments', authMiddleware(), appointmentController.departments)
+
 router.use(appointmentController.locationModuleErrorHandler)
 
 module.exports = router

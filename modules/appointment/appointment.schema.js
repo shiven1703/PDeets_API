@@ -8,6 +8,21 @@ const locationSchema = {
   additionalProperties: false
 }
 
+const departmentSchema = {
+  type: 'object',
+  properties: {
+    locationId: {
+      type: 'string'
+    },
+    filterBy: {
+      type: 'string'
+    }
+  },
+  required: ['locationId'],
+  additionalProperties: false
+}
+
 module.exports = {
-  locationSchema
+  locationSchema,
+  departmentSchema
 }

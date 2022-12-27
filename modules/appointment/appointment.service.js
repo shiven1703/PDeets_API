@@ -78,7 +78,56 @@ const getLocations = async ({ filterBy }) => {
   }
 }
 
+const getDepartments = async ({ locationId, filterBy }) => {
+  try {
+    let locations = []
+
+    if (filterBy) {
+      locations = await db.location.findAll({
+        attributes: [],
+        where: { id: locationId },
+        include: [{
+          model: db.department,
+          attributes: ['id', 'name', 'description'],
+          where: {
+            [Op.or]: [{
+              name: {
+                [Op.iLike]: `%${filterBy}%`
+              }
+            },
+            {
+              description: {
+                [Op.iLike]: `%${filterBy}%`
+              }
+            }]
+          },
+          through: {
+            attributes: []
+          }
+        }]
+      })
+    } else {
+      locations = await db.location.findAll({
+        attributes: [],
+        where: { id: locationId },
+        include: [{
+          model: db.department,
+          attributes: ['id', 'name', 'description'],
+          through: {
+            attributes: []
+          }
+        }]
+      })
+    }
+
+    return locations[0] ? locations[0] : { departments: [] }
+  } catch (err) {
+    throw new DatabaseError(err.message)
+  }
+}
+
 module.exports = {
   showAppointments,
-  getLocations
+  getLocations,
+  getDepartments
 }

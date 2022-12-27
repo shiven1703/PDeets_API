@@ -49,6 +49,7 @@ for (const modelName in modelList) {
   try {
     await sequelize.sync()
   } catch (error) {
+    console.log(error)
     console.log('Database sync failed...')
   }
 })()
@@ -59,6 +60,7 @@ for (const modelName in modelList) {
 //     const defaultDatabaseImports = require('./imports')
 //     await defaultDatabaseImports(sequelize, modelList)
 //   } catch (err) {
+//     console.log(err)
 //     console.log('Error while importing default database data...')
 //   }
 // })()

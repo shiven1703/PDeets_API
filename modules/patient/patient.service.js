@@ -4,6 +4,7 @@ const { db } = require('../../db')
 // lib imports
 const { DateTime } = require('luxon')
 const config = require('config')
+const otpGenerator = require('otp-generator')
 
 // helpers imports
 const encrypter = require('../../utils/encryption')
@@ -169,9 +170,8 @@ const performPasswordAction = async ({ action, email, phoneNumber, suppliedValid
 }
 
 const generateResetPasswordValidationCode = async () => {
-  const min = 10000
-  const max = 1000000000000
-  return Math.floor(Math.random() * (max - min + 1)) + min
+  const otp = otpGenerator.generate(5, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
+  return otp
 }
 
 module.exports = {

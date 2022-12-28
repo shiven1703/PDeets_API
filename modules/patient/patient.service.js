@@ -170,7 +170,7 @@ const performPasswordAction = async ({ action, email, phoneNumber, suppliedValid
 }
 
 const generateResetPasswordValidationCode = async () => {
-  const otp = otpGenerator.generate(5, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
+  const otp = otpGenerator.generate(config.get('modules.patient.passwordResetCodeLength'), { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
   return otp
 }
 

@@ -2,10 +2,9 @@ const { DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
   const departmentHasDoctor = sequelize.define('department_has_doctor', {
-    department_id: {
+    location_department_id: {
       type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true
+      primaryKey: false
     },
     doctor_id: {
       type: DataTypes.UUID,

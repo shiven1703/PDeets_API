@@ -47,14 +47,16 @@ module.exports = (sequelize) => {
       foreignKey: 'doctor_id'
     })
 
-    // many-to-many relationship with department table
-    doctor.belongsToMany(models.department, {
-      through: models.department_has_doctor
-    })
-
     doctor.hasMany(models.doctor_schedule, {
       foreignKey: 'doctor_id'
     })
+
+    doctor.registerRelationships = (models) => {
+      doctor.belongsToMany(models.location_has_department, {
+        through: models.department_has_doctor,
+        foreignKey: 'id'
+      })
+    }
   }
 
   return doctor

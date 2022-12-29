@@ -533,4 +533,81 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError' 
 
+  # appointment doctor listing
+  /appointment/doctors:
+    post:
+      tags:
+        - Appointment
+      summary: Allows fetching of available doctors
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                  type: string
+                  required: true,
+                departmentId:
+                  type: string
+                  required: true
+                filterBy: 
+                  type: string
+                  description: This is a gloabl filter. Pass the user input and search will be performed on doctor proerties.
+  
+      responses:
+        '200':
+          description: List of doctors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      doctors:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            doctor_id:
+                              type: string
+                            first_name:
+                              type: string
+                            last_name:
+                              type: string
+                            email:
+                              type: string
+                            phone_number:
+                              type: string
+                            address:
+                              type: string
+                            pincode:
+                              type: string
+                            doctor_speciality:
+                              type: string
+                            licence_no:
+                              type: string
+                            experience:
+                              type: string
+                            
 
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 

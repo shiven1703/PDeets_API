@@ -27,9 +27,9 @@ module.exports = (sequelize) => {
     })
 
     // many-to-many relationship with doctor table
-    department.belongsToMany(models.doctor, {
-      through: models.department_has_doctor
-    })
+    // department.belongsToMany(models.doctor, {
+    //   through: models.department_has_doctor
+    // })
   }
 
   return department

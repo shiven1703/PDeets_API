@@ -22,7 +22,25 @@ const departmentSchema = {
   additionalProperties: false
 }
 
+const doctorListSchema = {
+  type: 'object',
+  properties: {
+    locationId: {
+      type: 'string'
+    },
+    departmentId: {
+      type: 'string'
+    },
+    filterBy: {
+      type: 'string'
+    }
+  },
+  required: ['locationId', 'departmentId'],
+  additionalProperties: false
+}
+
 module.exports = {
   locationSchema,
-  departmentSchema
+  departmentSchema,
+  doctorListSchema
 }

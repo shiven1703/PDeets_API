@@ -45,6 +45,21 @@ const departments = async (req, res, next) => {
   }
 }
 
+const doctors = async (req, res, next) => {
+  try {
+    const params = await validator.validate(schema.doctorListSchema, req.body)
+    const doctors = await appointmentService.getDoctors(params)
+    res.status(200).json({
+      message: 'Successfully fetched doctors',
+      data: {
+        doctors
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const locationModuleErrorHandler = (err, req, res, next) => {
   console.log(err)
   next(err)
@@ -54,5 +69,6 @@ module.exports = {
   appointmentList,
   locations,
   departments,
+  doctors,
   locationModuleErrorHandler
 }

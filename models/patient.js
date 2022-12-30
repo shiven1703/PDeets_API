@@ -1,70 +1,70 @@
-const { DataTypes } = require("sequelize");
+const { DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
-  const patient = sequelize.define("patients", {
+  const patient = sequelize.define('patients', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
+      primaryKey: true
     },
     first_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     last_name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     email: {
       type: DataTypes.STRING,
-      unique: true,
+      unique: true
     },
     phone_number: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
+      unique: true
     },
     gender: {
       type: DataTypes.ENUM,
-      values: ["male", "female", "other"],
+      values: ['male', 'female', 'other']
     },
     date_of_birth: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATE
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     last_login: {
-      type: DataTypes.DATE,
-    },
-  });
+      type: DataTypes.DATE
+    }
+  })
 
   patient.registerRelationships = (models) => {
     patient.hasMany(models.review, {
-      foreignKey: "patient_id",
-    });
+      foreignKey: 'patient_id'
+    })
 
     patient.hasMany(models.appointment, {
-      foreignKey: "patient_id",
-    });
+      foreignKey: 'patient_id'
+    })
 
     patient.hasMany(models.medication_reminder, {
-      foreignKey: "patient_id",
-    });
+      foreignKey: 'patient_id'
+    })
 
     patient.hasMany(models.callback_request, {
-      foreignKey: "patient_id",
-    });
+      foreignKey: 'patient_id'
+    })
 
     patient.hasMany(models.lab_report, {
-      foreignKey: "patient_id",
-    });
+      foreignKey: 'patient_id'
+    })
 
     patient.hasMany(models.device_token, {
-      foreignKey: "patient_id",
-    });
-  };
+      foreignKey: 'patient_id'
+    })
+  }
 
-  return patient;
-};
+  return patient
+}

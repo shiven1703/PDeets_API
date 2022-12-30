@@ -102,6 +102,54 @@ const importDoctorSchedule = async (sequelize, modelList) => {
   }
 }
 
+const importQuestionnaire = async (sequelize, modelList) => {
+  try {
+    const questionsImportFile = path.join(__dirname, '/questionnaire.js')
+    const questionList = require(questionsImportFile)
+
+    questionList.forEach(async (question) => {
+      // adding question
+      const createdQuestion = await modelList.question.create({
+        question: question.text
+      })
+
+      // adding options
+      question.options.forEach(async (option) => {
+        await modelList.question_option.create({
+          question_id: createdQuestion.id,
+          option
+        })
+      })
+    })
+    console.log('imported questions and related options....')
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const truncateAllDefaultDataTables = async (sequelize, modelList) => {
+  try {
+    await modelList.department.destroy({ truncate: true, cascade: true })
+    console.log('departments table truncated...')
+    await modelList.location.destroy({ truncate: true, cascade: true })
+    console.log('locations table truncated...')
+    await modelList.doctor.destroy({ truncate: true, cascade: true })
+    console.log('doctors table truncated...')
+    await modelList.location_has_department.destroy({ truncate: true, cascade: true })
+    console.log('location_has_department table truncated...')
+    await modelList.department_has_doctor.destroy({ truncate: true, cascade: true })
+    console.log('department_has_doctor table truncated...')
+    await modelList.doctor_schedule.destroy({ truncate: true, cascade: true })
+    console.log('doctor_schedules table truncated...')
+    await modelList.question.destroy({ truncate: true, cascade: true })
+    console.log('question table truncated...')
+    await modelList.question_option.destroy({ truncate: true, cascade: true })
+    console.log('question_option table truncated...')
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 module.exports = async (sequelize, modelList) => {
   await importDepartments(sequelize, modelList)
   await importLocations(sequelize, modelList)
@@ -109,6 +157,12 @@ module.exports = async (sequelize, modelList) => {
   await importLocationHasDepartments(sequelize, modelList)
   await importDepartmentHasDoctor(sequelize, modelList)
   await importDoctorSchedule(sequelize, modelList)
+  await importQuestionnaire(sequelize, modelList)
+
+  // uncomment below function to remove all default data from above tables
+  // await truncateAllDefaultDataTables(sequelize, modelList)
+
+  // waiting for 5 sec (for async db calls)
   setTimeout(() => {
     console.log('Default data imported successfully...')
   }, 5000)

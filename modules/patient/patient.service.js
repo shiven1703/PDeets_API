@@ -4,6 +4,7 @@ const { db } = require('../../db')
 // lib imports
 const { DateTime } = require('luxon')
 const config = require('config')
+const otpGenerator = require('otp-generator')
 
 // helpers imports
 const encrypter = require('../../utils/encryption')
@@ -153,7 +154,6 @@ const performPasswordAction = async ({ action, email, phoneNumber, suppliedValid
     }
     // resetting password using reset token
     case PasswordActionEnum.reset_password: {
-      console.log(typeof suppliedValidationCode, typeof actualValidationCode)
       if (suppliedValidationCode === actualValidationCode) {
         await db.patient.update({
           password: await encrypter.makeHash(newPassword)
@@ -170,9 +170,8 @@ const performPasswordAction = async ({ action, email, phoneNumber, suppliedValid
 }
 
 const generateResetPasswordValidationCode = async () => {
-  const min = 10000
-  const max = 1000000000000
-  return Math.floor(Math.random() * (max - min + 1)) + min
+  const otp = otpGenerator.generate(config.get('modules.patient.passwordResetCodeLength'), { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false })
+  return otp
 }
 
 module.exports = {

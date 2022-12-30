@@ -60,6 +60,10 @@ module.exports = (sequelize) => {
     patient.hasMany(models.lab_report, {
       foreignKey: 'patient_id'
     })
+
+    patient.hasMany(models.device_token, {
+      foreignKey: 'patient_id'
+    })
   }
 
   return patient

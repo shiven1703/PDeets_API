@@ -44,9 +44,12 @@ const patientLoginSchema = {
     },
     password: {
       type: 'string'
+    },
+    deviceToken: {
+      type: 'string'
     }
   },
-  required: ['email', 'phoneNumber', 'password'],
+  required: ['email', 'phoneNumber', 'password', 'deviceToken'],
   additionalProperties: false
 }
 
@@ -63,10 +66,7 @@ const passwordResetTokenSchema = {
       maxLength: 15
     }
   },
-  oneOf: [
-    { required: ['email'] },
-    { required: ['phoneNumber'] }
-  ],
+  oneOf: [{ required: ['email'] }, { required: ['phoneNumber'] }],
   additionalProperties: false
 }
 

@@ -1,119 +1,119 @@
 const patientRegitserSchema = {
-  type: 'object',
+  type: "object",
   properties: {
     firstName: {
-      type: 'string'
+      type: "string",
     },
     lastName: {
-      type: 'string'
+      type: "string",
     },
     email: {
-      type: 'string',
-      format: 'email'
+      type: "string",
+      format: "email",
     },
     phoneNumber: {
-      type: 'string',
+      type: "string",
       minLength: 10,
-      maxLength: 13
+      maxLength: 13,
     },
     gender: {
-      type: 'string',
-      enum: ['male', 'female', 'other']
+      type: "string",
+      enum: ["male", "female", "other"],
     },
     dateOfBirth: {
-      type: 'string',
-      format: 'date-time'
+      type: "string",
+      format: "date-time",
     },
     password: {
-      type: 'string'
-    }
+      type: "string",
+    },
   },
-  required: ['firstName', 'lastName', 'phoneNumber', 'password'],
-  additionalProperties: false
-}
+  required: ["firstName", "lastName", "phoneNumber", "password"],
+  additionalProperties: false,
+};
 
 const patientLoginSchema = {
-  type: 'object',
+  type: "object",
   properties: {
     email: {
-      type: 'string',
-      format: 'email'
+      type: "string",
+      format: "email",
     },
     phoneNumber: {
-      type: 'string',
+      type: "string",
       minLength: 10,
-      maxLength: 13
+      maxLength: 13,
     },
     password: {
-      type: 'string'
-    }
+      type: "string",
+    },
+    deviceToken: {
+      type: "string",
+    },
   },
   oneOf: [
-    { required: ['email', 'password'] },
-    { required: ['phoneNumber', 'password'] }
+    { required: ["email", "password", "deviceToken"] },
+    { required: ["phoneNumber", "password", "deviceToken"] },
   ],
-  additionalProperties: false
-}
+  additionalProperties: false,
+};
 
 const passwordResetTokenSchema = {
-  type: 'object',
+  type: "object",
   properties: {
     email: {
-      type: 'string',
-      format: 'email'
+      type: "string",
+      format: "email",
     },
     phoneNumber: {
-      type: 'string',
+      type: "string",
       minLength: 10,
-      maxLength: 13
-    }
+      maxLength: 13,
+    },
   },
-  oneOf: [
-    { required: ['email'] },
-    { required: ['phoneNumber'] }
-  ],
-  additionalProperties: false
-}
+  oneOf: [{ required: ["email"] }, { required: ["phoneNumber"] }],
+  additionalProperties: false,
+};
 
 const patientPasswordUpdateSchema = {
-  type: 'object',
+  type: "object",
   properties: {
     action: {
-      type: 'string',
-      enum: ['change_password', 'reset_password']
+      type: "string",
+      enum: ["change_password", "reset_password"],
     },
     email: {
-      type: 'string',
-      format: 'email'
+      type: "string",
+      format: "email",
     },
     phoneNumber: {
-      type: 'string',
+      type: "string",
       minLength: 10,
-      maxLength: 13
+      maxLength: 13,
     },
     validationCode: {
-      type: 'string'
+      type: "string",
     },
     oldPassword: {
-      type: 'string'
+      type: "string",
     },
     newPassword: {
-      type: 'string'
-    }
+      type: "string",
+    },
   },
   anyOf: [
-    { required: ['action', 'email', 'oldPassword', 'newPassword'] },
-    { required: ['action', 'phoneNumber', 'oldPassword', 'newPassword'] },
-    { required: ['action', 'validationCode', 'newPassword'] },
-    { required: ['action', 'email'] },
-    { required: ['action', 'phoneNumber'] }
+    { required: ["action", "email", "oldPassword", "newPassword"] },
+    { required: ["action", "phoneNumber", "oldPassword", "newPassword"] },
+    { required: ["action", "validationCode", "newPassword"] },
+    { required: ["action", "email"] },
+    { required: ["action", "phoneNumber"] },
   ],
-  additionalProperties: false
-}
+  additionalProperties: false,
+};
 
 module.exports = {
   patientRegitserSchema,
   patientLoginSchema,
   passwordResetTokenSchema,
-  patientPasswordUpdateSchema
-}
+  patientPasswordUpdateSchema,
+};

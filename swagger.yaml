@@ -153,6 +153,7 @@ paths:
                   required: true
                 password:
                   type: string
+                deviceToken: string
       responses:
         '200':
           description: Patient login successful. Will return access and refresh tokens.

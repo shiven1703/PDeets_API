@@ -19,6 +19,11 @@ servers:
 
 # reuseable components
 components:
+  securitySchemes:
+    basicAuth: 
+      type: http
+      scheme: basic
+
   responses:
     UnknownServerError:
       description: Internal Server Error
@@ -29,8 +34,6 @@ components:
             properties:
               error: 
                 type: string
-
-
 
 
 paths:
@@ -235,6 +238,8 @@ paths:
       tags:
         - Patient
       summary: Allows patient tokens to be refreshed (will issue new pair of access and refresh tokens on access token expiration)
+      security:
+        - basicAuth: []
       parameters:
         - in: header
           name: Authorization
@@ -335,6 +340,8 @@ paths:
       tags:
         - Patient
       summary: Will allow to change and reset the password.
+      security:
+        - basicAuth: []
       parameters:
         - in: header
           name: Authorization
@@ -402,10 +409,17 @@ paths:
 
   # appointment location listing
   /appointment/locations:
-    post:
+    get:
       tags:
         - Appointment
       summary: Allows fetching of available locations
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
       requestBody:
         description: Takes below properties
         content:
@@ -475,10 +489,17 @@ paths:
 
   # appointment department listing
   /appointment/departments:
-    post:
+    get:
       tags:
         - Appointment
       summary: Allows fetching of available departments
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
       requestBody:
         description: Takes below properties
         content:
@@ -536,10 +557,17 @@ paths:
 
   # appointment doctor listing
   /appointment/doctors:
-    post:
+    get:
       tags:
         - Appointment
       summary: Allows fetching of available doctors
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
       requestBody:
         description: Takes below properties
         content:
@@ -597,6 +625,78 @@ paths:
                             experience:
                               type: string
                             
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment doctor schedule listing
+  /appointment/doctor/availability:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of doctor schedule
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                doctorId:
+                  type: string
+                  required: true,
+      responses:
+        '200':
+          description: List of doctor schedule
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      schedule:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            doctor_id:
+                              type: string
+                            start_time:
+                              type: string
+                            end_time:
+                              type: string
+                            appointment_duration:
+                              type: string
+                            createdAt:
+                              type: string
+                            updatedAt:
+                              type: string
 
         '400':
           description: JSON payload validation error

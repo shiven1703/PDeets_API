@@ -14,7 +14,7 @@ const patientRegitserSchema = {
     phoneNumber: {
       type: "string",
       minLength: 10,
-      maxLength: 13,
+      maxLength: 15,
     },
     gender: {
       type: "string",
@@ -37,12 +37,10 @@ const patientLoginSchema = {
   properties: {
     email: {
       type: "string",
-      format: "email",
     },
     phoneNumber: {
       type: "string",
-      minLength: 10,
-      maxLength: 13,
+      maxLength: 15,
     },
     password: {
       type: "string",
@@ -51,10 +49,7 @@ const patientLoginSchema = {
       type: "string",
     },
   },
-  oneOf: [
-    { required: ["email", "password", "deviceToken"] },
-    { required: ["phoneNumber", "password", "deviceToken"] },
-  ],
+  required: ["email", "phoneNumber", "password", "deviceToken"],
   additionalProperties: false,
 };
 
@@ -68,7 +63,7 @@ const passwordResetTokenSchema = {
     phoneNumber: {
       type: "string",
       minLength: 10,
-      maxLength: 13,
+      maxLength: 15,
     },
   },
   oneOf: [{ required: ["email"] }, { required: ["phoneNumber"] }],
@@ -89,7 +84,7 @@ const patientPasswordUpdateSchema = {
     phoneNumber: {
       type: "string",
       minLength: 10,
-      maxLength: 13,
+      maxLength: 15,
     },
     validationCode: {
       type: "string",

@@ -91,6 +91,10 @@ paths:
                   data:
                     type: object
                     properties:
+                      tokens:
+                        type: object
+                        nullable: true
+  
                       patient:
                         type: object
                         properties:
@@ -153,6 +157,7 @@ paths:
                   required: true
                 password:
                   type: string
+                  required: true
                 deviceToken: string
       responses:
         '200':
@@ -174,6 +179,29 @@ paths:
                           accessToken:
                             type: string
                           refreshToken:
+                            type: string
+                      patient:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          fist_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                          phone_number:
+                            type: string
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                          last_login:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
                             type: string
         '401':
           description: Invalid username or password.
@@ -372,5 +400,215 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
+  # appointment location listing
+  /appointment/locations:
+    post:
+      tags:
+        - Appointment
+      summary: Allows fetching of available locations
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filterBy: 
+                  type: string
+                  description: This is a gloabl filter. Pass the user input and search will be performed on location name, description, address, pincode and city columns
+  
+      responses:
+        '200':
+          description: List of locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      locations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            lan:
+                              type: string
+                            lon:
+                              type: string
+                            address:
+                              type: string
+                            pincode:
+                              type: string
+                            city:
+                              type: string
+                            createdAt:
+                              type: string
+                            updatedAt:
+                              type: string
+                          
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
 
 
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment department listing
+  /appointment/departments:
+    post:
+      tags:
+        - Appointment
+      summary: Allows fetching of available departments
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                  type: string
+                  required: true
+                filterBy: 
+                  type: string
+                  description: This is a gloabl filter. Pass the user input and search will be performed on department name and description
+  
+      responses:
+        '200':
+          description: List of departments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      departments:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            description:
+                              type: string
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment doctor listing
+  /appointment/doctors:
+    post:
+      tags:
+        - Appointment
+      summary: Allows fetching of available doctors
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                  type: string
+                  required: true,
+                departmentId:
+                  type: string
+                  required: true
+                filterBy: 
+                  type: string
+                  description: This is a gloabl filter. Pass the user input and search will be performed on doctor proerties.
+  
+      responses:
+        '200':
+          description: List of doctors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      doctors:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            doctor_id:
+                              type: string
+                            first_name:
+                              type: string
+                            last_name:
+                              type: string
+                            email:
+                              type: string
+                            phone_number:
+                              type: string
+                            address:
+                              type: string
+                            pincode:
+                              type: string
+                            doctor_speciality:
+                              type: string
+                            licence_no:
+                              type: string
+                            experience:
+                              type: string
+                            
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 

@@ -10,6 +10,14 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest'
   },
+  globals: {
+    jest: true,
+    test: true,
+    expect: true,
+    describe: true,
+    beforeAll: true,
+    afterAll: true
+  },
   rules: {
   }
 }

@@ -15,6 +15,7 @@ const registerPatient = async (req, res, next) => {
     res.status(201).json({
       message: "Patient registration successful",
       data: {
+        tokens: null,
         patient: newlyAddedPatient,
       },
     });
@@ -30,7 +31,7 @@ const patientLogin = async (req, res, next) => {
       req.body
     );
     await patientService.storeDeviceToken(patient.id, req.body.deviceToken);
-    const tokens = await patientService.validatePatientLogin(patient);
+    const data = await patientService.validatePatientLogin(patient);
     res.status(200).json({
       message: "Login successful",
       data: {

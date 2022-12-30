@@ -4,6 +4,7 @@ const { db } = require("../../db");
 // lib imports
 const { DateTime } = require("luxon");
 const config = require("config");
+const otpGenerator = require("otp-generator");
 
 // helpers imports
 const encrypter = require("../../utils/encryption");
@@ -67,18 +68,26 @@ const validatePatientLogin = async ({
   try {
     const findQuery = email ? { email } : { phone_number: phoneNumber };
 
-    const foundPatient = await db.patient.findOne({
+    let foundPatient = await db.patient.findOne({
       where: findQuery,
     });
+
     if (foundPatient) {
       const isPasswordValid = await validatePatientPassword(
         password,
         foundPatient.password
       );
       if (isPasswordValid) {
-        const tokens = generateTokens(foundPatient.id);
+        const tokens = await generateTokens(foundPatient.id);
         await updatePatientLastLogin(foundPatient.id);
-        return tokens;
+
+        foundPatient = foundPatient.toJSON();
+        delete foundPatient.password;
+
+        return {
+          tokens,
+          foundPatient,
+        };
       }
     }
     throw new InvalidUser("Invalid username or password.");
@@ -207,9 +216,16 @@ const performPasswordAction = async ({
 };
 
 const generateResetPasswordValidationCode = async () => {
-  const min = 10000;
-  const max = 1000000000000;
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  const otp = otpGenerator.generate(
+    config.get("modules.patient.passwordResetCodeLength"),
+    {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    }
+  );
+  return otp;
 };
 
 const storeDeviceToken = async (patientId, deviceToken) => {

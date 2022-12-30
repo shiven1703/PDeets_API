@@ -243,10 +243,24 @@ const storeDeviceToken = async (patientId, deviceToken) => {
   }
 }
 
+const getAllDeviceTokens = async () => {
+  try {
+    const tokens = await db.device_token.findAll({ attributes: ['device_token'], raw: true })
+    return tokens.map(token => token.device_token)
+  } catch (err) {
+    if (!err.name === 'InvalidUser') {
+      throw new UnknownServerError()
+    } else {
+      throw err
+    }
+  }
+}
+
 module.exports = {
   addPatient,
   validatePatientLogin,
   issueNewTokenPair,
   performPasswordAction,
-  storeDeviceToken
+  storeDeviceToken,
+  getAllDeviceTokens
 }

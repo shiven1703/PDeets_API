@@ -75,6 +75,20 @@ const doctorSchedule = async (req, res, next) => {
   }
 }
 
+const questionnaire = async (req, res, next) => {
+  try {
+    const questionnaireList = await appointmentService.getQuestionnaire()
+    res.status(200).json({
+      message: 'Questionnaire fetched successfully',
+      data: {
+        questionnaire: questionnaireList
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const locationModuleErrorHandler = (err, req, res, next) => {
   switch (err.name) {
     case 'DbError':
@@ -93,5 +107,6 @@ module.exports = {
   departments,
   doctors,
   doctorSchedule,
+  questionnaire,
   locationModuleErrorHandler
 }

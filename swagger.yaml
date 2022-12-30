@@ -34,6 +34,15 @@ components:
             properties:
               error: 
                 type: string
+    Unauhtorized:
+      description: Unauthorized request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: 
+                type: string
 
 
 paths:
@@ -483,6 +492,8 @@ paths:
                     type: string
                     description: A error message from server
 
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
@@ -551,6 +562,8 @@ paths:
                     type: string
                     description: A error message from server
 
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
@@ -637,6 +650,8 @@ paths:
                     type: string
                     description: A error message from server
 
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
@@ -709,6 +724,59 @@ paths:
                     type: string
                     description: A error message from server
 
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+   # appointment doctor schedule listing
+  
+  # appointment questionnaire listing
+  /appointment/questionnaire:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of questionnaire
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      
+      responses:
+        '200':
+          description: List of questionnaire with option
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      questionnaire:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            question:
+                              type: string
+                            question_options:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  option:
+                                    type: string
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 

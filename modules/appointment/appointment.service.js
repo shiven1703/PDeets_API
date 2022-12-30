@@ -168,9 +168,23 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
   }
 }
 
+const getDoctorSchedule = async ({ doctorId }) => {
+  try {
+    const doctorSchedule = await db.doctor_schedule.findAll({
+      where: {
+        doctor_id: doctorId
+      }
+    })
+    return doctorSchedule
+  } catch (err) {
+    throw new DatabaseError(err.message)
+  }
+}
+
 module.exports = {
   showAppointments,
   getLocations,
   getDepartments,
-  getDoctors
+  getDoctors,
+  getDoctorSchedule
 }

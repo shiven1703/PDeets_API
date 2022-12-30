@@ -39,8 +39,20 @@ const doctorListSchema = {
   additionalProperties: false
 }
 
+const doctorScheduleSchema = {
+  type: 'object',
+  properties: {
+    doctorId: {
+      type: 'string'
+    }
+  },
+  required: ['doctorId'],
+  additionalProperties: false
+}
+
 module.exports = {
   locationSchema,
   departmentSchema,
-  doctorListSchema
+  doctorListSchema,
+  doctorScheduleSchema
 }

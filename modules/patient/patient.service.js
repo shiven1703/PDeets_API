@@ -64,7 +64,7 @@ const validatePatientLogin = async ({
   email = null,
   phoneNumber = null,
   password,
-  deviceToken
+  deviceToken = null
 }) => {
   try {
     const findQuery = email ? { email } : { phone_number: phoneNumber }
@@ -196,7 +196,6 @@ const performPasswordAction = async ({
     }
     // resetting password using reset token
     case PasswordActionEnum.reset_password: {
-      console.log(typeof suppliedValidationCode, typeof actualValidationCode)
       if (suppliedValidationCode === actualValidationCode) {
         await db.patient.update(
           {
@@ -232,7 +231,9 @@ const generateResetPasswordValidationCode = async () => {
 
 const storeDeviceToken = async (patientId, deviceToken) => {
   try {
-    await db.device_token.upsert({ patient_id: patientId, device_token: deviceToken })
+    if (patientId && deviceToken) {
+      await db.device_token.upsert({ patient_id: patientId, device_token: deviceToken })
+    }
   } catch (err) {
     if (!err.name === 'InvalidUser') {
       throw new UnknownServerError()

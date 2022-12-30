@@ -168,9 +168,39 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
   }
 }
 
+const getDoctorSchedule = async ({ doctorId }) => {
+  try {
+    const doctorSchedule = await db.doctor_schedule.findAll({
+      where: {
+        doctor_id: doctorId
+      }
+    })
+    return doctorSchedule
+  } catch (err) {
+    throw new DatabaseError(err.message)
+  }
+}
+
+const getQuestionnaire = async () => {
+  try {
+    const questionList = await db.question.findAll({
+      attributes: ['question'],
+      include: [{
+        model: db.question_option,
+        attributes: ['option']
+      }]
+    })
+    return questionList
+  } catch (err) {
+    throw new DatabaseError(err.message)
+  }
+}
+
 module.exports = {
   showAppointments,
   getLocations,
   getDepartments,
-  getDoctors
+  getDoctors,
+  getDoctorSchedule,
+  getQuestionnaire
 }

@@ -16,6 +16,8 @@ router.get('/doctor/availability', authMiddleware(), appointmentController.docto
 
 router.get('/questionnaire', authMiddleware(), appointmentController.questionnaire)
 
+router.post('/', authMiddleware(), appointmentController.bookAppointment)
+
 router.use(appointmentController.locationModuleErrorHandler)
 
 module.exports = router

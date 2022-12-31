@@ -196,11 +196,30 @@ const getQuestionnaire = async () => {
   }
 }
 
+const bookAppointment = async({locationId, departmentId, doctorId, patientId, appointmentTime, appointmentDuration=30, questionaryAnswer, status='pending'}) => {
+  try {
+    const bookedAppointment = await db.appointment.create({
+      location_id: locationId,
+      department_id: departmentId,
+      doctor_id: doctorId,
+      patient_id: patientId,
+      appointment_time: appointmentTime,
+      appointment_duration: appointmentDuration,
+      questionary_answers: questionaryAnswer,
+      status: status,
+    })
+    return bookedAppointment
+  }catch(err) {
+    throw new DatabaseError(err.message)
+  }
+}
+
 module.exports = {
   showAppointments,
   getLocations,
   getDepartments,
   getDoctors,
   getDoctorSchedule,
-  getQuestionnaire
+  getQuestionnaire,
+  bookAppointment
 }

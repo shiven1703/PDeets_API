@@ -89,7 +89,23 @@ const questionnaire = async (req, res, next) => {
   }
 }
 
+const bookAppointment = async (req, res, next) => {
+  try {
+    const params = await validator.validate(schema.appointmentBookingSchema, req.body)
+    const bookedAppointment = await appointmentService.bookAppointment(params)
+    res.status(200).json({
+      message: 'Appointment booked.',
+      data: {
+        appointment: bookedAppointment
+      }
+    })
+  }catch(err) {
+    next(err)
+  }
+}
+
 const locationModuleErrorHandler = (err, req, res, next) => {
+  console.log(err)
   switch (err.name) {
     case 'DbError':
       res.status(400).json({
@@ -108,5 +124,6 @@ module.exports = {
   doctors,
   doctorSchedule,
   questionnaire,
+  bookAppointment,
   locationModuleErrorHandler
 }

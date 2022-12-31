@@ -25,7 +25,7 @@ const getModelName = (modelFile) => {
 
 // registering models
 const modelList = {}
-const modelsFolder = path.join(__dirname, '/../models')
+const modelsFolder = path.join(__dirname, '/../../models')
 
 fs.readdirSync(modelsFolder).forEach((modelFile) => {
   const model = require(path.join(modelsFolder, modelFile))(sequelize)
@@ -47,23 +47,12 @@ for (const modelName in modelList) {
 // sync({force: true}) - will drop the existing table and create new as per models
 ;(async () => {
   try {
+    console.log('db connection made...')
     await sequelize.sync()
   } catch (error) {
-    console.log(error)
     console.log('Database sync failed...')
   }
 })()
-
-// uncomment the below code to run default data imports
-// ;(async () => {
-//   try {
-//     const defaultDatabaseImports = require('./imports')
-//     await defaultDatabaseImports(sequelize, modelList)
-//   } catch (err) {
-//     console.log(err)
-//     console.log('Error while importing default database data...')
-//   }
-// })()
 
 const isConnected = async () => {
   await sequelize.authenticate()

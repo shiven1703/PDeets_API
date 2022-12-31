@@ -16,7 +16,8 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     email: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      unique: true
     },
     phone_number: {
       type: DataTypes.STRING,
@@ -57,6 +58,10 @@ module.exports = (sequelize) => {
     })
 
     patient.hasMany(models.lab_report, {
+      foreignKey: 'patient_id'
+    })
+
+    patient.hasMany(models.device_token, {
       foreignKey: 'patient_id'
     })
   }

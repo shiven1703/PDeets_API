@@ -12,7 +12,8 @@
                 "refresh_token": {
                     "exp_time": "30d"
                 }
-            }
+            },
+            "passwordResetCodeLength": 5
         }
     }
 }

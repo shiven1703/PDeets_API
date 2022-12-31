@@ -8,30 +8,24 @@ const jwtSignAsync = bluebird.promisify(jwt.sign)
 const jwtVerifyAsync = bluebird.promisify(jwt.verify)
 
 const generateAccessToken = async (data) => {
-  const accessToken = await jwtSignAsync(
-    data,
-    process.env.ACCESS_TOKEN_KEY,
-    { expiresIn: config.get('modules.patient.tokens.access_token.exp_time') }
-  )
+  const accessToken = await jwtSignAsync(data, process.env.ACCESS_TOKEN_KEY, {
+    expiresIn: config.get('modules.patient.tokens.access_token.exp_time')
+  })
   return accessToken
 }
 
 const generateRefreshToken = async (data) => {
-  const refreshToken = await jwtSignAsync(
-    data,
-    process.env.REFRESH_TOKEN_KEY,
-    { expiresIn: config.get('modules.patient.tokens.refresh_token.exp_time') }
-  )
+  const refreshToken = await jwtSignAsync(data, process.env.REFRESH_TOKEN_KEY, {
+    expiresIn: config.get('modules.patient.tokens.refresh_token.exp_time')
+  })
   return refreshToken
 }
 
 const generatePasswordResetToken = async (data) => {
   data.isResetToken = true
-  const resetToken = await jwtSignAsync(
-    data,
-    process.env.ACCESS_TOKEN_KEY,
-    { expiresIn: '15m' }
-  )
+  const resetToken = await jwtSignAsync(data, process.env.ACCESS_TOKEN_KEY, {
+    expiresIn: '15m'
+  })
   return resetToken
 }
 

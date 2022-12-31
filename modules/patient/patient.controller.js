@@ -6,12 +6,16 @@ const { PasswordActionEnum } = require('../../utils/enums')
 
 const registerPatient = async (req, res, next) => {
   try {
-    const patient = await validator.validate(schema.patientRegitserSchema, req.body)
+    const patient = await validator.validate(
+      schema.patientRegitserSchema,
+      req.body
+    )
     const newlyAddedPatient = await patientService.addPatient(patient)
 
     res.status(201).json({
       message: 'Patient registration successful',
       data: {
+        tokens: null,
         patient: newlyAddedPatient
       }
     })
@@ -22,12 +26,16 @@ const registerPatient = async (req, res, next) => {
 
 const patientLogin = async (req, res, next) => {
   try {
-    const patient = await validator.validate(schema.patientLoginSchema, req.body)
-    const tokens = await patientService.validatePatientLogin(patient)
+    const patient = await validator.validate(
+      schema.patientLoginSchema,
+      req.body
+    )
+    const data = await patientService.validatePatientLogin(patient)
     res.status(200).json({
       message: 'Login successful',
       data: {
-        tokens
+        tokens: data.tokens,
+        patient: data.foundPatient
       }
     })
   } catch (err) {
@@ -39,8 +47,12 @@ const refreshTokens = async (req, res, next) => {
   try {
     const receivedRefreshToken = req.headers.authorization
     if (receivedRefreshToken) {
-      const refreshTokenData = await tokenHelper.verifyRefreshToken(receivedRefreshToken)
-      const newTokenPair = await patientService.issueNewTokenPair(refreshTokenData)
+      const refreshTokenData = await tokenHelper.verifyRefreshToken(
+        receivedRefreshToken
+      )
+      const newTokenPair = await patientService.issueNewTokenPair(
+        refreshTokenData
+      )
       res.status(200).json({
         message: 'Success',
         data: {
@@ -59,7 +71,10 @@ const refreshTokens = async (req, res, next) => {
 
 const passwordResetToken = async (req, res, next) => {
   try {
-    const patient = await validator.validate(schema.passwordResetTokenSchema, req.body)
+    const patient = await validator.validate(
+      schema.passwordResetTokenSchema,
+      req.body
+    )
     patient.action = PasswordActionEnum.get_password_reset_token
 
     const token = await patientService.performPasswordAction(patient)
@@ -77,7 +92,10 @@ const passwordResetToken = async (req, res, next) => {
 
 const patientPasswordActionHandler = async (req, res, next) => {
   try {
-    const patient = await validator.validate(schema.patientPasswordUpdateSchema, req.body)
+    const patient = await validator.validate(
+      schema.patientPasswordUpdateSchema,
+      req.body
+    )
 
     // appending reset token data to patient
     if (patient.action === PasswordActionEnum.reset_password) {

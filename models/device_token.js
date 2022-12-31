@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
-  const patientSession = sequelize.define('patient_sessions', {
+  const deviceToken = sequelize.define('device_tokens', {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
@@ -11,15 +11,11 @@ module.exports = (sequelize) => {
       type: DataTypes.UUID,
       allowNull: false
     },
-    access_token: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    refresh_token: {
-      type: DataTypes.TEXT,
+    device_token: {
+      type: DataTypes.STRING,
       allowNull: false
     }
   })
 
-  return patientSession
+  return deviceToken
 }

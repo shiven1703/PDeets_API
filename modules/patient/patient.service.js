@@ -4,6 +4,7 @@ const { db } = require('../../db')
 // lib imports
 const { DateTime } = require('luxon')
 const config = require('config')
+const otpGenerator = require('otp-generator')
 
 // helpers imports
 const encrypter = require('../../utils/encryption')
@@ -12,9 +13,21 @@ const mailer = require('../../utils/mailer')
 const { PasswordActionEnum } = require('../../utils/enums')
 
 // custom errors
-const { DatabaseError, InvalidUser, UnknownServerError } = require('../../utils/customErrors')
+const {
+  DatabaseError,
+  InvalidUser,
+  UnknownServerError
+} = require('../../utils/customErrors')
 
-const addPatient = async ({ firstName, lastName, email, phoneNumber, gender, dateOfBirth, password }) => {
+const addPatient = async ({
+  firstName,
+  lastName,
+  email,
+  phoneNumber,
+  gender,
+  dateOfBirth,
+  password
+}) => {
   try {
     const newPatient = db.patient.build({
       first_name: firstName,
@@ -38,26 +51,45 @@ const addPatient = async ({ firstName, lastName, email, phoneNumber, gender, dat
   } catch (err) {
     // handling unique db error - need unique phone number
     if (err.name === 'SequelizeUniqueConstraintError') {
-      throw new DatabaseError(`Patient account already exist with the given phone number. ${err.errors[0].message}`)
+      throw new DatabaseError(
+        `Patient account already exist with the given phone number. ${err.errors[0].message}`
+      )
     } else {
       throw err
     }
   }
 }
 
-const validatePatientLogin = async ({ email = null, phoneNumber = null, password }) => {
+const validatePatientLogin = async ({
+  email = null,
+  phoneNumber = null,
+  password,
+  deviceToken = null
+}) => {
   try {
     const findQuery = email ? { email } : { phone_number: phoneNumber }
 
-    const foundPatient = await db.patient.findOne({
+    let foundPatient = await db.patient.findOne({
       where: findQuery
     })
+
     if (foundPatient) {
-      const isPasswordValid = await validatePatientPassword(password, foundPatient.password)
+      const isPasswordValid = await validatePatientPassword(
+        password,
+        foundPatient.password
+      )
       if (isPasswordValid) {
-        const tokens = generateTokens(foundPatient.id)
+        const tokens = await generateTokens(foundPatient.id)
         await updatePatientLastLogin(foundPatient.id)
-        return tokens
+        await storeDeviceToken(foundPatient.id, deviceToken)
+
+        foundPatient = foundPatient.toJSON()
+        delete foundPatient.password
+
+        return {
+          tokens,
+          foundPatient
+        }
       }
     }
     throw new InvalidUser('Invalid username or password.')
@@ -71,19 +103,19 @@ const validatePatientLogin = async ({ email = null, phoneNumber = null, password
 }
 
 const validatePatientPassword = async (password, passwordHash) => {
-  const isValidPassword = await encrypter.validateHash(
-    password,
-    passwordHash
-  )
+  const isValidPassword = await encrypter.validateHash(password, passwordHash)
   return isValidPassword
 }
 
 const updatePatientLastLogin = async (patientId) => {
-  await db.patient.update({ last_login: DateTime.now().setZone(config.get('app.timezone')).toISO() }, {
-    where: {
-      id: patientId
+  await db.patient.update(
+    { last_login: DateTime.now().setZone(config.get('app.timezone')).toISO() },
+    {
+      where: {
+        id: patientId
+      }
     }
-  })
+  )
 }
 
 const generateTokens = async (patientId) => {
@@ -106,25 +138,40 @@ const issueNewTokenPair = async ({ patientId }) => {
   return newTokens
 }
 
-const performPasswordAction = async ({ action, email, phoneNumber, suppliedValidationCode, actualValidationCode, oldPassword, newPassword }) => {
+const performPasswordAction = async ({
+  action,
+  email,
+  phoneNumber,
+  suppliedValidationCode,
+  actualValidationCode,
+  oldPassword,
+  newPassword
+}) => {
   const findQuery = email ? { email } : { phone_number: phoneNumber }
 
   const foundPatient = await db.patient.findOne({
     where: findQuery
   })
 
-  if (!foundPatient) { throw new DatabaseError('Invalid email or phone number supplied.') }
+  if (!foundPatient) {
+    throw new DatabaseError('Invalid email or phone number supplied.')
+  }
 
   switch (action) {
     // change password
-    case PasswordActionEnum.change_password:{
-      if (!(oldPassword && newPassword)) { throw new DatabaseError('Missing oldpassword or newPassword param') }
+    case PasswordActionEnum.change_password: {
+      if (!(oldPassword && newPassword)) {
+        throw new DatabaseError('Missing oldpassword or newPassword param')
+      }
       // checking if old password is valid
       if (await validatePatientPassword(oldPassword, foundPatient.password)) {
         // updating password
-        await db.patient.update({
-          password: await encrypter.makeHash(newPassword)
-        }, { where: findQuery })
+        await db.patient.update(
+          {
+            password: await encrypter.makeHash(newPassword)
+          },
+          { where: findQuery }
+        )
         return 'Password successfully updated'
       } else {
         throw new DatabaseError('Invalid old password.')
@@ -140,19 +187,27 @@ const performPasswordAction = async ({ action, email, phoneNumber, suppliedValid
         validationCode
       })
       // sending email with validation code
-      await mailer.sendEmail(foundPatient.email, 'PDeets: Password reset code', `<h3>Reset Code : ${validationCode}</h3>`)
+      await mailer.sendEmail(
+        foundPatient.email,
+        'PDeets: Password reset code',
+        `<h3>Reset Code : ${validationCode}</h3>`
+      )
       return passwordResetToken
     }
     // resetting password using reset token
     case PasswordActionEnum.reset_password: {
-      console.log(typeof suppliedValidationCode, typeof actualValidationCode)
       if (suppliedValidationCode === actualValidationCode) {
-        await db.patient.update({
-          password: await encrypter.makeHash(newPassword)
-        }, { where: findQuery })
+        await db.patient.update(
+          {
+            password: await encrypter.makeHash(newPassword)
+          },
+          { where: findQuery }
+        )
         return 'Password reset successful. Please login again using new password'
       } else {
-        throw new DatabaseError('Invalid reset password validation code received.')
+        throw new DatabaseError(
+          'Invalid reset password validation code received.'
+        )
       }
     }
 
@@ -162,14 +217,50 @@ const performPasswordAction = async ({ action, email, phoneNumber, suppliedValid
 }
 
 const generateResetPasswordValidationCode = async () => {
-  const min = 10000
-  const max = 1000000000000
-  return Math.floor(Math.random() * (max - min + 1)) + min
+  const otp = otpGenerator.generate(
+    config.get('modules.patient.passwordResetCodeLength'),
+    {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false
+    }
+  )
+  return otp
+}
+
+const storeDeviceToken = async (patientId, deviceToken) => {
+  try {
+    if (patientId && deviceToken) {
+      await db.device_token.upsert({ patient_id: patientId, device_token: deviceToken })
+    }
+  } catch (err) {
+    if (!err.name === 'InvalidUser') {
+      throw new UnknownServerError()
+    } else {
+      throw err
+    }
+  }
+}
+
+const getAllDeviceTokens = async () => {
+  try {
+    const tokens = await db.device_token.findAll({ attributes: ['device_token'], raw: true })
+    return tokens.map(token => token.device_token)
+  } catch (err) {
+    if (!err.name === 'InvalidUser') {
+      throw new UnknownServerError()
+    } else {
+      throw err
+    }
+  }
 }
 
 module.exports = {
   addPatient,
   validatePatientLogin,
   issueNewTokenPair,
-  performPasswordAction
+  performPasswordAction,
+  storeDeviceToken,
+  getAllDeviceTokens
 }

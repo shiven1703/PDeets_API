@@ -196,7 +196,7 @@ const getQuestionnaire = async () => {
   }
 }
 
-const bookAppointment = async({locationId, departmentId, doctorId, patientId, appointmentTime, appointmentDuration=30, questionaryAnswer, status}) => {
+const bookAppointment = async({locationId, departmentId, doctorId, patientId, appointmentTime, appointmentDuration=30, questionaryAnswer, status='pending'}) => {
   try {
     const bookedAppointment = await db.appointment.create({
       location_id: locationId,

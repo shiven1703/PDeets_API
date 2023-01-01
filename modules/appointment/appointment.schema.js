@@ -42,11 +42,17 @@ const doctorListSchema = {
 const doctorScheduleSchema = {
   type: 'object',
   properties: {
+    locationId: {
+      type: 'string'
+    },
+    departmentId: {
+      type: 'string'
+    },
     doctorId: {
       type: 'string'
     }
   },
-  required: ['doctorId'],
+  required: ['locationId', 'departmentId', 'doctorId'],
   additionalProperties: false
 }
 

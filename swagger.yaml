@@ -676,6 +676,12 @@ paths:
             schema:
               type: object
               properties:
+                locationId:
+                    type: string
+                    required: true,
+                departmentId:
+                  type: string
+                  required: true,      
                 doctorId:
                   type: string
                   required: true,
@@ -694,23 +700,29 @@ paths:
                     type: object
                     properties:
                       schedule:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          doctor_id:
+                            type: string
+                          start_time:
+                            type: string
+                          end_time:
+                            type: string
+                          appointment_duration:
+                            type: string
+                          createdAt:
+                            type: string
+                          updatedAt:
+                            type: string
+                      unavailableSlots:
                         type: array
                         items:
-                          type: object
                           properties:
-                            id:
+                            from:
                               type: string
-                            doctor_id:
-                              type: string
-                            start_time:
-                              type: string
-                            end_time:
-                              type: string
-                            appointment_duration:
-                              type: string
-                            createdAt:
-                              type: string
-                            updatedAt:
+                            duration:
                               type: string
 
         '400':

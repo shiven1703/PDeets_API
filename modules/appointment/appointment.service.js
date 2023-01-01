@@ -3,6 +3,7 @@ const { db, sequelize } = require('../../db')
 
 // lib imports
 const { Op, QueryTypes } = require('sequelize')
+const { DateTime } = require('luxon')
 
 // helpers imports
 
@@ -168,14 +169,43 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
   }
 }
 
-const getDoctorSchedule = async ({ doctorId }) => {
+const getDoctorSchedule = async ({ locationId, departmentId, doctorId }) => {
   try {
     const doctorSchedule = await db.doctor_schedule.findAll({
       where: {
         doctor_id: doctorId
       }
     })
-    return doctorSchedule
+
+    const unavailableSlots = await getDoctorUnavailableSlots({ locationId, departmentId, doctorId })
+    return {
+      doctorSchedule,
+      unavailableSlots
+    }
+  } catch (err) {
+    throw new DatabaseError(err.message)
+  }
+}
+
+const getDoctorUnavailableSlots = async ({ locationId, departmentId, doctorId }) => {
+  try {
+    const bookedAppointments = await db.appointment.findAll({
+      where: {
+        location_id: locationId,
+        department_id: departmentId,
+        doctor_id: doctorId
+      }
+    })
+
+    const unavailableSlots = []
+    bookedAppointments.forEach((appointment) => {
+      unavailableSlots.push({
+        from: appointment.appointment_time,
+        duration: appointment.appointment_duration
+      })
+    })
+
+    return unavailableSlots
   } catch (err) {
     throw new DatabaseError(err.message)
   }
@@ -196,7 +226,7 @@ const getQuestionnaire = async () => {
   }
 }
 
-const bookAppointment = async({locationId, departmentId, doctorId, patientId, appointmentTime, appointmentDuration=30, questionaryAnswer, status='pending'}) => {
+const bookAppointment = async ({ locationId, departmentId, doctorId, patientId, appointmentTime, appointmentDuration = 30, questionaryAnswer, status = 'pending' }) => {
   try {
     const bookedAppointment = await db.appointment.create({
       location_id: locationId,
@@ -206,10 +236,10 @@ const bookAppointment = async({locationId, departmentId, doctorId, patientId, ap
       appointment_time: appointmentTime,
       appointment_duration: appointmentDuration,
       questionary_answers: questionaryAnswer,
-      status: status,
+      status
     })
     return bookedAppointment
-  }catch(err) {
+  } catch (err) {
     throw new DatabaseError(err.message)
   }
 }

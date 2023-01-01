@@ -63,11 +63,13 @@ const doctors = async (req, res, next) => {
 const doctorSchedule = async (req, res, next) => {
   try {
     const params = await validator.validate(schema.doctorScheduleSchema, req.body)
-    const schedule = await appointmentService.getDoctorSchedule(params)
+    const { doctorSchedule, unavailableSlots } = await appointmentService.getDoctorSchedule(params)
+    doctorSchedule.unavailableSlots = unavailableSlots
     res.status(200).json({
       message: 'Doctor schedule fecthed successfully',
       data: {
-        schedule
+        schedule: doctorSchedule[0],
+        unavailableSlots
       }
     })
   } catch (err) {
@@ -99,7 +101,7 @@ const bookAppointment = async (req, res, next) => {
         appointment: bookedAppointment
       }
     })
-  }catch(err) {
+  } catch (err) {
     next(err)
   }
 }

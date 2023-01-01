@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 // model imports
 const { db, sequelize } = require('../../db')
 
@@ -13,17 +14,71 @@ const {
 } = require('../../utils/customErrors')
 
 const showAppointments = async (patientId) => {
-  console.log('inside showappointment')
   try {
     const listOfAppointments = await db.appointment.findAll({
       where: {
         patient_id: patientId
       }
     })
-
     if (listOfAppointments) {
       return listOfAppointments
     } else throw new DatabaseError('Something wrong with Database Operation')
+  } catch (err) {
+    if (!err.name === 'InvalidUser') {
+      throw new UnknownServerError()
+    } else {
+      throw err
+    }
+  }
+}
+
+// const changeAppointmentData = async ({ firstName, lastName, email, phoneNumber, gender, dateOfBirth, password }) => {
+//   try {
+//     const newPatient = db.patient.build({
+//       first_name: firstName,
+//       last_name: lastName,
+//       email,
+//       phone_number: phoneNumber,
+//       gender,
+//       date_of_birth: dateOfBirth,
+//       password
+//     })
+
+//     // encrypting password and saving patient details to the db
+//     newPatient.password = await encrypter.makeHash(newPatient.password)
+//     await newPatient.save()
+
+//     // returning saved patient
+//     const newlyAddedPatient = newPatient.toJSON()
+//     delete newlyAddedPatient.password
+
+//     return newlyAddedPatient
+//   } catch (err) {
+//     // handling unique db error - need unique phone number
+//     if (err.name === 'SequelizeUniqueConstraintError') {
+//       throw new DatabaseError(`Patient account already exist with the given phone number. ${err.errors[0].message}`)
+//     } else {
+//       throw err
+//     }
+//   }
+// }
+
+const removeAppointmentData = async (appointmentId) => {
+  try {
+    const appointmentEntryCheck = await db.appointment.findOne({
+      id: appointmentId
+    })
+    if (appointmentEntryCheck) {
+      try {
+        await db.appointment.destroy({
+          where: {
+            id: appointmentId
+          }
+        })
+      } catch (err) { throw new DatabaseError('No entry to delete the appoinment') }
+    } else {
+      throw new DatabaseError('cannot delete appointment data')
+    }
   } catch (err) {
     if (!err.name === 'InvalidUser') {
       throw new UnknownServerError()
@@ -170,6 +225,8 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
 
 module.exports = {
   showAppointments,
+  // changeAppointmentData,
+  removeAppointmentData,
   getLocations,
   getDepartments,
   getDoctors

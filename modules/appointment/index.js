@@ -2,7 +2,7 @@ const express = require('express')
 const appointmentController = require('./appointment.controller')
 const authMiddleware = require('../../middleware/auth')
 const cors = require('cors')
-// const auth = require('../../middleware/auth')
+const auth = require('../../middleware/auth')
 
 const router = express.Router()
 

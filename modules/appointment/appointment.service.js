@@ -34,9 +34,10 @@ const showAppointments = async (patientId) => {
 
 const changeAppointmentData = async (appointmentId, reqBody) => {
   try {
-    await db.appoinment.update(reqBody, { where: { id: appointmentId } })
+    await db.appointment.update(reqBody, { where: { id: appointmentId } })
   } catch (err) {
-    throw new DatabaseError(err)
+    console.log(err)
+    throw new DatabaseError('cannot update appointment data')
   }
 }
 

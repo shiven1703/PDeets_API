@@ -2,12 +2,13 @@ const express = require('express')
 const appointmentController = require('./appointment.controller')
 const authMiddleware = require('../../middleware/auth')
 const cors = require('cors')
+// const auth = require('../../middleware/auth')
 
 const router = express.Router()
 
 router.get('/list', authMiddleware(), appointmentController.appointmentList)
 
-console.log('inside index.js')
+router.put('/:id', authMiddleware(), appointmentController.updateAppointment)
 
 router.delete('/:id', authMiddleware(), appointmentController.deleteAppointment)
 

@@ -32,36 +32,13 @@ const showAppointments = async (patientId) => {
   }
 }
 
-// const changeAppointmentData = async ({ firstName, lastName, email, phoneNumber, gender, dateOfBirth, password }) => {
-//   try {
-//     const newPatient = db.patient.build({
-//       first_name: firstName,
-//       last_name: lastName,
-//       email,
-//       phone_number: phoneNumber,
-//       gender,
-//       date_of_birth: dateOfBirth,
-//       password
-//     })
-
-//     // encrypting password and saving patient details to the db
-//     newPatient.password = await encrypter.makeHash(newPatient.password)
-//     await newPatient.save()
-
-//     // returning saved patient
-//     const newlyAddedPatient = newPatient.toJSON()
-//     delete newlyAddedPatient.password
-
-//     return newlyAddedPatient
-//   } catch (err) {
-//     // handling unique db error - need unique phone number
-//     if (err.name === 'SequelizeUniqueConstraintError') {
-//       throw new DatabaseError(`Patient account already exist with the given phone number. ${err.errors[0].message}`)
-//     } else {
-//       throw err
-//     }
-//   }
-// }
+const changeAppointmentData = async (appoinmentId, reqBody) => {
+  try {
+    console.log('check')
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 const removeAppointmentData = async (appointmentId) => {
   try {
@@ -225,7 +202,7 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
 
 module.exports = {
   showAppointments,
-  // changeAppointmentData,
+  changeAppointmentData,
   removeAppointmentData,
   getLocations,
   getDepartments,

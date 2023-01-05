@@ -17,20 +17,18 @@ const appointmentList = async (req, res, next) => {
   }
 }
 
-// const updateAppointment = async (req, res, next) => {
-//   try {
-//     const params = await validator.validate(schema.doctorListSchema, req.body)
-//     const doctors = await appointmentService.updateAppointment(params)
-//     res.status(200).json({
-//       message: 'Successfully fetched doctors',
-//       data: {
-//         doctors
-//       }
-//     })
-//   } catch (err) {
-//     next(err)
-//   }
-// }
+const updateAppointment = async (req, res, next) => {
+  try {
+    const appointmentId = req.params.id
+    // const params = await validator.validate(schema.doctorListSchema, req.body)
+    await appointmentService.changeAppointmentData(appointmentId, req.body)
+    res.status(200).json({
+      message: 'Successfully updated appointment data'
+    })
+  } catch (err) {
+    next(err)
+  }
+}
 
 const deleteAppointment = async (req, res, next) => {
   try {
@@ -94,7 +92,7 @@ const locationModuleErrorHandler = (err, req, res, next) => {
 
 module.exports = {
   appointmentList,
-  // updateAppointment,
+  updateAppointment,
   deleteAppointment,
   locations,
   departments,

@@ -19,6 +19,11 @@ servers:
 
 # reuseable components
 components:
+  securitySchemes:
+    basicAuth: 
+      type: http
+      scheme: basic
+
   responses:
     UnknownServerError:
       description: Internal Server Error
@@ -29,8 +34,15 @@ components:
             properties:
               error: 
                 type: string
-
-
+    Unauhtorized:
+      description: Unauthorized request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: 
+                type: string
 
 
 paths:
@@ -158,6 +170,7 @@ paths:
                 password:
                   type: string
                   required: true
+                deviceToken: string
       responses:
         '200':
           description: Patient login successful. Will return access and refresh tokens.
@@ -234,6 +247,8 @@ paths:
       tags:
         - Patient
       summary: Allows patient tokens to be refreshed (will issue new pair of access and refresh tokens on access token expiration)
+      security:
+        - basicAuth: []
       parameters:
         - in: header
           name: Authorization
@@ -334,6 +349,8 @@ paths:
       tags:
         - Patient
       summary: Will allow to change and reset the password.
+      security:
+        - basicAuth: []
       parameters:
         - in: header
           name: Authorization
@@ -401,10 +418,17 @@ paths:
 
   # appointment location listing
   /appointment/locations:
-    post:
+    get:
       tags:
         - Appointment
       summary: Allows fetching of available locations
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
       requestBody:
         description: Takes below properties
         content:
@@ -468,16 +492,25 @@ paths:
                     type: string
                     description: A error message from server
 
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
 
   # appointment department listing
   /appointment/departments:
-    post:
+    get:
       tags:
         - Appointment
       summary: Allows fetching of available departments
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
       requestBody:
         description: Takes below properties
         content:
@@ -529,16 +562,25 @@ paths:
                     type: string
                     description: A error message from server
 
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
 
   # appointment doctor listing
   /appointment/doctors:
-    post:
+    get:
       tags:
         - Appointment
       summary: Allows fetching of available doctors
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
       requestBody:
         description: Takes below properties
         content:
@@ -608,6 +650,248 @@ paths:
                     type: string
                     description: A error message from server
 
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment doctor schedule listing
+  /appointment/doctor/availability:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of doctor schedule
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                    type: string
+                    required: true,
+                departmentId:
+                  type: string
+                  required: true,      
+                doctorId:
+                  type: string
+                  required: true,
+      responses:
+        '200':
+          description: List of doctor schedule
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      schedule:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          doctor_id:
+                            type: string
+                          start_time:
+                            type: string
+                          end_time:
+                            type: string
+                          appointment_duration:
+                            type: string
+                          createdAt:
+                            type: string
+                          updatedAt:
+                            type: string
+                      unavailableSlots:
+                        type: array
+                        items:
+                          properties:
+                            from:
+                              type: string
+                            duration:
+                              type: string
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment questionary
+  /appointment/questionnaire:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of questionnaire
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      
+      responses:
+        '200':
+          description: List of questionnaire with option
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      questionnaire:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            question:
+                              type: string
+                            question_options:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  option:
+                                    type: string
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment booking 
+  /appointment:
+    post:
+      tags:
+        - Appointment
+      summary: Allows booking of an appointment
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                  type: string
+                  required: true
+                departmentId:
+                  type: string
+                  required: true
+                doctorId:
+                  type: string
+                  required: true
+                patientId:
+                  type: string
+                  required: true
+                appointmentTime:
+                  type: string
+                  required: true
+                appointmentDuration:
+                  type: string
+                questionaryAnswer:
+                  type: json
+                  required: true
+                status:
+                  type: string
+                
+      
+      responses:
+        '200':
+          description: details of booked appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          location_id:
+                            type: string
+                          department_id:
+                            type: string
+                          doctor_id:
+                            type: string
+                          patient_id:
+                            type: string
+                          appointment_time:
+                            type: string
+                          appointment_duration:
+                            type: string
+                          questionary_answers:
+                            type: string
+                          status:
+                            type: string
+                          prescription_image_url:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+                  
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+

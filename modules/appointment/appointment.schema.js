@@ -89,10 +89,62 @@ const doctorListSchema = {
   additionalProperties: false
 }
 
+const doctorScheduleSchema = {
+  type: 'object',
+  properties: {
+    locationId: {
+      type: 'string'
+    },
+    departmentId: {
+      type: 'string'
+    },
+    doctorId: {
+      type: 'string'
+    }
+  },
+  required: ['locationId', 'departmentId', 'doctorId'],
+  additionalProperties: false
+}
+
+const appointmentBookingSchema = {
+  type: 'object',
+  properties: {
+    locationId: {
+      type: 'string'
+    },
+    departmentId: {
+      type: 'string'
+    },
+    doctorId: {
+      type: 'string'
+    },
+    patientId: {
+      type: 'string'
+    },
+    appointmentTime: {
+      type: 'string'
+    },
+    appointmentDuration: {
+      type: 'string'
+    },
+    questionaryAnswer: {
+      type: 'string'
+    },
+    status: {
+      type: 'string',
+      enum: ['pending', 'done', 'cancelled']
+    }
+  },
+  required: ['locationId', 'departmentId', 'doctorId', 'patientId', 'appointmentTime', 'questionaryAnswer'],
+  additionalProperties: false
+}
+
 module.exports = {
   editAppointmentschema,
   deleteAppointmentschema,
   locationSchema,
   departmentSchema,
-  doctorListSchema
+  doctorListSchema,
+  doctorScheduleSchema,
+  appointmentBookingSchema
 }

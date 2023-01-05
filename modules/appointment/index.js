@@ -18,6 +18,12 @@ router.get('/departments', authMiddleware(), appointmentController.departments)
 
 router.get('/doctors', authMiddleware(), appointmentController.doctors)
 
+router.get('/doctor/availability', authMiddleware(), appointmentController.doctorSchedule)
+
+router.get('/questionnaire', authMiddleware(), appointmentController.questionnaire)
+
+router.post('/', authMiddleware(), appointmentController.bookAppointment)
+
 router.use(appointmentController.locationModuleErrorHandler)
 router.use(cors())
 

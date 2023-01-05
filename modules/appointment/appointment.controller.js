@@ -85,9 +85,63 @@ const doctors = async (req, res, next) => {
   }
 }
 
+const doctorSchedule = async (req, res, next) => {
+  try {
+    const params = await validator.validate(schema.doctorScheduleSchema, req.body)
+    const { doctorSchedule, unavailableSlots } = await appointmentService.getDoctorSchedule(params)
+    doctorSchedule.unavailableSlots = unavailableSlots
+    res.status(200).json({
+      message: 'Doctor schedule fecthed successfully',
+      data: {
+        schedule: doctorSchedule[0],
+        unavailableSlots
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const questionnaire = async (req, res, next) => {
+  try {
+    const questionnaireList = await appointmentService.getQuestionnaire()
+    res.status(200).json({
+      message: 'Questionnaire fetched successfully',
+      data: {
+        questionnaire: questionnaireList
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const bookAppointment = async (req, res, next) => {
+  try {
+    const params = await validator.validate(schema.appointmentBookingSchema, req.body)
+    const bookedAppointment = await appointmentService.bookAppointment(params)
+    res.status(200).json({
+      message: 'Appointment booked.',
+      data: {
+        appointment: bookedAppointment
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const locationModuleErrorHandler = (err, req, res, next) => {
   console.log(err)
-  next(err)
+  switch (err.name) {
+    case 'DbError':
+      res.status(400).json({
+        error: err.message
+      })
+      break
+    default:
+      next(err)
+  }
 }
 
 module.exports = {
@@ -97,5 +151,8 @@ module.exports = {
   locations,
   departments,
   doctors,
+  doctorSchedule,
+  questionnaire,
+  bookAppointment,
   locationModuleErrorHandler
 }

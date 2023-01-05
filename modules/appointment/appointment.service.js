@@ -32,11 +32,11 @@ const showAppointments = async (patientId) => {
   }
 }
 
-const changeAppointmentData = async (appoinmentId, reqBody) => {
+const changeAppointmentData = async (appointmentId, reqBody) => {
   try {
-    console.log('check')
+    await db.appoinment.update(reqBody, { where: { id: appointmentId } })
   } catch (err) {
-    console.log(err)
+    throw new DatabaseError(err)
   }
 }
 

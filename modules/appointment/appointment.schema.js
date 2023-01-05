@@ -1,6 +1,18 @@
 const editAppointmentschema = {
   type: 'object',
   properties: {
+    locationId: {
+      type: 'string'
+    },
+    departmentId: {
+      type: 'string'
+    },
+    doctorId: {
+      type: 'string'
+    },
+    patientId: {
+      type: 'string'
+    },
     appointment_time: {
       type: 'string',
       format: 'date-time'
@@ -16,9 +28,14 @@ const editAppointmentschema = {
     },
     prescription_image_url: {
       type: 'string'
+    },
+    createdAt: {
+      type: 'string'
+    },
+    updatedAt: {
+      type: 'string'
     }
   },
-  required: ['locationId'],
   additionalProperties: false
 }
 

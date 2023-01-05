@@ -20,7 +20,7 @@ const appointmentList = async (req, res, next) => {
 const updateAppointment = async (req, res, next) => {
   try {
     const appointmentId = req.params.id
-    // const params = await validator.validate(schema.doctorListSchema, req.body)
+    // const params = await validator.validate(schema.updateAppointment, req.body)
     await appointmentService.changeAppointmentData(appointmentId, req.body)
     res.status(200).json({
       message: 'Successfully updated appointment data'

@@ -418,7 +418,7 @@ paths:
 
   # appointment location listing
   /appointment/locations:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of available locations
@@ -500,7 +500,7 @@ paths:
 
   # appointment department listing
   /appointment/departments:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of available departments
@@ -570,7 +570,7 @@ paths:
 
   # appointment doctor listing
   /appointment/doctors:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of available doctors
@@ -658,7 +658,7 @@ paths:
 
   # appointment doctor schedule listing
   /appointment/doctor/availability:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of doctor schedule
@@ -744,7 +744,7 @@ paths:
 
   # appointment questionary
   /appointment/questionnaire:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of questionnaire

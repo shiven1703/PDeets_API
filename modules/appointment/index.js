@@ -6,15 +6,15 @@ const router = express.Router()
 
 router.get('/list', authMiddleware(), appointmentController.appointmentList)
 
-router.get('/locations', authMiddleware(), appointmentController.locations)
+router.post('/locations', authMiddleware(), appointmentController.locations)
 
-router.get('/departments', authMiddleware(), appointmentController.departments)
+router.post('/departments', authMiddleware(), appointmentController.departments)
 
-router.get('/doctors', authMiddleware(), appointmentController.doctors)
+router.post('/doctors', authMiddleware(), appointmentController.doctors)
 
-router.get('/doctor/availability', authMiddleware(), appointmentController.doctorSchedule)
+router.post('/doctor/availability', authMiddleware(), appointmentController.doctorSchedule)
 
-router.get('/questionnaire', authMiddleware(), appointmentController.questionnaire)
+router.post('/questionnaire', authMiddleware(), appointmentController.questionnaire)
 
 router.post('/', authMiddleware(), appointmentController.bookAppointment)
 

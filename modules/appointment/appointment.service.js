@@ -165,7 +165,7 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
     doctorList = JSON.parse(JSON.stringify(doctorList))
 
     // fetching reviews for each doctor
-    const doctorListWithReviews = await Promise.all(doctorList.map(async (doctor) => {
+    let doctorListWithReviews = await Promise.all(doctorList.map(async (doctor) => {
       const query = `SELECT first_name, last_name, number_of_stars, review_text FROM reviews
       LEFT JOIN doctors ON doctors.id = reviews.doctor_id
       WHERE reviews.doctor_id = '${doctor.doctor_id}';`
@@ -173,6 +173,23 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
       doctor.reviews = reviews
       return doctor
     }))
+
+    // avg review
+    doctorListWithReviews = doctorListWithReviews.map((doctor) => {
+      const reviewCount = doctor.reviews.length
+      let reviewTotal = 0
+
+      if (reviewCount > 0) {
+        doctor.reviews.forEach((review) => {
+          reviewTotal = reviewTotal + review.number_of_stars
+        })
+
+        doctor.avg_review = reviewTotal / reviewCount
+      } else {
+        doctor.avg_review = 5
+      }
+      return doctor
+    })
 
     return doctorListWithReviews
   } catch (err) {

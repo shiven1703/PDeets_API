@@ -641,6 +641,8 @@ paths:
                               type: string
                             experience:
                               type: string
+                            avg_review:
+                              type: number
                             reviews:
                              type: array
                              items:

@@ -3,7 +3,6 @@ const { db, sequelize } = require('../../db')
 
 // lib imports
 const { Op, QueryTypes } = require('sequelize')
-const { DateTime } = require('luxon')
 
 // helpers imports
 
@@ -141,7 +140,7 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
     let query = null
 
     if (filterBy) {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience
+      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience
       FROM department_has_doctor 
       LEFT JOIN doctors as doctors 
       ON doctor_id=doctors.id 
@@ -155,15 +154,27 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
         doctors.licence_no ILIKE '%${filterBy}%'
       );`
     } else {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience 
+      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience 
       FROM department_has_doctor 
       LEFT JOIN doctors as doctors 
       ON doctor_id=doctors.id 
       WHERE location_department_id='${locationDepartment.location_department_id}';`
     }
 
-    const doctorList = await sequelize.query(query, { type: QueryTypes.SELECT })
-    return doctorList
+    let doctorList = await sequelize.query(query, { type: QueryTypes.SELECT })
+    doctorList = JSON.parse(JSON.stringify(doctorList))
+
+    // fetching reviews for each doctor
+    const doctorListWithReviews = await Promise.all(doctorList.map(async (doctor) => {
+      const query = `SELECT first_name, last_name, number_of_stars, review_text FROM reviews
+      LEFT JOIN doctors ON doctors.id = reviews.doctor_id
+      WHERE reviews.doctor_id = '${doctor.doctor_id}';`
+      const reviews = await sequelize.query(query, { type: QueryTypes.SELECT })
+      doctor.reviews = reviews
+      return doctor
+    }))
+
+    return doctorListWithReviews
   } catch (err) {
     throw new DatabaseError(err.message)
   }

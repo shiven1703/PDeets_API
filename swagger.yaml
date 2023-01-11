@@ -627,6 +627,10 @@ paths:
                               type: string
                             phone_number:
                               type: string
+                            education:
+                              type: string
+                            about:
+                              type: string
                             address:
                               type: string
                             pincode:
@@ -637,6 +641,18 @@ paths:
                               type: string
                             experience:
                               type: string
+                            reviews:
+                             type: array
+                             items:
+                              properties:
+                               first_name:
+                                type: string
+                               last_name:
+                                type: string
+                               number_of_stars:
+                                type: string
+                               review_text:
+                                type: string
                             
 
         '400':

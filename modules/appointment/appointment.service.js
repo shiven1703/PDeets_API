@@ -161,8 +161,20 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
       WHERE location_department_id='${locationDepartment.location_department_id}';`
     }
 
-    const doctorList = await sequelize.query(query, { type: QueryTypes.SELECT })
-    return doctorList
+    let doctorList = await sequelize.query(query, { type: QueryTypes.SELECT })
+    doctorList = JSON.parse(JSON.stringify(doctorList))
+
+    // fetching reviews for each doctor
+    const doctorListWithReviews = await Promise.all(doctorList.map(async (doctor) => {
+      const query = `SELECT first_name, last_name, number_of_stars, review_text FROM reviews
+      LEFT JOIN doctors ON doctors.id = reviews.doctor_id
+      WHERE reviews.doctor_id = '${doctor.doctor_id}';`
+      const reviews = await sequelize.query(query, { type: QueryTypes.SELECT })
+      doctor.reviews = reviews
+      return doctor
+    }))
+
+    return doctorListWithReviews
   } catch (err) {
     throw new DatabaseError(err.message)
   }

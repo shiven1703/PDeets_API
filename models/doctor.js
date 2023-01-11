@@ -27,6 +27,12 @@ module.exports = (sequelize) => {
     pincode: {
       type: DataTypes.STRING
     },
+    education: {
+      type: DataTypes.STRING
+    },
+    about: {
+      type: DataTypes.TEXT
+    },
     doctor_speciality: {
       type: DataTypes.STRING
     },

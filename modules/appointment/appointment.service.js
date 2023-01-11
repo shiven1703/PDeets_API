@@ -3,7 +3,6 @@ const { db, sequelize } = require('../../db')
 
 // lib imports
 const { Op, QueryTypes } = require('sequelize')
-const { DateTime } = require('luxon')
 
 // helpers imports
 
@@ -141,7 +140,7 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
     let query = null
 
     if (filterBy) {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience
+      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience
       FROM department_has_doctor 
       LEFT JOIN doctors as doctors 
       ON doctor_id=doctors.id 
@@ -155,7 +154,7 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
         doctors.licence_no ILIKE '%${filterBy}%'
       );`
     } else {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience 
+      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience 
       FROM department_has_doctor 
       LEFT JOIN doctors as doctors 
       ON doctor_id=doctors.id 

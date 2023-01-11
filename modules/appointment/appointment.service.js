@@ -222,13 +222,15 @@ const getDoctorUnavailableSlots = async ({ locationId, departmentId, doctorId })
         location_id: locationId,
         department_id: departmentId,
         doctor_id: doctorId
-      }
+      },
+      raw: true
     })
 
     const unavailableSlots = []
     bookedAppointments.forEach((appointment) => {
       unavailableSlots.push({
-        from: appointment.appointment_time,
+        date: new Date(appointment.appointment_time).toISOString().split('T')[0],
+        time: new Date(appointment.appointment_time).toLocaleTimeString('en-GB'),
         duration: appointment.appointment_duration
       })
     })

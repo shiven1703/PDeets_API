@@ -69,7 +69,7 @@ const doctorSchedule = async (req, res, next) => {
       message: 'Doctor schedule fecthed successfully',
       data: {
         schedule: doctorSchedule[0],
-        unavailableSlots
+        bookedSlots: unavailableSlots
       }
     })
   } catch (err) {

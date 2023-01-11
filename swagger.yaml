@@ -734,11 +734,13 @@ paths:
                             type: string
                           updatedAt:
                             type: string
-                      unavailableSlots:
+                      bookedSlots:
                         type: array
                         items:
                           properties:
-                            from:
+                            date:
+                              type: string
+                            time:
                               type: string
                             duration:
                               type: string

@@ -4,7 +4,7 @@ const authMiddleware = require('../../middleware/auth')
 
 const router = express.Router()
 
-router.get('/list', authMiddleware(), appointmentController.appointmentList)
+router.get('/', authMiddleware(), appointmentController.appointmentList)
 
 router.post('/locations', authMiddleware(), appointmentController.locations)
 

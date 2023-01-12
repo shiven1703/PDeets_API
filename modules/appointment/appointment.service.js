@@ -13,23 +13,27 @@ const {
 } = require('../../utils/customErrors')
 
 const showAppointments = async (patientId) => {
-  console.log('inside showappointment')
   try {
     const listOfAppointments = await db.appointment.findAll({
+      attributes: ['id', 'appointment_time', 'appointment_duration', 'questionary_answers', 'status', 'prescription_image_url'],
       where: {
         patient_id: patientId
-      }
+      },
+      include: [{
+        model: db.location
+      }, {
+        model: db.department
+      }, {
+        model: db.doctor
+      }, {
+        model: db.patient,
+        attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login']
+      }]
     })
-
-    if (listOfAppointments) {
-      return listOfAppointments
-    } else throw new DatabaseError('Something wrong with Database Operation')
+    return listOfAppointments
   } catch (err) {
-    if (!err.name === 'InvalidUser') {
-      throw new UnknownServerError()
-    } else {
-      throw err
-    }
+    console.log(err)
+    throw new UnknownServerError()
   }
 }
 

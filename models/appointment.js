@@ -48,6 +48,14 @@ module.exports = (sequelize) => {
     appointment.hasMany(model.lab_report, {
       foreignKey: 'appointment_id'
     })
+
+    appointment.belongsTo(model.location)
+
+    appointment.belongsTo(model.department)
+
+    appointment.belongsTo(model.doctor)
+
+    appointment.belongsTo(model.patient)
   }
 
   return appointment

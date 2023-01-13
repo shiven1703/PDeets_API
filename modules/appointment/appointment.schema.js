@@ -31,15 +31,6 @@ const updateAppointmentSchema = {
   additionalProperties: false
 }
 
-const deleteAppointmentschema = {
-  type: 'object',
-  properties: {
-    appointmentId: {
-      type: 'string'
-    }
-  }
-}
-
 const locationSchema = {
   type: 'object',
   properties: {
@@ -133,7 +124,6 @@ const appointmentBookingSchema = {
 
 module.exports = {
   updateAppointmentSchema,
-  deleteAppointmentschema,
   locationSchema,
   departmentSchema,
   doctorListSchema,

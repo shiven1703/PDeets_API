@@ -316,8 +316,17 @@ const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) =
   return updatedAppointmentString
 }
 
-const deleteAppointment = async () => {
+const deleteAppointment = async (appointmentId) => {
+  const isDeleted = await db.appointment.destroy({
+    where: {
+      id: appointmentId
+    }
+  })
 
+  if (!isDeleted) {
+    throw new DatabaseError('No appointment found with the provided id.')
+  }
+  return true
 }
 
 module.exports = {

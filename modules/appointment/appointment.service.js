@@ -293,10 +293,27 @@ const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) =
     status: updatedAppointmentdata.status
   }, {
     where: { id: appointmentId },
+    underscored: true,
     returning: true,
-    plain: true
+    plain: true,
+    raw: true
   })
-  return updatedAppointment.pop()
+
+  // renaming major ids from camplecase to snake
+  const updatedAppointmentString = updatedAppointment.pop()
+  updatedAppointmentString.location_id = updatedAppointmentString.locationId
+  delete updatedAppointmentString.locationId
+
+  updatedAppointmentString.department_id = updatedAppointmentString.departmentId
+  delete updatedAppointmentString.departmentId
+
+  updatedAppointmentString.doctor_id = updatedAppointmentString.doctorId
+  delete updatedAppointmentString.doctorId
+
+  updatedAppointmentString.patient_id = updatedAppointmentString.patientId
+  delete updatedAppointmentString.patientId
+
+  return updatedAppointmentString
 }
 
 const deleteAppointment = async () => {

@@ -1,8 +1,6 @@
 const express = require('express')
 const appointmentController = require('./appointment.controller')
 const authMiddleware = require('../../middleware/auth')
-const cors = require('cors')
-const auth = require('../../middleware/auth')
 
 const router = express.Router()
 
@@ -25,6 +23,5 @@ router.post('/questionnaire', authMiddleware(), appointmentController.questionna
 router.post('/', authMiddleware(), appointmentController.bookAppointment)
 
 router.use(appointmentController.locationModuleErrorHandler)
-router.use(cors())
 
 module.exports = router

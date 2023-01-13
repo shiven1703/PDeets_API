@@ -15,5 +15,8 @@
             },
             "passwordResetCodeLength": 5
         }
+    },
+    "crons": {
+        "timezone": "Europe/Berlin"  
     }
 }

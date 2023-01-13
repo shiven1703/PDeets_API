@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 // model imports
 const { db, sequelize } = require('../../db')
 
@@ -6,7 +5,8 @@ const { db, sequelize } = require('../../db')
 const { Op, QueryTypes } = require('sequelize')
 
 // helpers imports
-
+const luxon = require('luxon')
+const { sendPushNotification } = require('../push-notification/push-notification.service')
 // custom errors
 const {
   DatabaseError,
@@ -38,6 +38,26 @@ const showAppointments = async (patientId) => {
     } else {
       throw err
     }
+  }
+}
+
+const sendAppointmentReminder = async () => {
+  try {
+    const query = `SELECT appointments.id as appointment_id, patients.first_name, patients.last_name, device_tokens.device_token FROM appointments
+    LEFT JOIN patients ON patients.id = appointments.patient_id
+    LEFT JOIN device_tokens ON device_tokens.patient_id = patients.id
+    WHERE appointment_time >= '${luxon.DateTime.now().startOf('day').toString()}' AND appointment_time <= '${luxon.DateTime.now().endOf('day').toString()}';`
+
+    const appointments = await sequelize.query(query, { type: QueryTypes.SELECT })
+
+    await Promise.all(appointments.map(async (appointment) => {
+      await sendPushNotification('Appointment reminder', `Hello ${appointment.first_name}, you have an appointment today.`, appointment.device_token, {
+        appointmentId: appointment.appointment_id
+      })
+    }))
+    console.log('Appointment reminder cron ran...')
+  } catch (err) {
+    console.log(err)
   }
 }
 
@@ -332,6 +352,7 @@ const deleteAppointment = async (appointmentId) => {
 
 module.exports = {
   showAppointments,
+  sendAppointmentReminder,
   updateAppointment,
   deleteAppointment,
   getLocations,

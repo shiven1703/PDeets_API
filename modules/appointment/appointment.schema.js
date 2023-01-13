@@ -1,36 +1,3 @@
-const updateAppointmentSchema = {
-  type: 'object',
-  properties: {
-    appointmentId: {
-      type: 'string'
-    },
-    locationId: {
-      type: 'string'
-    },
-    departmentId: {
-      type: 'string'
-    },
-    doctorId: {
-      type: 'string'
-    },
-    appointmentTime: {
-      type: 'string',
-      format: 'date-time'
-    },
-    appointmentDuration: {
-      type: 'integer'
-    },
-    questionaryAnswers: {
-      type: 'string'
-    },
-    status: {
-      type: 'string'
-    }
-  },
-  required: ['appointmentId'],
-  additionalProperties: false
-}
-
 const locationSchema = {
   type: 'object',
   properties: {
@@ -119,6 +86,35 @@ const appointmentBookingSchema = {
     }
   },
   required: ['locationId', 'departmentId', 'doctorId', 'patientId', 'appointmentTime', 'questionaryAnswer'],
+  additionalProperties: false
+}
+
+const updateAppointmentSchema = {
+  type: 'object',
+  properties: {
+    locationId: {
+      type: 'string'
+    },
+    departmentId: {
+      type: 'string'
+    },
+    doctorId: {
+      type: 'string'
+    },
+    appointmentTime: {
+      type: 'string',
+      format: 'date-time'
+    },
+    appointmentDuration: {
+      type: 'integer'
+    },
+    questionaryAnswers: {
+      type: 'string'
+    },
+    status: {
+      type: 'string'
+    }
+  },
   additionalProperties: false
 }
 

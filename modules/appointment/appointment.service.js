@@ -293,27 +293,28 @@ const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) =
     status: updatedAppointmentdata.status
   }, {
     where: { id: appointmentId },
-    underscored: true,
     returning: true,
-    plain: true,
     raw: true
   })
-
-  // renaming major ids from camplecase to snake
   const updatedAppointmentString = updatedAppointment.pop()
-  updatedAppointmentString.location_id = updatedAppointmentString.locationId
-  delete updatedAppointmentString.locationId
+  if (updatedAppointmentString.length > 0) {
+    // renaming major ids from camplecase to snake
+    updatedAppointmentString.location_id = updatedAppointmentString.locationId
+    delete updatedAppointmentString.locationId
 
-  updatedAppointmentString.department_id = updatedAppointmentString.departmentId
-  delete updatedAppointmentString.departmentId
+    updatedAppointmentString.department_id = updatedAppointmentString.departmentId
+    delete updatedAppointmentString.departmentId
 
-  updatedAppointmentString.doctor_id = updatedAppointmentString.doctorId
-  delete updatedAppointmentString.doctorId
+    updatedAppointmentString.doctor_id = updatedAppointmentString.doctorId
+    delete updatedAppointmentString.doctorId
 
-  updatedAppointmentString.patient_id = updatedAppointmentString.patientId
-  delete updatedAppointmentString.patientId
+    updatedAppointmentString.patient_id = updatedAppointmentString.patientId
+    delete updatedAppointmentString.patientId
 
-  return updatedAppointmentString
+    return updatedAppointmentString
+  } else {
+    throw new DatabaseError('No appointment found with the provided id.')
+  }
 }
 
 const deleteAppointment = async (appointmentId) => {

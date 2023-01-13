@@ -3,51 +3,6 @@ const validator = require('../../utils/schemaValidator')
 const schema = require('./appointment.schema')
 const { DatabaseError } = require('sequelize')
 
-const appointmentList = async (req, res, next) => {
-  try {
-    const patientId = req.patient.id
-    const patientAppointmentList = await appointmentService.showAppointments(patientId)
-    res.status(200).json({
-      message: 'Patient appointment list fetched successful',
-      data: {
-        appointments: patientAppointmentList
-      }
-    })
-  } catch (err) {
-    next(err)
-  }
-}
-
-const updateAppointment = async (req, res, next) => {
-  try {
-    const params = await validator.validate(schema.updateAppointmentSchema, req.body)
-    const updatedAppointment = await appointmentService.updateAppointment(params)
-    res.status(200).json({
-      message: 'Appointment updated',
-      data: {
-        updatedAppointment
-      }
-    })
-  } catch (err) {
-    next(err)
-  }
-}
-
-const deleteAppointment = async (req, res, next) => {
-  try {
-    if (req.params.id) {
-      await appointmentService.deleteAppointment(req.params.id)
-      res.status(200).json({
-        message: 'Appointment deleted'
-      })
-    } else {
-      throw new DatabaseError('Missing appointment id in request url')
-    }
-  } catch (err) {
-    next(err)
-  }
-}
-
 const locations = async (req, res, next) => {
   try {
     const filterBy = await validator.validate(schema.locationSchema, req.body)
@@ -137,9 +92,66 @@ const bookAppointment = async (req, res, next) => {
   }
 }
 
+const appointmentList = async (req, res, next) => {
+  try {
+    const patientId = req.patient.id
+    const patientAppointmentList = await appointmentService.showAppointments(patientId)
+    res.status(200).json({
+      message: 'Patient appointment list fetched successful',
+      data: {
+        appointments: patientAppointmentList
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
+const updateAppointment = async (req, res, next) => {
+  try {
+    if (req.params.id) {
+      const params = await validator.validate(schema.updateAppointmentSchema, req.body)
+      params.appointmentId = req.params.id
+
+      const updatedAppointment = await appointmentService.updateAppointment(params)
+      res.status(200).json({
+        message: 'Appointment updated',
+        data: {
+          updatedAppointment
+        }
+      })
+    } else {
+      throw new DatabaseError('Missing appointment id in request url')
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
+const deleteAppointment = async (req, res, next) => {
+  try {
+    if (req.params.id) {
+      await appointmentService.deleteAppointment(req.params.id)
+      res.status(200).json({
+        message: 'Appointment deleted'
+      })
+    } else {
+      throw new DatabaseError('Missing appointment id in request url')
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
 const locationModuleErrorHandler = (err, req, res, next) => {
+  console.log(err)
   switch (err.name) {
     case 'DbError':
+      res.status(400).json({
+        error: err.message
+      })
+      break
+    case 'SequelizeDatabaseError':
       res.status(400).json({
         error: err.message
       })

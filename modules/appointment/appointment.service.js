@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 // model imports
 const { db, sequelize } = require('../../db')
 
@@ -32,8 +33,11 @@ const showAppointments = async (patientId) => {
     })
     return listOfAppointments
   } catch (err) {
-    console.log(err)
-    throw new UnknownServerError()
+    if (!err.name === 'InvalidUser') {
+      throw new UnknownServerError()
+    } else {
+      throw err
+    }
   }
 }
 
@@ -278,8 +282,58 @@ const bookAppointment = async ({ locationId, departmentId, doctorId, patientId, 
   }
 }
 
+const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) => {
+  const updatedAppointment = await db.appointment.update({
+    location_id: updatedAppointmentdata.locationId,
+    department_id: updatedAppointmentdata.departmentId,
+    doctor_id: updatedAppointmentdata.doctorId,
+    appointment_time: updatedAppointmentdata.appointmentTime,
+    appointment_duration: updatedAppointmentdata.appointmentDuration,
+    questionary_answers: updatedAppointmentdata.questionaryAnswers,
+    status: updatedAppointmentdata.status
+  }, {
+    where: { id: appointmentId },
+    returning: true,
+    raw: true
+  })
+  const updatedAppointmentString = updatedAppointment.pop()
+  if (updatedAppointmentString.length > 0) {
+    // renaming major ids from camplecase to snake
+    updatedAppointmentString.location_id = updatedAppointmentString.locationId
+    delete updatedAppointmentString.locationId
+
+    updatedAppointmentString.department_id = updatedAppointmentString.departmentId
+    delete updatedAppointmentString.departmentId
+
+    updatedAppointmentString.doctor_id = updatedAppointmentString.doctorId
+    delete updatedAppointmentString.doctorId
+
+    updatedAppointmentString.patient_id = updatedAppointmentString.patientId
+    delete updatedAppointmentString.patientId
+
+    return updatedAppointmentString
+  } else {
+    throw new DatabaseError('No appointment found with the provided id.')
+  }
+}
+
+const deleteAppointment = async (appointmentId) => {
+  const isDeleted = await db.appointment.destroy({
+    where: {
+      id: appointmentId
+    }
+  })
+
+  if (!isDeleted) {
+    throw new DatabaseError('No appointment found with the provided id.')
+  }
+  return true
+}
+
 module.exports = {
   showAppointments,
+  updateAppointment,
+  deleteAppointment,
   getLocations,
   getDepartments,
   getDoctors,

@@ -6,6 +6,10 @@ const router = express.Router()
 
 router.get('/', authMiddleware(), appointmentController.appointmentList)
 
+router.put('/:id', authMiddleware(), appointmentController.updateAppointment)
+
+router.delete('/:id', authMiddleware(), appointmentController.deleteAppointment)
+
 router.post('/locations', authMiddleware(), appointmentController.locations)
 
 router.post('/departments', authMiddleware(), appointmentController.departments)

@@ -849,7 +849,7 @@ paths:
                 appointmentDuration:
                   type: string
                 questionaryAnswer:
-                  type: json
+                  type: string
                   required: true
                 status:
                   type: string
@@ -1061,4 +1061,138 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError' 
     
-  
+  # appointment update
+  /appointment/{appointmentId}:
+    put:
+      tags:
+        - Appointment
+      summary: Allows to update the booked appointment
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                  type: string
+                departmentId:
+                  type: string
+                doctorId:
+                  type: string
+                appointmentTime:
+                  type: string
+                appointmentDuration:
+                  type: number
+                questionaryAnswer:
+                  type: string
+                status:
+                  type: string
+                
+      
+      responses:
+        '200':
+          description: details of updated appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      updatedAppointment:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          location_id:
+                            type: string
+                          department_id:
+                            type: string
+                          doctor_id:
+                            type: string
+                          patient_id:
+                            type: string
+                          appointment_time:
+                            type: string
+                          appointment_duration:
+                            type: string
+                          questionary_answers:
+                            type: string
+                          status:
+                            type: string
+                          prescription_image_url:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+                  
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+    delete:
+      tags:
+        - Appointment
+      summary: Allows to delete the booked appointment
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      
+      responses:
+        '200':
+          description: details of deleted appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'

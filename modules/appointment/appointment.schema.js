@@ -89,7 +89,37 @@ const appointmentBookingSchema = {
   additionalProperties: false
 }
 
+const updateAppointmentSchema = {
+  type: 'object',
+  properties: {
+    locationId: {
+      type: 'string'
+    },
+    departmentId: {
+      type: 'string'
+    },
+    doctorId: {
+      type: 'string'
+    },
+    appointmentTime: {
+      type: 'string',
+      format: 'date-time'
+    },
+    appointmentDuration: {
+      type: 'integer'
+    },
+    questionaryAnswers: {
+      type: 'string'
+    },
+    status: {
+      type: 'string'
+    }
+  },
+  additionalProperties: false
+}
+
 module.exports = {
+  updateAppointmentSchema,
   locationSchema,
   departmentSchema,
   doctorListSchema,

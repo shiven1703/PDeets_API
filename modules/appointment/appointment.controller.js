@@ -19,11 +19,13 @@ const appointmentList = async (req, res, next) => {
 
 const updateAppointment = async (req, res, next) => {
   try {
-    const appointmentId = req.params.id
-    // const params = await validator.validate(schema.updateAppointment, req.body)
-    await appointmentService.changeAppointmentData(appointmentId, req.body)
+    const params = await validator.validate(schema.updateAppointmentSchema, req.body)
+    const updatedAppointment = await appointmentService.updateAppointment(params)
     res.status(200).json({
-      message: 'Successfully updated appointment data'
+      message: 'Appointment updated',
+      data: {
+        updatedAppointment
+      }
     })
   } catch (err) {
     next(err)
@@ -32,8 +34,8 @@ const updateAppointment = async (req, res, next) => {
 
 const deleteAppointment = async (req, res, next) => {
   try {
-    const appointmentId = req.params.id
-    await appointmentService.removeAppointmentData(appointmentId)
+    const params = await validator.validate(schema.updateAppointment, req.body)
+    await appointmentService.deleteAppointment(params)
     res.status(200).json({
       message: 'appoinment data deleted successfully'
     })

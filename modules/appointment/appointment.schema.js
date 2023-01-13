@@ -1,6 +1,9 @@
-const editAppointmentschema = {
+const updateAppointmentSchema = {
   type: 'object',
   properties: {
+    appointmentId: {
+      type: 'string'
+    },
     locationId: {
       type: 'string'
     },
@@ -10,32 +13,21 @@ const editAppointmentschema = {
     doctorId: {
       type: 'string'
     },
-    patientId: {
-      type: 'string'
-    },
-    appointment_time: {
+    appointmentTime: {
       type: 'string',
       format: 'date-time'
     },
-    appointment_duration: {
+    appointmentDuration: {
       type: 'integer'
     },
-    questionary_answers: {
-      type: 'json'
+    questionaryAnswers: {
+      type: 'string'
     },
     status: {
       type: 'string'
-    },
-    prescription_image_url: {
-      type: 'string'
-    },
-    createdAt: {
-      type: 'string'
-    },
-    updatedAt: {
-      type: 'string'
     }
   },
+  required: ['appointmentId'],
   additionalProperties: false
 }
 
@@ -140,7 +132,7 @@ const appointmentBookingSchema = {
 }
 
 module.exports = {
-  editAppointmentschema,
+  updateAppointmentSchema,
   deleteAppointmentschema,
   locationSchema,
   departmentSchema,

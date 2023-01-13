@@ -282,10 +282,31 @@ const bookAppointment = async ({ locationId, departmentId, doctorId, patientId, 
   }
 }
 
+const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) => {
+  const updatedAppointment = await db.appointment.update({
+    location_id: updatedAppointmentdata.locationId,
+    department_id: updatedAppointmentdata.departmentId,
+    doctor_id: updatedAppointmentdata.doctorId,
+    appointment_time: updatedAppointmentdata.appointmentTime,
+    appointment_duration: updatedAppointmentdata.appointmentDuration,
+    questionary_answers: updatedAppointmentdata.questionaryAnswers,
+    status: updatedAppointmentdata.status
+  }, {
+    where: { id: appointmentId },
+    returning: true,
+    plain: true
+  })
+  return updatedAppointment.pop()
+}
+
+const deleteAppointment = async () => {
+
+}
+
 module.exports = {
   showAppointments,
-  changeAppointmentData,
-  removeAppointmentData,
+  updateAppointment,
+  deleteAppointment,
   getLocations,
   getDepartments,
   getDoctors,

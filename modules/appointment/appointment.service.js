@@ -4,7 +4,6 @@ const { db, sequelize } = require('../../db')
 
 // lib imports
 const { Op, QueryTypes } = require('sequelize')
-const { DateTime } = require('luxon')
 
 // helpers imports
 
@@ -17,47 +16,22 @@ const {
 const showAppointments = async (patientId) => {
   try {
     const listOfAppointments = await db.appointment.findAll({
+      attributes: ['id', 'appointment_time', 'appointment_duration', 'questionary_answers', 'status', 'prescription_image_url'],
       where: {
         patient_id: patientId
-      }
+      },
+      include: [{
+        model: db.location
+      }, {
+        model: db.department
+      }, {
+        model: db.doctor
+      }, {
+        model: db.patient,
+        attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login']
+      }]
     })
-    if (listOfAppointments) {
-      return listOfAppointments
-    } else throw new DatabaseError('Something wrong with Database Operation')
-  } catch (err) {
-    if (!err.name === 'InvalidUser') {
-      throw new UnknownServerError()
-    } else {
-      throw err
-    }
-  }
-}
-
-const changeAppointmentData = async (appointmentId, reqBody) => {
-  try {
-    await db.appointment.update(reqBody, { where: { id: appointmentId } })
-  } catch (err) {
-    console.log(err)
-    throw new DatabaseError('cannot update appointment data')
-  }
-}
-
-const removeAppointmentData = async (appointmentId) => {
-  try {
-    const appointmentEntryCheck = await db.appointment.findOne({
-      id: appointmentId
-    })
-    if (appointmentEntryCheck) {
-      try {
-        await db.appointment.destroy({
-          where: {
-            id: appointmentId
-          }
-        })
-      } catch (err) { throw new DatabaseError('No entry to delete the appoinment') }
-    } else {
-      throw new DatabaseError('cannot delete appointment data')
-    }
+    return listOfAppointments
   } catch (err) {
     if (!err.name === 'InvalidUser') {
       throw new UnknownServerError()
@@ -174,7 +148,7 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
     let query = null
 
     if (filterBy) {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience
+      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience
       FROM department_has_doctor 
       LEFT JOIN doctors as doctors 
       ON doctor_id=doctors.id 
@@ -188,15 +162,44 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
         doctors.licence_no ILIKE '%${filterBy}%'
       );`
     } else {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience 
+      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience 
       FROM department_has_doctor 
       LEFT JOIN doctors as doctors 
       ON doctor_id=doctors.id 
       WHERE location_department_id='${locationDepartment.location_department_id}';`
     }
 
-    const doctorList = await sequelize.query(query, { type: QueryTypes.SELECT })
-    return doctorList
+    let doctorList = await sequelize.query(query, { type: QueryTypes.SELECT })
+    doctorList = JSON.parse(JSON.stringify(doctorList))
+
+    // fetching reviews for each doctor
+    let doctorListWithReviews = await Promise.all(doctorList.map(async (doctor) => {
+      const query = `SELECT first_name, last_name, number_of_stars, review_text FROM reviews
+      LEFT JOIN doctors ON doctors.id = reviews.doctor_id
+      WHERE reviews.doctor_id = '${doctor.doctor_id}';`
+      const reviews = await sequelize.query(query, { type: QueryTypes.SELECT })
+      doctor.reviews = reviews
+      return doctor
+    }))
+
+    // avg review
+    doctorListWithReviews = doctorListWithReviews.map((doctor) => {
+      const reviewCount = doctor.reviews.length
+      let reviewTotal = 0
+
+      if (reviewCount > 0) {
+        doctor.reviews.forEach((review) => {
+          reviewTotal = reviewTotal + review.number_of_stars
+        })
+
+        doctor.avg_review = reviewTotal / reviewCount
+      } else {
+        doctor.avg_review = 5
+      }
+      return doctor
+    })
+
+    return doctorListWithReviews
   } catch (err) {
     throw new DatabaseError(err.message)
   }
@@ -227,13 +230,15 @@ const getDoctorUnavailableSlots = async ({ locationId, departmentId, doctorId })
         location_id: locationId,
         department_id: departmentId,
         doctor_id: doctorId
-      }
+      },
+      raw: true
     })
 
     const unavailableSlots = []
     bookedAppointments.forEach((appointment) => {
       unavailableSlots.push({
-        from: appointment.appointment_time,
+        date: new Date(appointment.appointment_time).toISOString().split('T')[0],
+        time: new Date(appointment.appointment_time).toLocaleTimeString('en-GB'),
         duration: appointment.appointment_duration
       })
     })

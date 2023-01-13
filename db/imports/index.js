@@ -1,5 +1,6 @@
 
 const path = require('path')
+const { getRandomReview } = require('./review')
 
 const importDepartments = async (sequelize, modelList) => {
   try {
@@ -127,6 +128,35 @@ const importQuestionnaire = async (sequelize, modelList) => {
   }
 }
 
+const randomBoolean = () => {
+  return Math.random() >= 0.5
+}
+
+const importDoctorReviews = async (sequelize, modelList) => {
+  try {
+    const doctors = await modelList.doctor.findAll()
+    const patients = await modelList.patient.findAll({ limit: 5 })
+
+    patients.forEach(async (patient) => {
+      doctors.forEach(async (doctor) => {
+        const isAllowed = randomBoolean()
+        if (isAllowed) {
+          const randomReview = await getRandomReview()
+          await modelList.review.create({
+            patient_id: patient.id,
+            doctor_id: doctor.id,
+            number_of_stars: randomReview.reviewStars,
+            review_text: randomReview.reviewText
+          })
+        }
+      })
+    })
+    console.log('imported doctor reviews...')
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 const truncateAllDefaultDataTables = async (sequelize, modelList) => {
   try {
     await modelList.department.destroy({ truncate: true, cascade: true })
@@ -145,6 +175,8 @@ const truncateAllDefaultDataTables = async (sequelize, modelList) => {
     console.log('question table truncated...')
     await modelList.question_option.destroy({ truncate: true, cascade: true })
     console.log('question_option table truncated...')
+    await modelList.review.destroy({ truncate: true, cascade: true })
+    console.log('reviews table truncated...')
   } catch (err) {
     console.log(err)
   }
@@ -158,6 +190,7 @@ module.exports = async (sequelize, modelList) => {
   await importDepartmentHasDoctor(sequelize, modelList)
   await importDoctorSchedule(sequelize, modelList)
   await importQuestionnaire(sequelize, modelList)
+  await importDoctorReviews(sequelize, modelList)
 
   // uncomment below function to remove all default data from above tables
   // await truncateAllDefaultDataTables(sequelize, modelList)

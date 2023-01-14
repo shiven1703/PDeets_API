@@ -1,6 +1,7 @@
 const express = require('express')
 const appointmentController = require('./appointment.controller')
 const authMiddleware = require('../../middleware/auth')
+const externalAuthMiddleware = require('../../middleware/externalAuth')
 
 const router = express.Router()
 
@@ -23,6 +24,8 @@ router.post('/questionnaire', authMiddleware(), appointmentController.questionna
 router.post('/', authMiddleware(), appointmentController.bookAppointment)
 
 router.post('/qr/:appointmentId', authMiddleware(), appointmentController.getAppointmentQR)
+
+router.post('/qr', externalAuthMiddleware(), appointmentController.decodeAppointmentQR)
 
 router.use(appointmentController.locationModuleErrorHandler)
 

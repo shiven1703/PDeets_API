@@ -162,6 +162,23 @@ const getAppointmentQR = async (req, res, next) => {
   }
 }
 
+const decodeAppointmentQR = async (req, res, next) => {
+  try {
+    const params = await validator.validate(schema.qrCodeDecodeSchema, req.body)
+    params.appointmentId = req.appointmentId
+
+    const appointment = await appointmentService.decodeAppointmentQR(params)
+    res.status(200).json({
+      message: 'Appointment Details',
+      data: {
+        appointment
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 // module level error handler
 const locationModuleErrorHandler = (err, req, res, next) => {
   console.log(err)
@@ -192,5 +209,6 @@ module.exports = {
   questionnaire,
   bookAppointment,
   getAppointmentQR,
+  decodeAppointmentQR,
   locationModuleErrorHandler
 }

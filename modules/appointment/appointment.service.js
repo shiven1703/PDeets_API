@@ -6,6 +6,7 @@ const { Op, QueryTypes } = require('sequelize')
 
 // helpers imports
 const luxon = require('luxon')
+const tokenHelper = require('../../utils/token')
 const { sendPushNotification } = require('../push-notification/push-notification.service')
 // custom errors
 const {
@@ -58,6 +59,20 @@ const sendAppointmentReminder = async () => {
     console.log('Appointment reminder cron ran...')
   } catch (err) {
     console.log(err)
+  }
+}
+
+const generateAppointmentQR = async (appointmentId) => {
+  const appointment = await db.appointment.findOne({ where: { id: appointmentId } })
+  if (appointment) {
+    const token = await tokenHelper.generateAppointmentQrToken({
+      appintmentId: appointment.id
+    })
+    return {
+      token
+    }
+  } else {
+    throw new DatabaseError('Invalid appointment id.')
   }
 }
 
@@ -353,6 +368,7 @@ const deleteAppointment = async (appointmentId) => {
 module.exports = {
   showAppointments,
   sendAppointmentReminder,
+  generateAppointmentQR,
   updateAppointment,
   deleteAppointment,
   getLocations,

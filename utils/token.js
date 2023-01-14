@@ -29,6 +29,14 @@ const generatePasswordResetToken = async (data) => {
   return resetToken
 }
 
+const generateAppointmentQrToken = async (data) => {
+  data.isAppointmentQrToken = true
+  const qrToken = await jwtSignAsync(data, process.env.QR_CODE_TOKEN_KEY, {
+    expiresIn: '1h'
+  })
+  return qrToken
+}
+
 const verifyAccessToken = async (token) => {
   try {
     const accessToken = await jwtVerifyAsync(
@@ -73,6 +81,7 @@ module.exports = {
   generateAccessToken,
   generateRefreshToken,
   generatePasswordResetToken,
+  generateAppointmentQrToken,
   verifyAccessToken,
   verifyRefreshToken
 }

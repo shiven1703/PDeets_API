@@ -143,6 +143,26 @@ const deleteAppointment = async (req, res, next) => {
   }
 }
 
+const getAppointmentQR = async (req, res, next) => {
+  try {
+    const appintmentId = req.params.appointmentId
+    if (appintmentId) {
+      const qrCode = await appointmentService.generateAppointmentQR(appintmentId)
+      res.status(200).json({
+        message: 'QR code generated.',
+        data: {
+          qrCode
+        }
+      })
+    } else {
+      throw new DatabaseError('Invalid appointment id.')
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
+// module level error handler
 const locationModuleErrorHandler = (err, req, res, next) => {
   console.log(err)
   switch (err.name) {
@@ -171,5 +191,6 @@ module.exports = {
   doctorSchedule,
   questionnaire,
   bookAppointment,
+  getAppointmentQR,
   locationModuleErrorHandler
 }

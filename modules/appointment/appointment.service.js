@@ -66,7 +66,7 @@ const generateAppointmentQR = async (appointmentId) => {
   const appointment = await db.appointment.findOne({ where: { id: appointmentId } })
   if (appointment) {
     const token = await tokenHelper.generateAppointmentQrToken({
-      appintmentId: appointment.id
+      appointment: appointment.id
     })
     return {
       token
@@ -318,6 +318,7 @@ const bookAppointment = async ({ locationId, departmentId, doctorId, patientId, 
 }
 
 const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) => {
+  console.log(updatedAppointmentdata)
   const updatedAppointment = await db.appointment.update({
     location_id: updatedAppointmentdata.locationId,
     department_id: updatedAppointmentdata.departmentId,
@@ -331,6 +332,7 @@ const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) =
     returning: true,
     raw: true
   })
+  console.log(updatedAppointment)
   const updatedAppointmentString = updatedAppointment.pop()
   if (updatedAppointmentString.length > 0) {
     // renaming major ids from camplecase to snake
@@ -365,10 +367,42 @@ const deleteAppointment = async (appointmentId) => {
   return true
 }
 
+const decodeAppointmentQR = async ({ appointmentId, ...updatedAppointmentdata }) => {
+  const appointment = await db.appointment.findOne({
+    attributes: ['id', 'appointment_time', 'appointment_duration', 'questionary_answers', 'status', 'prescription_image_url'],
+    where: {
+      id: appointmentId
+    },
+    include: [{
+      model: db.location
+    }, {
+      model: db.department
+    }, {
+      model: db.doctor
+    }, {
+      model: db.patient,
+      attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login']
+    }],
+    raw: true,
+    nest: true
+  })
+
+  if (appointment) {
+    if (updatedAppointmentdata.status) {
+      await db.appointment.update({ status: updatedAppointmentdata.status }, { where: { id: appointmentId } })
+      appointment.status = updatedAppointmentdata.status
+    }
+    return appointment
+  } else {
+    throw new DatabaseError('No appointment found with the provided id.')
+  }
+}
+
 module.exports = {
   showAppointments,
   sendAppointmentReminder,
   generateAppointmentQR,
+  decodeAppointmentQR,
   updateAppointment,
   deleteAppointment,
   getLocations,

@@ -77,11 +77,37 @@ const verifyRefreshToken = async (token) => {
   }
 }
 
+const verifyQrToken = async (token) => {
+  try {
+    const qrToken = await jwtVerifyAsync(
+      token,
+      process.env.QR_CODE_TOKEN_KEY
+    )
+    return qrToken
+  } catch (err) {
+    if (err.name === 'TokenExpiredError') {
+      throw new JwtError('QR token expired.')
+    } else if (err.name === 'SyntaxError') {
+      throw new JwtError('Invalid QR token')
+    } else if (err.name === 'JsonWebTokenError') {
+      throw new JwtError('Invalid QR token')
+    } else {
+      throw err
+    }
+  }
+}
+
+const decodeWithoutVerification = (token) => {
+  return jwt.decode(token, { complete: true })
+}
+
 module.exports = {
   generateAccessToken,
   generateRefreshToken,
   generatePasswordResetToken,
   generateAppointmentQrToken,
   verifyAccessToken,
-  verifyRefreshToken
+  verifyRefreshToken,
+  verifyQrToken,
+  decodeWithoutVerification
 }

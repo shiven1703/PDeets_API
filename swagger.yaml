@@ -1248,3 +1248,158 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError' 
   
+  # appointmemt qr decode
+  /appointment/qr:
+    post:
+      tags:
+        - Appointment
+      summary: Allows fetching of appointment details using appointment qr token
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the qr token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+      
+      responses:
+        '200':
+          description: Appointment details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          appointment_time:
+                            type: string
+                          appointment_duration:
+                            type: string
+                          questionary_answers:
+                            type: string
+                          status:
+                            type: string
+                          prescription_image_url:
+                            type: string
+                          location:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              description:
+                                type: string
+                              lan:
+                                type: number
+                              lon:
+                                type: number
+                              address:
+                                type: string
+                              pincode:
+                                type: string
+                              city:
+                                type: string
+                              createdAt:
+                                type: string
+                              updatedAt:
+                                type: string
+                          department:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              description:
+                                type: string
+                              createdAt:
+                                type: string
+                              updatedAt:
+                                type: string
+                          doctor:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              first_name:
+                                type: string
+                              last_name:
+                                type: string
+                              email:
+                                type: string
+                              phone_number:
+                                type: string
+                              address:
+                                type: string
+                              pincode:
+                                type: string
+                              education:
+                                type: string
+                              about:
+                                type: string
+                              doctor_speciality:
+                                type: string
+                              licence_no:
+                                type: string
+                              experience:
+                                type: number
+                              createdAt:
+                                type: string
+                              updatedAt:
+                                type: string
+                          patient:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              fist_name:
+                                type: string
+                              last_name:
+                                type: string
+                              email:
+                                type: string
+                              phone_number:
+                                type: string
+                              gender:
+                                type: string
+                              date_of_birth:
+                                type: string
+                              last_login:
+                                type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'

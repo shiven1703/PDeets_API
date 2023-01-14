@@ -22,6 +22,8 @@ router.post('/questionnaire', authMiddleware(), appointmentController.questionna
 
 router.post('/', authMiddleware(), appointmentController.bookAppointment)
 
+router.post('/qr/:appointmentId', authMiddleware(), appointmentController.getAppointmentQR)
+
 router.use(appointmentController.locationModuleErrorHandler)
 
 module.exports = router

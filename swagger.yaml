@@ -126,6 +126,8 @@ paths:
                             type: string
                           last_login:
                             type: string
+                          image_url:
+                            type: string
                           updatedAt:
                             type: string
                           createdAt:
@@ -210,6 +212,8 @@ paths:
                           date_of_birth:
                             type: string
                           last_login:
+                            type: string
+                          image_url:
                             type: string
                           updatedAt:
                             type: string
@@ -418,7 +422,7 @@ paths:
 
   # appointment location listing
   /appointment/locations:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of available locations
@@ -475,6 +479,8 @@ paths:
                               type: string
                             city:
                               type: string
+                            image_url:
+                              type: string
                             createdAt:
                               type: string
                             updatedAt:
@@ -500,7 +506,7 @@ paths:
 
   # appointment department listing
   /appointment/departments:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of available departments
@@ -550,6 +556,8 @@ paths:
                               type: string
                             description:
                               type: string
+                            image_url:
+                              type: string
 
         '400':
           description: JSON payload validation error
@@ -570,7 +578,7 @@ paths:
 
   # appointment doctor listing
   /appointment/doctors:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of available doctors
@@ -627,6 +635,10 @@ paths:
                               type: string
                             phone_number:
                               type: string
+                            education:
+                              type: string
+                            about:
+                              type: string
                             address:
                               type: string
                             pincode:
@@ -637,6 +649,22 @@ paths:
                               type: string
                             experience:
                               type: string
+                            image_url:
+                              type: string
+                            avg_review:
+                              type: number
+                            reviews:
+                             type: array
+                             items:
+                              properties:
+                               first_name:
+                                type: string
+                               last_name:
+                                type: string
+                               number_of_stars:
+                                type: string
+                               review_text:
+                                type: string
                             
 
         '400':
@@ -658,7 +686,7 @@ paths:
 
   # appointment doctor schedule listing
   /appointment/doctor/availability:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of doctor schedule
@@ -676,6 +704,12 @@ paths:
             schema:
               type: object
               properties:
+                locationId:
+                    type: string
+                    required: true,
+                departmentId:
+                  type: string
+                  required: true,      
                 doctorId:
                   type: string
                   required: true,
@@ -694,23 +728,31 @@ paths:
                     type: object
                     properties:
                       schedule:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          doctor_id:
+                            type: string
+                          start_time:
+                            type: string
+                          end_time:
+                            type: string
+                          appointment_duration:
+                            type: string
+                          createdAt:
+                            type: string
+                          updatedAt:
+                            type: string
+                      bookedSlots:
                         type: array
                         items:
-                          type: object
                           properties:
-                            id:
+                            date:
                               type: string
-                            doctor_id:
+                            time:
                               type: string
-                            start_time:
-                              type: string
-                            end_time:
-                              type: string
-                            appointment_duration:
-                              type: string
-                            createdAt:
-                              type: string
-                            updatedAt:
+                            duration:
                               type: string
 
         '400':
@@ -732,7 +774,7 @@ paths:
 
   # appointment questionary
   /appointment/questionnaire:
-    get:
+    post:
       tags:
         - Appointment
       summary: Allows fetching of questionnaire
@@ -779,7 +821,7 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError' 
 
-  # appointment booking 
+  # appointment booking and listing 
   /appointment:
     post:
       tags:
@@ -817,7 +859,7 @@ paths:
                 appointmentDuration:
                   type: string
                 questionaryAnswer:
-                  type: json
+                  type: string
                   required: true
                 status:
                   type: string
@@ -881,5 +923,509 @@ paths:
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
+    
+    get:
+      tags:
+        - Appointment
+      summary: Allows listing of booked appointments by a patient
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+              
+      responses:
+        '200':
+          description: List of booked appointments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            appointment_time:
+                              type: string
+                            appointment_duration:
+                              type: string
+                            questionary_answers:
+                              type: string
+                            status:
+                              type: string
+                            prescription_image_url:
+                              type: string
+                            location:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                name:
+                                  type: string
+                                description:
+                                  type: string
+                                lan:
+                                  type: number
+                                lon:
+                                  type: number
+                                address:
+                                  type: string
+                                pincode:
+                                  type: string
+                                city:
+                                  type: string
+                                image_url:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                updatedAt:
+                                  type: string
+                            department:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                name:
+                                  type: string
+                                description:
+                                  type: string
+                                image_url:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                updatedAt:
+                                  type: string
+                            doctor:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                first_name:
+                                  type: string
+                                last_name:
+                                  type: string
+                                email:
+                                  type: string
+                                phone_number:
+                                  type: string
+                                address:
+                                  type: string
+                                pincode:
+                                  type: string
+                                education:
+                                  type: string
+                                about:
+                                  type: string
+                                doctor_speciality:
+                                  type: string
+                                licence_no:
+                                  type: string
+                                experience:
+                                  type: number
+                                image_url:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                updatedAt:
+                                  type: string
+                            patient:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                fist_name:
+                                  type: string
+                                last_name:
+                                  type: string
+                                email:
+                                  type: string
+                                phone_number:
+                                  type: string
+                                gender:
+                                  type: string
+                                date_of_birth:
+                                  type: string
+                                last_login:
+                                  type: string
+                                image_url:
+                                  type: string
+                  
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
 
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+    
+  # appointment update
+  /appointment/{appointmentId}:
+    put:
+      tags:
+        - Appointment
+      summary: Allows to update the booked appointment
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                  type: string
+                departmentId:
+                  type: string
+                doctorId:
+                  type: string
+                appointmentTime:
+                  type: string
+                appointmentDuration:
+                  type: number
+                questionaryAnswer:
+                  type: string
+                status:
+                  type: string
+                
+      
+      responses:
+        '200':
+          description: details of updated appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      updatedAppointment:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          location_id:
+                            type: string
+                          department_id:
+                            type: string
+                          doctor_id:
+                            type: string
+                          patient_id:
+                            type: string
+                          appointment_time:
+                            type: string
+                          appointment_duration:
+                            type: string
+                          questionary_answers:
+                            type: string
+                          status:
+                            type: string
+                          prescription_image_url:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+                  
+        '400':
+          description: JSON payload validation error | Invalid appointment id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
 
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+    delete:
+      tags:
+        - Appointment
+      summary: Allows to delete the booked appointment
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      
+      responses:
+        '200':
+          description: details of deleted appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  
+        '400':
+          description: Invalid appointment id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # appointmemt qr generation
+  /appointment/qr/{appointmentId}:
+    post:
+      tags:
+        - Appointment
+      summary: Allows fetching of appointment qr token
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      
+      responses:
+        '200':
+          description: Generated QR code details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      qrCode:
+                        type: object
+                        properties:
+                          token:
+                            type: string
+                            
+        '400':
+          description: Invalid appintment id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+  
+  # appointmemt qr decode
+  /appointment/qr:
+    post:
+      tags:
+        - Appointment
+      summary: Allows fetching of appointment details using appointment qr token
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the qr token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+      
+      responses:
+        '200':
+          description: Appointment details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          appointment_time:
+                            type: string
+                          appointment_duration:
+                            type: string
+                          questionary_answers:
+                            type: string
+                          status:
+                            type: string
+                          prescription_image_url:
+                            type: string
+                          location:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              description:
+                                type: string
+                              lan:
+                                type: number
+                              lon:
+                                type: number
+                              address:
+                                type: string
+                              pincode:
+                                type: string
+                              city:
+                                type: string
+                              image_url:
+                                  type: string
+                              createdAt:
+                                type: string
+                              updatedAt:
+                                type: string
+                          department:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              name:
+                                type: string
+                              description:
+                                type: string
+                              image_url:
+                                  type: string
+                              createdAt:
+                                type: string
+                              updatedAt:
+                                type: string
+                          doctor:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              first_name:
+                                type: string
+                              last_name:
+                                type: string
+                              email:
+                                type: string
+                              phone_number:
+                                type: string
+                              address:
+                                type: string
+                              pincode:
+                                type: string
+                              education:
+                                type: string
+                              about:
+                                type: string
+                              doctor_speciality:
+                                type: string
+                              licence_no:
+                                type: string
+                              experience:
+                                type: number
+                              image_url:
+                                  type: string
+                              createdAt:
+                                type: string
+                              updatedAt:
+                                type: string
+                          patient:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              fist_name:
+                                type: string
+                              last_name:
+                                type: string
+                              email:
+                                type: string
+                              phone_number:
+                                type: string
+                              gender:
+                                type: string
+                              date_of_birth:
+                                type: string
+                              last_login:
+                                type: string
+                              image_url:
+                                  type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'

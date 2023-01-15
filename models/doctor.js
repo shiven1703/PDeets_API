@@ -27,6 +27,12 @@ module.exports = (sequelize) => {
     pincode: {
       type: DataTypes.STRING
     },
+    education: {
+      type: DataTypes.STRING
+    },
+    about: {
+      type: DataTypes.TEXT
+    },
     doctor_speciality: {
       type: DataTypes.STRING
     },
@@ -35,6 +41,13 @@ module.exports = (sequelize) => {
     },
     experience: {
       type: DataTypes.DOUBLE
+    },
+    image_url: {
+      type: DataTypes.TEXT,
+      get () {
+        const url = this.getDataValue('image_url')
+        return url ? `${process.env.HOST}${url}` : null
+      }
     }
   })
 

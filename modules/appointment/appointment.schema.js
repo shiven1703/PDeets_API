@@ -42,11 +42,17 @@ const doctorListSchema = {
 const doctorScheduleSchema = {
   type: 'object',
   properties: {
+    locationId: {
+      type: 'string'
+    },
+    departmentId: {
+      type: 'string'
+    },
     doctorId: {
       type: 'string'
     }
   },
-  required: ['doctorId'],
+  required: ['locationId', 'departmentId', 'doctorId'],
   additionalProperties: false
 }
 
@@ -83,10 +89,52 @@ const appointmentBookingSchema = {
   additionalProperties: false
 }
 
+const updateAppointmentSchema = {
+  type: 'object',
+  properties: {
+    locationId: {
+      type: 'string'
+    },
+    departmentId: {
+      type: 'string'
+    },
+    doctorId: {
+      type: 'string'
+    },
+    appointmentTime: {
+      type: 'string',
+      format: 'date-time'
+    },
+    appointmentDuration: {
+      type: 'integer'
+    },
+    questionaryAnswers: {
+      type: 'string'
+    },
+    status: {
+      type: 'string'
+    }
+  },
+  additionalProperties: false
+}
+
+const qrCodeDecodeSchema = {
+  type: 'object',
+  properties: {
+    status: {
+      type: 'string',
+      enum: ['pending', 'done', 'cancelled']
+    }
+  },
+  additionalProperties: false
+}
+
 module.exports = {
+  updateAppointmentSchema,
   locationSchema,
   departmentSchema,
   doctorListSchema,
   doctorScheduleSchema,
-  appointmentBookingSchema
+  appointmentBookingSchema,
+  qrCodeDecodeSchema
 }

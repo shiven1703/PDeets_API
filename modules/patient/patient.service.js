@@ -232,7 +232,15 @@ const generateResetPasswordValidationCode = async () => {
 const storeDeviceToken = async (patientId, deviceToken) => {
   try {
     if (patientId && deviceToken) {
-      await db.device_token.upsert({ patient_id: patientId, device_token: deviceToken })
+      const existingDeviceToken = await db.device_token.findAll({
+        where: {
+          patient_id: patientId,
+          device_token: deviceToken
+        }
+      })
+      if (!(existingDeviceToken.length > 0)) {
+        await db.device_token.create({ patient_id: patientId, device_token: deviceToken })
+      }
     }
   } catch (err) {
     if (!err.name === 'InvalidUser') {

@@ -22,6 +22,13 @@ module.exports = (sequelize) => {
     description: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    image_url: {
+      type: DataTypes.TEXT,
+      get () {
+        const url = this.getDataValue('image_url')
+        return url ? `${process.env.HOST}${url}` : null
+      }
     }
   })
 

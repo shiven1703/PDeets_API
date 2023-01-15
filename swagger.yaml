@@ -126,6 +126,8 @@ paths:
                             type: string
                           last_login:
                             type: string
+                          image_url:
+                            type: string
                           updatedAt:
                             type: string
                           createdAt:
@@ -210,6 +212,8 @@ paths:
                           date_of_birth:
                             type: string
                           last_login:
+                            type: string
+                          image_url:
                             type: string
                           updatedAt:
                             type: string
@@ -475,6 +479,8 @@ paths:
                               type: string
                             city:
                               type: string
+                            image_url:
+                              type: string
                             createdAt:
                               type: string
                             updatedAt:
@@ -549,6 +555,8 @@ paths:
                             name:
                               type: string
                             description:
+                              type: string
+                            image_url:
                               type: string
 
         '400':
@@ -640,6 +648,8 @@ paths:
                             licence_no:
                               type: string
                             experience:
+                              type: string
+                            image_url:
                               type: string
                             avg_review:
                               type: number
@@ -976,6 +986,8 @@ paths:
                                   type: string
                                 city:
                                   type: string
+                                image_url:
+                                  type: string
                                 createdAt:
                                   type: string
                                 updatedAt:
@@ -988,6 +1000,8 @@ paths:
                                 name:
                                   type: string
                                 description:
+                                  type: string
+                                image_url:
                                   type: string
                                 createdAt:
                                   type: string
@@ -1020,6 +1034,8 @@ paths:
                                   type: string
                                 experience:
                                   type: number
+                                image_url:
+                                  type: string
                                 createdAt:
                                   type: string
                                 updatedAt:
@@ -1042,6 +1058,8 @@ paths:
                                 date_of_birth:
                                   type: string
                                 last_login:
+                                  type: string
+                                image_url:
                                   type: string
                   
         '400':
@@ -1319,6 +1337,8 @@ paths:
                                 type: string
                               city:
                                 type: string
+                              image_url:
+                                  type: string
                               createdAt:
                                 type: string
                               updatedAt:
@@ -1332,6 +1352,8 @@ paths:
                                 type: string
                               description:
                                 type: string
+                              image_url:
+                                  type: string
                               createdAt:
                                 type: string
                               updatedAt:
@@ -1363,6 +1385,8 @@ paths:
                                 type: string
                               experience:
                                 type: number
+                              image_url:
+                                  type: string
                               createdAt:
                                 type: string
                               updatedAt:
@@ -1386,6 +1410,8 @@ paths:
                                 type: string
                               last_login:
                                 type: string
+                              image_url:
+                                  type: string
                             
         '400':
           description: JSON validation error

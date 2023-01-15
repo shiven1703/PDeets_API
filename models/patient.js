@@ -35,6 +35,13 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    image_url: {
+      type: DataTypes.TEXT,
+      get () {
+        const url = this.getDataValue('image_url')
+        return url ? `${process.env.HOST}${url}` : null
+      }
+    },
     last_login: {
       type: DataTypes.DATE
     }

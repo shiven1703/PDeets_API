@@ -29,7 +29,7 @@ const showAppointments = async (patientId) => {
         model: db.doctor
       }, {
         model: db.patient,
-        attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login']
+        attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login', 'image_url']
       }]
     })
     return listOfAppointments
@@ -131,7 +131,7 @@ const getDepartments = async ({ locationId, filterBy }) => {
         where: { id: locationId },
         include: [{
           model: db.department,
-          attributes: ['id', 'name', 'description'],
+          attributes: ['id', 'name', 'description', 'image_url'],
           where: {
             [Op.or]: [{
               name: {
@@ -155,7 +155,7 @@ const getDepartments = async ({ locationId, filterBy }) => {
         where: { id: locationId },
         include: [{
           model: db.department,
-          attributes: ['id', 'name', 'description'],
+          attributes: ['id', 'name', 'description', 'image_url'],
           through: {
             attributes: []
           }
@@ -183,7 +183,7 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
     let query = null
 
     if (filterBy) {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience
+      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience, CONCAT('${process.env.HOST}', doctors.image_url) as image_url
       FROM department_has_doctor 
       LEFT JOIN doctors as doctors 
       ON doctor_id=doctors.id 
@@ -197,7 +197,7 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
         doctors.licence_no ILIKE '%${filterBy}%'
       );`
     } else {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience 
+      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience, CONCAT('${process.env.HOST}', doctors.image_url) as image_url
       FROM department_has_doctor 
       LEFT JOIN doctors as doctors 
       ON doctor_id=doctors.id 
@@ -318,7 +318,6 @@ const bookAppointment = async ({ locationId, departmentId, doctorId, patientId, 
 }
 
 const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) => {
-  console.log(updatedAppointmentdata)
   const updatedAppointment = await db.appointment.update({
     location_id: updatedAppointmentdata.locationId,
     department_id: updatedAppointmentdata.departmentId,
@@ -332,9 +331,8 @@ const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) =
     returning: true,
     raw: true
   })
-  console.log(updatedAppointment)
-  const updatedAppointmentString = updatedAppointment.pop()
-  if (updatedAppointmentString.length > 0) {
+  const updatedAppointmentString = JSON.parse(JSON.stringify(updatedAppointment[1]))[0]
+  if (updatedAppointmentString) {
     // renaming major ids from camplecase to snake
     updatedAppointmentString.location_id = updatedAppointmentString.locationId
     delete updatedAppointmentString.locationId
@@ -347,7 +345,6 @@ const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) =
 
     updatedAppointmentString.patient_id = updatedAppointmentString.patientId
     delete updatedAppointmentString.patientId
-
     return updatedAppointmentString
   } else {
     throw new DatabaseError('No appointment found with the provided id.')
@@ -381,9 +378,8 @@ const decodeAppointmentQR = async ({ appointmentId, ...updatedAppointmentdata })
       model: db.doctor
     }, {
       model: db.patient,
-      attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login']
+      attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login', 'image_url']
     }],
-    raw: true,
     nest: true
   })
 

@@ -28,6 +28,9 @@ module.exports = (sequelize) => {
     },
     city: {
       type: DataTypes.STRING
+    },
+    image_url: {
+      type: DataTypes.TEXT
     }
   })
 

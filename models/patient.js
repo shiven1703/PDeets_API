@@ -35,6 +35,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    image_url: {
+      type: DataTypes.TEXT
+    },
     last_login: {
       type: DataTypes.DATE
     }

@@ -41,6 +41,9 @@ module.exports = (sequelize) => {
     },
     experience: {
       type: DataTypes.DOUBLE
+    },
+    image_url: {
+      type: DataTypes.TEXT
     }
   })
 

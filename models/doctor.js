@@ -43,7 +43,11 @@ module.exports = (sequelize) => {
       type: DataTypes.DOUBLE
     },
     image_url: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      get () {
+        const url = this.getDataValue('image_url')
+        return url ? `${process.env.HOST}${url}` : null
+      }
     }
   })
 

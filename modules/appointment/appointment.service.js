@@ -209,8 +209,9 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
 
     // fetching reviews for each doctor
     let doctorListWithReviews = await Promise.all(doctorList.map(async (doctor) => {
-      const query = `SELECT first_name, last_name, number_of_stars, review_text FROM reviews
+      const query = `SELECT patients.first_name, patients.last_name, patients.image_url, number_of_stars, review_text FROM reviews
       LEFT JOIN doctors ON doctors.id = reviews.doctor_id
+      LEFT JOIN patients ON patients.id = reviews.patient_id
       WHERE reviews.doctor_id = '${doctor.doctor_id}';`
       const reviews = await sequelize.query(query, { type: QueryTypes.SELECT })
       doctor.reviews = reviews

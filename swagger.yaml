@@ -661,6 +661,8 @@ paths:
                                 type: string
                                last_name:
                                 type: string
+                               image_url:
+                                type: string
                                number_of_stars:
                                 type: string
                                review_text:

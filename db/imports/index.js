@@ -1,6 +1,22 @@
 
 const path = require('path')
+const { addPatient } = require('../../modules/patient/patient.service')
 const { getRandomReview } = require('./review')
+const encrypter = require('../../utils/encryption')
+
+const importPatients = async (sequelize, modelList) => {
+  try {
+    // importing patients
+    const patientsImportFile = path.join(__dirname, '/patients.js')
+    const patient = require(patientsImportFile)
+
+    patient.password = await encrypter.makeHash(patient.password)
+    await modelList.patient.create(patient)
+    console.log('Imported default patient...')
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 const importDepartments = async (sequelize, modelList) => {
   try {
@@ -48,14 +64,14 @@ const importLocationHasDepartments = async (sequelize, modelList) => {
     const departments = await modelList.department.findAll()
 
     // location_has_departments
-    locations.forEach((location) => {
-      departments.forEach(async (department) => {
+    await Promise.all(locations.map(async (location) => {
+      await Promise.all(departments.map(async (department) => {
         await modelList.location_has_department.create({
           location_id: location.id,
           department_id: department.id
         })
-      })
-    })
+      }))
+    }))
     console.log('location_has_department imported...')
   } catch (err) {
     console.log(err)
@@ -68,8 +84,8 @@ const importDepartmentHasDoctor = async (sequelize, modelList) => {
     const doctors = await modelList.doctor.findAll()
     const locationDepartment = await modelList.location_has_department.findAll()
 
-    locationDepartment.forEach((locationDepartment) => {
-      doctors.forEach(async (doctor) => {
+    await Promise.all(locationDepartment.map(async (locationDepartment) => {
+      await Promise.all(doctors.map(async (doctor) => {
         try {
           await modelList.department_has_doctor.create({
             location_department_id: locationDepartment.location_department_id,
@@ -78,8 +94,8 @@ const importDepartmentHasDoctor = async (sequelize, modelList) => {
         } catch (err) {
           console.log(err)
         }
-      })
-    })
+      }))
+    }))
     console.log('department_has_doctor imported...')
   } catch (err) {
     console.log(err)
@@ -89,14 +105,14 @@ const importDepartmentHasDoctor = async (sequelize, modelList) => {
 const importDoctorSchedule = async (sequelize, modelList) => {
   try {
     const doctors = await modelList.doctor.findAll()
-    doctors.forEach(async (doctor) => {
+    await Promise.all(doctors.map(async (doctor) => {
       await modelList.doctor_schedule.create({
         doctor_id: doctor.id,
         start_time: '09:00:00',
         end_time: '17:00:00',
         appointment_duration: 30
       })
-    })
+    }))
     console.log('Doctor schedule imported...')
   } catch (err) {
     console.log(err)
@@ -108,20 +124,20 @@ const importQuestionnaire = async (sequelize, modelList) => {
     const questionsImportFile = path.join(__dirname, '/questionnaire.js')
     const questionList = require(questionsImportFile)
 
-    questionList.forEach(async (question) => {
+    await Promise.all(questionList.map(async (question) => {
       // adding question
       const createdQuestion = await modelList.question.create({
         question: question.text
       })
 
       // adding options
-      question.options.forEach(async (option) => {
+      await Promise.all(question.options.map(async (option) => {
         await modelList.question_option.create({
           question_id: createdQuestion.id,
           option
         })
-      })
-    })
+      }))
+    }))
     console.log('imported questions and related options....')
   } catch (err) {
     console.log(err)
@@ -137,8 +153,8 @@ const importDoctorReviews = async (sequelize, modelList) => {
     const doctors = await modelList.doctor.findAll()
     const patients = await modelList.patient.findAll({ limit: 5 })
 
-    patients.forEach(async (patient) => {
-      doctors.forEach(async (doctor) => {
+    await Promise.all(patients.map(async (patient) => {
+      await Promise.all(doctors.map(async (doctor) => {
         const isAllowed = randomBoolean()
         if (isAllowed) {
           const randomReview = await getRandomReview()
@@ -149,8 +165,8 @@ const importDoctorReviews = async (sequelize, modelList) => {
             review_text: randomReview.reviewText
           })
         }
-      })
-    })
+      }))
+    }))
     console.log('imported doctor reviews...')
   } catch (err) {
     console.log(err)
@@ -159,6 +175,8 @@ const importDoctorReviews = async (sequelize, modelList) => {
 
 const truncateAllDefaultDataTables = async (sequelize, modelList) => {
   try {
+    await modelList.patient.destroy({ truncate: true, cascade: true })
+    console.log('patients table truncated...')
     await modelList.department.destroy({ truncate: true, cascade: true })
     console.log('departments table truncated...')
     await modelList.location.destroy({ truncate: true, cascade: true })
@@ -183,6 +201,7 @@ const truncateAllDefaultDataTables = async (sequelize, modelList) => {
 }
 
 module.exports = async (sequelize, modelList) => {
+  await importPatients(sequelize, modelList)
   await importDepartments(sequelize, modelList)
   await importLocations(sequelize, modelList)
   await importDoctors(sequelize, modelList)

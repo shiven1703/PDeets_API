@@ -10,4 +10,5 @@ router.get('/get-callback-requests', authMiddleware(), requestCallbackController
 
 router.get('/:id', authMiddleware(), requestCallbackController.getAllCallBackRequestById)
 
+router.put('/:id', authMiddleware(), requestCallbackController.updateAllCallBackRequestById)
 module.exports = router

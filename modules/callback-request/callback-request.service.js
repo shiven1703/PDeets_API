@@ -92,8 +92,32 @@ const getAllCallRequestById = async (patientId) => {
   }
 }
 
+const updateAllCallRequestById = async (patientId) => {
+  try {
+    const allCallBackRequest = await db.callback_request.findAll({
+      where: {
+        patient_id: patientId
+      },
+      include: [{
+        model: db.callback_reason
+      }]
+    })
+    return allCallBackRequest
+  } catch (err) {
+    // handling unique db error - need unique phone number
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      throw new DatabaseError(
+        `call request doesn't exist. ${err.errors[0].message}`
+      )
+    } else {
+      throw err
+    }
+  }
+}
+
 module.exports = {
   addCallRequest,
   getAllCallRequest,
-  getAllCallRequestById
+  getAllCallRequestById,
+  updateAllCallRequestById
 }

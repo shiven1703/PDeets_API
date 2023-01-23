@@ -47,16 +47,16 @@ for (const modelName in modelList) {
 // sync({force: true}) - will drop the existing table and create new as per models
 ;(async () => {
   try {
-    console.log('db connection made...')
+    console.log('test db connection made...')
     await sequelize.sync()
   } catch (error) {
-    console.log('Database sync failed...')
+    console.log('Test database sync failed...')
   }
 })()
 
 const isConnected = async () => {
   await sequelize.authenticate()
-  console.log('Connected with database...')
+  console.log('Connected with test database...')
 }
 
 module.exports = {

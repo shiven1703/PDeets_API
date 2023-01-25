@@ -8,6 +8,7 @@ const { Op } = require('sequelize')
 // helpers imports
 // custom errors
 const {
+  DatabaseError,
   UnknownServerError
 } = require('../../utils/customErrors')
 
@@ -97,8 +98,23 @@ const updateMedicationReminder = async ({ reminderId, medicineName, dosageQty, d
   })
   return updatedReminder[1][0]
 }
+
+const deleteMedicationReminder = async (reminderId) => {
+  const isDeleted = await db.medication_reminder.destroy({
+    where: {
+      id: reminderId
+    }
+  })
+
+  if (!isDeleted) {
+    throw new DatabaseError('No medication reminder found with the provided id.')
+  }
+  return true
+}
+
 module.exports = {
   addMedicationReminder,
   updateMedicationReminder,
+  deleteMedicationReminder,
   getReminders
 }

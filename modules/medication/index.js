@@ -10,6 +10,8 @@ router.get('/reminder', authMiddleware(), medicationController.getReminders)
 
 router.put('/reminder/:reminderId', authMiddleware(), medicationController.updateReminder)
 
+router.delete('/reminder/:reminderId', authMiddleware(), medicationController.deleteReminder)
+
 router.use(medicationController.medicationModuleErrorHandler)
 
 module.exports = router

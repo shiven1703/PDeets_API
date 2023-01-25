@@ -1691,3 +1691,150 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
+  # medication update
+  /medication/reminder/{reminderId}:
+    put:
+      tags:
+        - Medication
+      summary: Allows updation of medication reminder
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                medicineName:
+                  type: string
+                dosageQty:
+                  type: number
+                  description: Number of medicine count (1 or 2 ...)
+                  required: true
+                dosageInterval:
+                  type: number
+                  description: 2 time per day/week/month
+                  required: true
+                dosageIntervalUnit:
+                  type: string
+                  description: Allowed values - 'day', 'week', 'month'
+                  required: true
+                medicationTime:
+                  type: array
+                  description: if one medicine has multiple intervals, then it could be taken at diffrent times in a day/week/month.
+                  required: true
+                  items:
+                    type: object
+                    properties:
+                      unit:
+                        type: string
+                        description: Allowed values - 'before_breakfast', 'after_breakfast', 'before_meal', 'after_meal', 'before_dinner', 'after_dinner'
+                        required: true
+                      time:
+                        type: string
+                        required: true
+                        format: date-time
+                reminderTime:
+                  type: number
+                  description: The number of day/week/month this reminder should go on
+                  required: true
+                reminderTimeUnit:
+                  type: string
+                  description: Allowed values - 'day', 'week', 'month'
+                  required: true
+                startDate:
+                  type: string
+                  format: date-time
+                specialRemarks:
+                  type: string
+                  required: true
+                
+      
+      responses:
+        '200':
+          description: updated reminder
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      reminder:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          patient_id:
+                            type: string
+                            format: uuid
+                          medicine_name:
+                            type: string
+                          dosage_qty:
+                            type: number
+                          dosage_unit:
+                            type: string
+                            nullable: true
+                          dosage_interval:
+                            type: number
+                          dosage_interval_unit:
+                            type: string
+                          medication_time:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                unit:
+                                  type: string
+                                time:
+                                  type: string
+                                  format: date-time
+                          medication_time_unit:
+                            type: string
+                            nullable: true
+                          reminder_time:
+                            type: number
+                          reminder_unit:
+                            type: string
+                          start_date:
+                            type: string
+                            format: date-time
+                          end_date:
+                            type: string
+                            format: date-time
+                          special_remarks:
+                            type: string
+                          updatedAt:
+                            type: string
+                            format: date-time
+                          createdAt:
+                            type: string
+                            format: date-time
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'

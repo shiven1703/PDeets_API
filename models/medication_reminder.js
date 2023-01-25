@@ -58,9 +58,5 @@ module.exports = (sequelize) => {
     }
   })
 
-  medicationReminder.registerRelationships = (model) => {
-    medicationReminder.belongsTo(model.patient)
-  }
-
   return medicationReminder
 }

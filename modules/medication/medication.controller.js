@@ -1,6 +1,7 @@
 const medicationService = require('./medication.service')
 const validator = require('../../utils/schemaValidator')
 const schema = require('./medication.schema')
+const { InvalidPayload } = require('../../utils/customErrors')
 
 const addReminder = async (req, res, next) => {
   try {
@@ -35,13 +36,35 @@ const getReminders = async (req, res, next) => {
   }
 }
 
+const updateReminder = async (req, res, next) => {
+  try {
+    if (req.params.reminderId) {
+      const params = await validator.validate(schema.updateMedicationReminderSchema, req.body)
+      params.reminderId = req.params.reminderId
+      const updatedReminder = await medicationService.updateMedicationReminder(params)
+      res.status(200).json({
+        message: 'Reminder updated',
+        data: {
+          reminder: updatedReminder
+        }
+      })
+    } else {
+      next(new InvalidPayload('Missing reminder id'))
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
 // module level error handler
 const medicationModuleErrorHandler = (err, req, res, next) => {
+  console.log(err)
   next(err)
 }
 
 module.exports = {
   addReminder,
   getReminders,
+  updateReminder,
   medicationModuleErrorHandler
 }

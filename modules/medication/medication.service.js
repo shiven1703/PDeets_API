@@ -37,15 +37,19 @@ const addMedicationReminder = async ({ patientId, medicineName, dosageQty, dosag
 }
 
 const getEndDate = (startDate, reminderTimeUnit, reminderTime) => {
-  const plusObj = {}
-  if (reminderTimeUnit === 'day') {
-    plusObj.days = reminderTime
-  } else if (reminderTimeUnit === 'week') {
-    plusObj.weeks = reminderTime
-  } else if (reminderTimeUnit === 'month') {
-    plusObj.months = reminderTime
+  if (startDate && reminderTimeUnit && reminderTime) {
+    const plusObj = {}
+    if (reminderTimeUnit === 'day') {
+      plusObj.days = reminderTime
+    } else if (reminderTimeUnit === 'week') {
+      plusObj.weeks = reminderTime
+    } else if (reminderTimeUnit === 'month') {
+      plusObj.months = reminderTime
+    }
+    return DateTime.fromISO(startDate).plus(plusObj).endOf('day')
+  } else {
+    return undefined
   }
-  return DateTime.fromISO(startDate).plus(plusObj).endOf('day')
 }
 
 const getReminders = async ({ patientId, filterBy = null }) => {
@@ -71,7 +75,30 @@ const getReminders = async ({ patientId, filterBy = null }) => {
   return reminders
 }
 
+const updateMedicationReminder = async ({ reminderId, medicineName, dosageQty, dosageUnit = null, dosageInterval, dosageIntervalUnit, medicationTime, reminderTime, reminderTimeUnit, startDate, specialRemarks = null }) => {
+  const updatedReminder = await db.medication_reminder.update({
+    medicine_name: medicineName,
+    dosage_qty: dosageQty,
+    dosage_unit: dosageUnit,
+    dosage_interval: dosageInterval,
+    dosage_interval_unit: dosageIntervalUnit,
+    medication_time: medicationTime,
+    reminder_time: reminderTime,
+    reminder_unit: reminderTimeUnit,
+    start_date: startDate,
+    end_date: getEndDate(startDate, reminderTimeUnit, reminderTime),
+    special_remarks: specialRemarks
+  }, {
+    where: {
+      id: reminderId
+    },
+    returning: true,
+    raw: true
+  })
+  return updatedReminder[1][0]
+}
 module.exports = {
   addMedicationReminder,
+  updateMedicationReminder,
   getReminders
 }

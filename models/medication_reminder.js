@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     medicine_name: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSON,
       allowNull: false
     },
     dosage_qty: {
@@ -36,7 +36,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     medication_time_unit: {
-      type: DataTypes.STRING,
+      type: DataTypes.JSON,
       allowNull: false
     },
     reminder_time: {
@@ -59,6 +59,10 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT
     }
   })
+
+  medicationReminder.registerRelationships = (model) => {
+    medicationReminder.belongsTo(model.patient)
+  }
 
   return medicationReminder
 }

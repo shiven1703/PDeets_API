@@ -1,6 +1,5 @@
 
 const path = require('path')
-const { addPatient } = require('../../modules/patient/patient.service')
 const { getRandomReview } = require('./review')
 const encrypter = require('../../utils/encryption')
 

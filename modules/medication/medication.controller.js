@@ -56,15 +56,45 @@ const updateReminder = async (req, res, next) => {
   }
 }
 
+const deleteReminder = async (req, res, next) => {
+  try {
+    if (req.params.reminderId) {
+      await medicationService.deleteMedicationReminder(req.params.reminderId)
+      res.status(200).json({
+        message: 'Reminder deleted.',
+        data: {}
+      })
+    } else {
+      next(new InvalidPayload('Missing reminder id'))
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
 // module level error handler
 const medicationModuleErrorHandler = (err, req, res, next) => {
   console.log(err)
-  next(err)
+  switch (err.name) {
+    case 'DbError':
+      res.status(400).json({
+        error: err.message
+      })
+      break
+    case 'SequelizeDatabaseError':
+      res.status(400).json({
+        error: err.message
+      })
+      break
+    default:
+      next(err)
+  }
 }
 
 module.exports = {
   addReminder,
   getReminders,
   updateReminder,
+  deleteReminder,
   medicationModuleErrorHandler
 }

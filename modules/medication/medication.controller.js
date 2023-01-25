@@ -18,6 +18,23 @@ const addReminder = async (req, res, next) => {
   }
 }
 
+const getReminders = async (req, res, next) => {
+  try {
+    const reminders = await medicationService.getReminders({
+      patientId: req.patient.id,
+      filterBy: req.query.filterBy
+    })
+    res.status(200).json({
+      message: 'Reminder listing',
+      data: {
+        reminders
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 // module level error handler
 const medicationModuleErrorHandler = (err, req, res, next) => {
   next(err)
@@ -25,5 +42,6 @@ const medicationModuleErrorHandler = (err, req, res, next) => {
 
 module.exports = {
   addReminder,
+  getReminders,
   medicationModuleErrorHandler
 }

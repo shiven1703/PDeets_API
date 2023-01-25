@@ -1433,7 +1433,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
   
   # medication creation
-  /medication:
+  /medication/reminder:
     post:
       tags:
         - Medication
@@ -1585,3 +1585,109 @@ paths:
 
         '500':
           $ref: '#/components/responses/UnknownServerError'
+
+    get:
+      tags:
+        - Medication
+      summary: Allows listing of medication reminders
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true
+        - in: query
+          name: filterBy
+          required: false
+          schema:
+            type: string
+          description: Will perform filter by on medication name
+      
+                
+      
+      responses:
+        '200':
+          description: Booked reminders listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      reminders:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            patient_id:
+                              type: string
+                              format: uuid
+                            medicine_name:
+                              type: string
+                            dosage_qty:
+                              type: number
+                            dosage_unit:
+                              type: string
+                              nullable: true
+                            dosage_interval:
+                              type: number
+                            dosage_interval_unit:
+                              type: string
+                            medication_time:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  unit:
+                                    type: string
+                                  time:
+                                    type: string
+                                    format: date-time
+                            medication_time_unit:
+                              type: string
+                              nullable: true
+                            reminder_time:
+                              type: number
+                            reminder_unit:
+                              type: string
+                            start_date:
+                              type: string
+                              format: date-time
+                            end_date:
+                              type: string
+                              format: date-time
+                            special_remarks:
+                              type: string
+                            updatedAt:
+                              type: string
+                              format: date-time
+                            createdAt:
+                              type: string
+                              format: date-time
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+

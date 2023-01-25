@@ -3,6 +3,7 @@ const { DateTime } = require('luxon')
 const { db } = require('../../db')
 
 // lib imports
+const { Op } = require('sequelize')
 
 // helpers imports
 // custom errors
@@ -47,6 +48,30 @@ const getEndDate = (startDate, reminderTimeUnit, reminderTime) => {
   return DateTime.fromISO(startDate).plus(plusObj).endOf('day')
 }
 
+const getReminders = async ({ patientId, filterBy = null }) => {
+  let reminders = []
+  if (filterBy) {
+    reminders = await db.medication_reminder.findAll({
+      where: {
+        patient_id: patientId,
+        [Op.or]: [{
+          medicine_name: {
+            [Op.iLike]: `%${filterBy}%`
+          }
+        }]
+      }
+    })
+  } else {
+    reminders = await db.medication_reminder.findAll({
+      where: {
+        patient_id: patientId
+      }
+    })
+  }
+  return reminders
+}
+
 module.exports = {
-  addMedicationReminder
+  addMedicationReminder,
+  getReminders
 }

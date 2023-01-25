@@ -4,6 +4,8 @@ const authMiddleware = require('../../middleware/auth')
 
 const router = express.Router()
 
-router.post('/', authMiddleware(), medicationController.addReminder)
+router.post('/reminder', authMiddleware(), medicationController.addReminder)
+
+router.get('/reminder', authMiddleware(), medicationController.getReminders)
 
 module.exports = router

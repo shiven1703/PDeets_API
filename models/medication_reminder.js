@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     medicine_name: {
-      type: DataTypes.JSON,
+      type: DataTypes.STRING,
       allowNull: false
     },
     dosage_qty: {
@@ -20,8 +20,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     dosage_unit: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     },
     dosage_interval: {
       type: DataTypes.INTEGER,
@@ -32,15 +31,14 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     medication_time: {
-      type: DataTypes.DATE,
-      allowNull: false
-    },
-    medication_time_unit: {
       type: DataTypes.JSON,
       allowNull: false
     },
+    medication_time_unit: {
+      type: DataTypes.STRING
+    },
     reminder_time: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     reminder_unit: {

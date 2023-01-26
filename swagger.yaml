@@ -1131,7 +1131,7 @@ paths:
                   data:
                     type: object
                     properties:
-                      updatedAppointment:
+                      appointment:
                         type: object
                         properties:
                           id:

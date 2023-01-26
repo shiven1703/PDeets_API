@@ -332,23 +332,11 @@ const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) =
     returning: true,
     raw: true
   })
-  const updatedAppointmentString = JSON.parse(JSON.stringify(updatedAppointment[1]))[0]
-  if (updatedAppointmentString) {
-    // renaming major ids from camplecase to snake
-    updatedAppointmentString.location_id = updatedAppointmentString.locationId
-    delete updatedAppointmentString.locationId
 
-    updatedAppointmentString.department_id = updatedAppointmentString.departmentId
-    delete updatedAppointmentString.departmentId
-
-    updatedAppointmentString.doctor_id = updatedAppointmentString.doctorId
-    delete updatedAppointmentString.doctorId
-
-    updatedAppointmentString.patient_id = updatedAppointmentString.patientId
-    delete updatedAppointmentString.patientId
-    return updatedAppointmentString
+  if (updatedAppointment.length > 0 && updatedAppointment[1]) {
+    return updatedAppointment[1][0]
   } else {
-    throw new DatabaseError('No appointment found with the provided id.')
+    throw new DatabaseError('No appointment found with the provided id or no updated were supplied.')
   }
 }
 

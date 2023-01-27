@@ -1,8 +1,8 @@
 const patientModule = require('../modules/patient')
-const gloablErrorHandler = require('../middleware/error')
 const appointmentModule = require('../modules/appointment')
 const medicationModule = require('../modules/medication')
 const callBackRquestModule = require('../modules/callback-request')
+const gloablErrorHandler = require('../middleware/error')
 
 module.exports = (app) => {
   app.use('/patient', patientModule)
@@ -11,6 +11,7 @@ module.exports = (app) => {
 
   app.use('/medication', medicationModule)
 
-  app.se('/callback-request', callBackRquestModule)
+  app.use('/callback-request', callBackRquestModule)
+
   app.use(gloablErrorHandler)
 }

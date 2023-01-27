@@ -117,7 +117,7 @@ const updateAppointment = async (req, res, next) => {
       res.status(200).json({
         message: 'Appointment updated',
         data: {
-          updatedAppointment
+          appointment: updatedAppointment
         }
       })
     } else {

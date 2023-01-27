@@ -92,26 +92,33 @@ const getAllCallRequestById = async (patientId) => {
   }
 }
 
-const updateAllCallRequestById = async (patientId) => {
-  try {
-    const allCallBackRequest = await db.callback_request.findAll({
-      where: {
-        patient_id: patientId
-      },
-      include: [{
-        model: db.callback_reason
-      }]
-    })
-    return allCallBackRequest
-  } catch (err) {
-    // handling unique db error - need unique phone number
-    if (err.name === 'SequelizeUniqueConstraintError') {
-      throw new DatabaseError(
-        `call request doesn't exist. ${err.errors[0].message}`
-      )
-    } else {
-      throw err
-    }
+const updateAllCallRequestById = async ({
+  callbackRequestId,
+  callbackReasonId,
+  preferredContactOption,
+  preferredTime,
+  isSevere,
+  remarks,
+  status
+}) => {
+  const allCallBackRequest = await db.callback_request.update({
+    callback_reason_id: callbackReasonId,
+    preferred_contact_option: preferredContactOption,
+    preferred_time: preferredTime,
+    is_severe: isSevere,
+    remark: remarks,
+    status
+  }, {
+    where: {
+      id: callbackRequestId
+    },
+    returning: true
+  })
+
+  if (allCallBackRequest[1]) {
+    return allCallBackRequest[1][0]
+  } else {
+    throw new DatabaseError('Invalid callbackReuest id or no update values are supplied.')
   }
 }
 

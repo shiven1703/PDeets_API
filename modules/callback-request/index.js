@@ -10,9 +10,9 @@ router.post('/', authMiddleware(), callbackRequestController.addCallBackRequest)
 
 router.get('/', authMiddleware(), callbackRequestController.getAllCallBackRequests)
 
-router.get('/:id', authMiddleware(), callbackRequestController.getAllCallBackRequestById)
+router.put('/:callbackRequestId', authMiddleware(), callbackRequestController.updateAllCallBackRequestById)
 
-router.put('/:id', authMiddleware(), callbackRequestController.updateAllCallBackRequestById)
+// router.get('/:id', authMiddleware(), callbackRequestController.getAllCallBackRequestById)
 
 router.use(callbackRequestController.callbackRequestModuleErrorHandler)
 

@@ -67,13 +67,17 @@ const getAllCallBackRequestById = async (req, res, next) => {
 
 const updateAllCallBackRequestById = async (req, res, next) => {
   try {
+    req.body.callbackRequestId = req.params.callbackRequestId
     const reqBody = await validator.validate(
-      schema.callBackRequestSchema,
+      schema.updateCallBackRequestSchema,
       req.body
     )
-    await callBackRequestService.updateAllCallRequestById(req.patient.id, reqBody)
+    const callbackRequest = await callBackRequestService.updateAllCallRequestById(reqBody)
     res.status(200).json({
-      message: 'Request of callback is sent successfully'
+      message: 'callback request updated',
+      data: {
+        callbackRequest
+      }
     })
   } catch (err) {
     next(err)

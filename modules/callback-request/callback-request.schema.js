@@ -1,36 +1,22 @@
 const callBackRequestSchema = {
   type: 'object',
   properties: {
-    patientId: {
+    callbackReasonId: {
       type: 'string'
     },
-    callback_reasonId: {
-      type: 'string'
+    preferredContactOption: {
+      type: 'string',
+      enum: ['phone', 'email']
     },
-    preferred_contact_option: {
-      type: 'object',
-      properties: {
-        email: {
-          type: 'string',
-          format: 'email'
-        },
-        phoneNumber: {
-          type: 'string',
-          minLength: 10,
-          maxLength: 15
-        }
-      },
-      oneOf: [{ required: ['email'] }, { required: ['phoneNumber'] }]
-    },
-    preferred_time: {
+    preferredTime: {
       type: 'string',
       format: 'date-time'
     },
-    is_severe: {
-      type: 'string',
-      format: 'boolean'
+    isSevere: {
+      type: 'boolean',
+      default: false
     },
-    remark: {
+    remarks: {
       type: 'string'
     },
     status: {
@@ -38,6 +24,7 @@ const callBackRequestSchema = {
       enum: ['pending', 'contacted', 'not_reachable']
     }
   },
+  required: ['callbackReasonId', 'preferredContactOption', 'preferredTime', 'status'],
   additionalProperties: false
 }
 

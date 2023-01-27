@@ -11,7 +11,7 @@ const { db } = require('../../db')
 
 // custom errors
 const {
-  DatabaseError
+  DatabaseError, UnknownServerError
 //   InvalidUser,
 //   UnknownServerError
 } = require('../../utils/customErrors')
@@ -23,36 +23,29 @@ const getCallbackRequestReasons = async () => {
   return reasons
 }
 
-const addCallRequest = async (patientId, {
+const addCallRequest = async ({
+  patientId,
   callbackReasonId,
   preferredContactOption,
   preferredTime,
   isSevere,
-  remark,
+  remarks,
   status
 }) => {
   try {
-    const newCallBackRequest = await db.callback_requests.build({
+    const newCallBackRequest = await db.callback_request.create({
       patient_id: patientId,
       callback_reason_id: callbackReasonId,
       preferred_contact_option: preferredContactOption,
       preferred_time: preferredTime,
       is_severe: isSevere,
-      remark,
+      remark: remarks,
       status
     })
-    await newCallBackRequest.save()
-    const newlyAddedCallRequest = newCallBackRequest.toJSON()
-    return newlyAddedCallRequest
+    return newCallBackRequest
   } catch (err) {
-    // handling unique db error - need unique phone number
-    if (err.name === 'SequelizeUniqueConstraintError') {
-      throw new DatabaseError(
-        `call request already exist. ${err.errors[0].message}`
-      )
-    } else {
-      throw err
-    }
+    console.log(err)
+    throw new UnknownServerError(err.message)
   }
 }
 

@@ -1,6 +1,6 @@
 const schema = require('./callback-request.schema')
-const validator = require('../../utils/schemaValidator')
 const callBackRequestService = require('./callback-request.service')
+const validator = require('../../utils/schemaValidator')
 
 const getCallbackRequestReasons = async (req, res, next) => {
   try {
@@ -22,9 +22,14 @@ const addCallBackRequest = async (req, res, next) => {
       schema.callBackRequestSchema,
       req.body
     )
-    await callBackRequestService.addCallRequest(req.patient.id, callRequestBody)
+    callRequestBody.patientId = req.patient.id
+
+    const callbackRequest = await callBackRequestService.addCallRequest(callRequestBody)
     res.status(201).json({
-      message: 'Request of callback is sent successfully'
+      message: 'Request of callback is sent successfully',
+      data: {
+        callbackRequest
+      }
     })
   } catch (err) {
     next(err)
@@ -76,10 +81,30 @@ const updateAllCallBackRequestById = async (req, res, next) => {
   }
 }
 
+// module level error handler
+const callbackRequestModuleErrorHandler = (err, req, res, next) => {
+  console.log(err)
+  switch (err.name) {
+    case 'DbError':
+      res.status(400).json({
+        error: err.message
+      })
+      break
+    case 'SequelizeDatabaseError':
+      res.status(400).json({
+        error: err.message
+      })
+      break
+    default:
+      next(err)
+  }
+}
+
 module.exports = {
   getCallbackRequestReasons,
   addCallBackRequest,
   getAllCallBackRequests,
   getAllCallBackRequestById,
-  updateAllCallBackRequestById
+  updateAllCallBackRequestById,
+  callbackRequestModuleErrorHandler
 }

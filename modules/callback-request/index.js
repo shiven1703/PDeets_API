@@ -1,14 +1,16 @@
 const express = require('express')
-const requestCallbackController = require('./callback-request.controlller')
+const callbackRequestController = require('./callback-request.controlller')
 const authMiddleware = require('../../middleware/auth')
 
 const router = express.Router()
 
-router.post('/add-call-request', authMiddleware(), requestCallbackController.addCallBackRequest)
+router.get('/reasons', authMiddleware(), callbackRequestController.getCallbackRequestReasons)
 
-router.get('/get-callback-requests', authMiddleware(), requestCallbackController.getAllCallBackRequests)
+router.post('/add-call-request', authMiddleware(), callbackRequestController.addCallBackRequest)
 
-router.get('/:id', authMiddleware(), requestCallbackController.getAllCallBackRequestById)
+router.get('/get-callback-requests', authMiddleware(), callbackRequestController.getAllCallBackRequests)
 
-router.put('/:id', authMiddleware(), requestCallbackController.updateAllCallBackRequestById)
+router.get('/:id', authMiddleware(), callbackRequestController.getAllCallBackRequestById)
+
+router.put('/:id', authMiddleware(), callbackRequestController.updateAllCallBackRequestById)
 module.exports = router

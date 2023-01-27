@@ -16,6 +16,13 @@ const {
 //   UnknownServerError
 } = require('../../utils/customErrors')
 
+const getCallbackRequestReasons = async () => {
+  const reasons = await db.callback_reason.findAll({
+    raw: true
+  })
+  return reasons
+}
+
 const addCallRequest = async (patientId, {
   callbackReasonId,
   preferredContactOption,
@@ -116,6 +123,7 @@ const updateAllCallRequestById = async (patientId) => {
 }
 
 module.exports = {
+  getCallbackRequestReasons,
   addCallRequest,
   getAllCallRequest,
   getAllCallRequestById,

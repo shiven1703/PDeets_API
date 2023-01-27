@@ -2,6 +2,20 @@ const schema = require('./callback-request.schema')
 const validator = require('../../utils/schemaValidator')
 const callBackRequestService = require('./callback-request.service')
 
+const getCallbackRequestReasons = async (req, res, next) => {
+  try {
+    const reasons = await callBackRequestService.getCallbackRequestReasons()
+    res.status(200).json({
+      message: 'callback request reasons',
+      data: {
+        reasons
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const addCallBackRequest = async (req, res, next) => {
   try {
     const callRequestBody = await validator.validate(
@@ -63,6 +77,7 @@ const updateAllCallBackRequestById = async (req, res, next) => {
 }
 
 module.exports = {
+  getCallbackRequestReasons,
   addCallBackRequest,
   getAllCallBackRequests,
   getAllCallBackRequestById,

@@ -35,5 +35,11 @@ module.exports = (sequelize) => {
     }
   })
 
+  callbackRequest.registerRelationships = (model) => {
+    callbackRequest.belongsTo(model.callback_reason, {
+      foreignKey: 'callback_reason_id'
+    })
+  }
+
   return callbackRequest
 }

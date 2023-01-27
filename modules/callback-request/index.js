@@ -8,7 +8,7 @@ router.get('/reasons', authMiddleware(), callbackRequestController.getCallbackRe
 
 router.post('/', authMiddleware(), callbackRequestController.addCallBackRequest)
 
-router.get('/get-callback-requests', authMiddleware(), callbackRequestController.getAllCallBackRequests)
+router.get('/', authMiddleware(), callbackRequestController.getAllCallBackRequests)
 
 router.get('/:id', authMiddleware(), callbackRequestController.getAllCallBackRequestById)
 

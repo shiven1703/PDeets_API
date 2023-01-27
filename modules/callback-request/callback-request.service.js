@@ -122,10 +122,24 @@ const updateAllCallRequestById = async ({
   }
 }
 
+const deleteCallBackRequest = async (callbackRequestId) => {
+  const isDeleted = await db.callback_request.destroy({
+    where: {
+      id: callbackRequestId
+    }
+  })
+
+  if (!isDeleted) {
+    throw new DatabaseError('No callback request found with the provided id.')
+  }
+  return true
+}
+
 module.exports = {
   getCallbackRequestReasons,
   addCallRequest,
   getAllCallRequest,
   getAllCallRequestById,
-  updateAllCallRequestById
+  updateAllCallRequestById,
+  deleteCallBackRequest
 }

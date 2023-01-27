@@ -12,6 +12,8 @@ router.get('/', authMiddleware(), callbackRequestController.getAllCallBackReques
 
 router.put('/:callbackRequestId', authMiddleware(), callbackRequestController.updateAllCallBackRequestById)
 
+router.delete('/:callbackRequestId', authMiddleware(), callbackRequestController.deleteCallBackRequest)
+
 // router.get('/:id', authMiddleware(), callbackRequestController.getAllCallBackRequestById)
 
 router.use(callbackRequestController.callbackRequestModuleErrorHandler)

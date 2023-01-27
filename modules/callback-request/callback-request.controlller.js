@@ -1,6 +1,7 @@
 const schema = require('./callback-request.schema')
 const callBackRequestService = require('./callback-request.service')
 const validator = require('../../utils/schemaValidator')
+const { InvalidPayload } = require('../../utils/customErrors')
 
 const getCallbackRequestReasons = async (req, res, next) => {
   try {
@@ -84,6 +85,22 @@ const updateAllCallBackRequestById = async (req, res, next) => {
   }
 }
 
+const deleteCallBackRequest = async (req, res, next) => {
+  try {
+    if (req.params.callbackRequestId) {
+      await callBackRequestService.deleteCallBackRequest(req.params.callbackRequestId)
+      res.status(200).json({
+        message: 'callback request deleted.',
+        data: {}
+      })
+    } else {
+      next(new InvalidPayload('Missing reminder id'))
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
 // module level error handler
 const callbackRequestModuleErrorHandler = (err, req, res, next) => {
   console.log(err)
@@ -109,5 +126,6 @@ module.exports = {
   getAllCallBackRequests,
   getAllCallBackRequestById,
   updateAllCallBackRequestById,
+  deleteCallBackRequest,
   callbackRequestModuleErrorHandler
 }

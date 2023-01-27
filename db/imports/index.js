@@ -172,6 +172,18 @@ const importDoctorReviews = async (sequelize, modelList) => {
   }
 }
 
+const importCallbackReasons = async (sequelize, modelList) => {
+  try {
+    const reasonsImportFile = path.join(__dirname, '/callback_reasons.js')
+    const reasonsList = require(reasonsImportFile)
+
+    await modelList.callback_reason.bulkCreate(reasonsList)
+    console.log('imported callback reasons...')
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 const truncateAllDefaultDataTables = async (sequelize, modelList) => {
   try {
     await modelList.patient.destroy({ truncate: true, cascade: true })
@@ -194,6 +206,8 @@ const truncateAllDefaultDataTables = async (sequelize, modelList) => {
     console.log('question_option table truncated...')
     await modelList.review.destroy({ truncate: true, cascade: true })
     console.log('reviews table truncated...')
+    await modelList.callback_reason.destroy({ truncate: true, cascade: true })
+    console.log('callback reason table truncated...')
   } catch (err) {
     console.log(err)
   }
@@ -209,11 +223,13 @@ module.exports = async (sequelize, modelList) => {
   await importDoctorSchedule(sequelize, modelList)
   await importQuestionnaire(sequelize, modelList)
   await importDoctorReviews(sequelize, modelList)
+  await importCallbackReasons(sequelize, modelList)
 
   // uncomment below function to remove all default data from above tables
   // await truncateAllDefaultDataTables(sequelize, modelList)
 
   // waiting for 5 sec (for async db calls)
+  console.log('Wait....cleaning up...')
   setTimeout(() => {
     console.log('Default data imported successfully...')
   }, 5000)

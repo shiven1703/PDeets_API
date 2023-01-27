@@ -1081,7 +1081,7 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError' 
     
-  # appointment update
+  # appointment update & delete
   /appointment/{appointmentId}:
     put:
       tags:
@@ -1691,7 +1691,7 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
-  # medication update
+  # medication update & delete
   /medication/reminder/{reminderId}:
     put:
       tags:
@@ -1881,3 +1881,352 @@ paths:
 
           '500':
             $ref: '#/components/responses/UnknownServerError'
+
+  # callback reasons listing
+  /callback-request/reasons:
+    get:
+      tags:
+        - Callback Reuqest
+      summary: Allows listing of callback reasons
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true      
+              
+      
+      responses:
+        '200':
+          description: Callback reasons listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      reasons:
+                        type: array
+                        items:
+                          properties: 
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            updatedAt:
+                              type: string
+                            createdAt:
+                              type: string
+                            
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # callback request creation & listing
+  /callback-request:
+    post:
+      tags:
+        - Callback Reuqest
+      summary: Allows creation of callback request
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callbackReasonId:
+                  type: string
+                  required: true
+                preferredContactOption:
+                  type: string
+                  description: Allowed values - 'phone', 'email'
+                  required: true
+                preferredTime:
+                  type: string
+                  required: true
+                isSevere:
+                  type: string
+                  required: false
+                remarks:
+                  type: string
+                  required: false
+                status:
+                  type: string
+                  description: Allowed values - 'pending', 'contacted', 'not_reachable'
+                  required: true
+                
+      
+      responses:
+        '200':
+          description: added callback request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: object
+                        properties: 
+                          id:
+                            type: string
+                          patient_id:
+                            type: string
+                          callback_reason_id:
+                            type: string
+                          preferred_contact_option:
+                            type: string
+                          preferred_time:
+                            type: string
+                          is_severe:
+                            type: string
+                          remark:
+                            type: string
+                          status:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    get:
+      tags:
+        - Callback Reuqest
+      summary: Allows listing of callback requests
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true      
+              
+      
+      responses:
+        '200':
+          description: Callback request listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: array
+                        items:
+                          properties: 
+                            id:
+                              type: string
+                            patient_id:
+                              type: string
+                            callback_reason_id:
+                              type: string
+                            preferred_contact_option:
+                              type: string
+                            preferred_time:
+                              type: string
+                            is_severe:
+                              type: string
+                            remark:
+                              type: string
+                            status:
+                              type: string
+                            updatedAt:
+                              type: string
+                            createdAt:
+                              type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # callback request update & delete
+  /callback-request/{callbackRequestId}:
+    put:
+      tags:
+        - Callback Reuqest
+      summary: Allows updation of callback request
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callbackReasonId:
+                  type: string
+                preferredContactOption:
+                  type: string
+                  description: Allowed values - 'phone', 'email'
+                preferredTime:
+                  type: string
+                isSevere:
+                  type: string
+                remarks:
+                  type: string
+                status:
+                  type: string
+                  description: Allowed values - 'pending', 'contacted', 'not_reachable'
+                
+      
+      responses:
+        '200':
+          description: updated callback request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: object
+                        properties: 
+                          id:
+                            type: string
+                          patient_id:
+                            type: string
+                          callback_reason_id:
+                            type: string
+                          preferred_contact_option:
+                            type: string
+                          preferred_time:
+                            type: string
+                          is_severe:
+                            type: string
+                          remark:
+                            type: string
+                          status:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    delete:
+      tags:
+        - Callback Reuqest
+      summary: Allows deletion of callback requests
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true      
+              
+      
+      responses:
+        '200':
+          description: Callback request listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                            
+        '400':
+          description: JSON validation error | Invalid callback request id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'

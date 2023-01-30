@@ -97,6 +97,21 @@ const getReports = async (req, res, next) => {
   }
 }
 
+const deleteReport = async (req, res, next) => {
+  try {
+    if (req.params.reportId) {
+      await reportService.deleteReport(req.patient.id, req.params.reportId)
+      res.status(200).json({
+        message: 'Report deleted'
+      })
+    } else {
+      throw new InvalidPayload('Missing report id in request url')
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
 // module level error handler
 const reportModuleErrorHandler = (err, req, res, next) => {
   console.log(err)
@@ -124,5 +139,6 @@ const reportModuleErrorHandler = (err, req, res, next) => {
 module.exports = {
   uploadReport,
   getReports,
+  deleteReport,
   reportModuleErrorHandler
 }

@@ -8,6 +8,8 @@ router.post('/lab', reportController.uploadReport)
 
 router.get('/lab', authMiddleware(), reportController.getReports)
 
+router.delete('/lab/:reportId', authMiddleware(), reportController.deleteReport)
+
 router.use(reportController.reportModuleErrorHandler)
 
 module.exports = router

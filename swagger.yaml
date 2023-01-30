@@ -2438,3 +2438,48 @@ paths:
 
           '500':
             $ref: '#/components/responses/UnknownServerError'
+
+  # Lab report update & delete
+  /report/lab/{reportId}:
+    delete:
+        tags:
+          - Lab report
+        summary: Internal - REST- Interface - Allows to delete a report
+        security:
+        - basicAuth: []
+        parameters:
+          - in: header
+            name: Authorization
+            description: pass access token
+            required: true
+        
+        responses:
+          '200':
+            description: Report listing
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: message from the server
+                    data:
+                      type: object
+                              
+          '400':
+            description: JSON validation error 
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error: 
+                      type: string
+                      description: A error message from server
+
+          '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+          '500':
+            $ref: '#/components/responses/UnknownServerError'

@@ -4,6 +4,11 @@ const { db } = require('../../db')
 // lib import
 const config = require('config')
 
+// custom eror
+const {
+  DatabaseError
+} = require('../../utils/customErrors')
+
 const addReport = async (reportData, reportFiles) => {
   let report = await db.lab_report.create({
     patient_id: reportData.patientId,
@@ -33,6 +38,20 @@ const getReports = async (patientId) => {
   return reports
 }
 
+const deleteReport = async (patientId, reportId) => {
+  const isDeleted = await db.lab_report.destroy({
+    where: {
+      id: reportId,
+      patient_id: patientId
+    }
+  })
+
+  if (!isDeleted) {
+    throw new DatabaseError('No report found with the provided id.')
+  }
+  return true
+}
+
 const addReportDownloadUrl = async (report) => {
   const updatedReportFiles = report.report_files.map((file) => {
     file.download_url = process.env.HOST + '/' + config.get('modules.reports.lab.upload_location').replace('public/', '') + '/' + file.filename
@@ -44,5 +63,6 @@ const addReportDownloadUrl = async (report) => {
 
 module.exports = {
   addReport,
-  getReports
+  getReports,
+  deleteReport
 }

@@ -112,6 +112,7 @@ const updateAppointment = async (req, res, next) => {
     if (req.params.id) {
       const params = await validator.validate(schema.updateAppointmentSchema, req.body)
       params.appointmentId = req.params.id
+      params.patientId = req.patient.id
 
       const updatedAppointment = await appointmentService.updateAppointment(params)
       res.status(200).json({
@@ -131,7 +132,7 @@ const updateAppointment = async (req, res, next) => {
 const deleteAppointment = async (req, res, next) => {
   try {
     if (req.params.id) {
-      await appointmentService.deleteAppointment(req.params.id)
+      await appointmentService.deleteAppointment(req.params.id, req.patient.id)
       res.status(200).json({
         message: 'Appointment deleted'
       })

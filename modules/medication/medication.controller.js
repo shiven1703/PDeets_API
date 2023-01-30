@@ -41,6 +41,8 @@ const updateReminder = async (req, res, next) => {
     if (req.params.reminderId) {
       const params = await validator.validate(schema.updateMedicationReminderSchema, req.body)
       params.reminderId = req.params.reminderId
+      params.patientId = req.patient.id
+
       const updatedReminder = await medicationService.updateMedicationReminder(params)
       res.status(200).json({
         message: 'Reminder updated',
@@ -59,7 +61,7 @@ const updateReminder = async (req, res, next) => {
 const deleteReminder = async (req, res, next) => {
   try {
     if (req.params.reminderId) {
-      await medicationService.deleteMedicationReminder(req.params.reminderId)
+      await medicationService.deleteMedicationReminder(req.params.reminderId, req.patient.id)
       res.status(200).json({
         message: 'Reminder deleted.',
         data: {}

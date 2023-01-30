@@ -76,7 +76,7 @@ const getReminders = async ({ patientId, filterBy = null }) => {
   return reminders
 }
 
-const updateMedicationReminder = async ({ reminderId, medicineName, dosageQty, dosageUnit = null, dosageInterval, dosageIntervalUnit, medicationTime, reminderTime, reminderTimeUnit, startDate, specialRemarks = null }) => {
+const updateMedicationReminder = async ({ patientId, reminderId, medicineName, dosageQty, dosageUnit = null, dosageInterval, dosageIntervalUnit, medicationTime, reminderTime, reminderTimeUnit, startDate, specialRemarks = null }) => {
   const updatedReminder = await db.medication_reminder.update({
     medicine_name: medicineName,
     dosage_qty: dosageQty,
@@ -91,7 +91,8 @@ const updateMedicationReminder = async ({ reminderId, medicineName, dosageQty, d
     special_remarks: specialRemarks
   }, {
     where: {
-      id: reminderId
+      id: reminderId,
+      patient_id: patientId
     },
     returning: true,
     raw: true
@@ -99,10 +100,11 @@ const updateMedicationReminder = async ({ reminderId, medicineName, dosageQty, d
   return updatedReminder[1][0]
 }
 
-const deleteMedicationReminder = async (reminderId) => {
+const deleteMedicationReminder = async (reminderId, patientId) => {
   const isDeleted = await db.medication_reminder.destroy({
     where: {
-      id: reminderId
+      id: reminderId,
+      patient_id: patientId
     }
   })
 

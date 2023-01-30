@@ -22,8 +22,8 @@ module.exports = (sequelize) => {
     generation_date: {
       type: DataTypes.DATE
     },
-    report_url: {
-      type: DataTypes.TEXT
+    report_files: {
+      type: DataTypes.JSON
     },
     status: {
       type: DataTypes.ENUM,

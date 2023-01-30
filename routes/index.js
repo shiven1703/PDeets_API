@@ -2,6 +2,7 @@ const patientModule = require('../modules/patient')
 const appointmentModule = require('../modules/appointment')
 const medicationModule = require('../modules/medication')
 const callBackRquestModule = require('../modules/callback-request')
+const reportsModule = require('../modules/reports')
 const gloablErrorHandler = require('../middleware/error')
 
 module.exports = (app) => {
@@ -12,6 +13,8 @@ module.exports = (app) => {
   app.use('/medication', medicationModule)
 
   app.use('/callback-request', callBackRquestModule)
+
+  app.use('/reports', reportsModule)
 
   app.use(gloablErrorHandler)
 }

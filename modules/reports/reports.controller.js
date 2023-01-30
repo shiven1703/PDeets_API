@@ -83,6 +83,20 @@ const removeReport = (reportPath) => {
   fs.unlinkSync(reportPath)
 }
 
+const getReports = async (req, res, next) => {
+  try {
+    const report = await reportService.getReports(req.patient.id)
+    res.status(200).json({
+      message: 'Report listing',
+      data: {
+        report
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 // module level error handler
 const reportModuleErrorHandler = (err, req, res, next) => {
   console.log(err)
@@ -109,5 +123,6 @@ const reportModuleErrorHandler = (err, req, res, next) => {
 
 module.exports = {
   uploadReport,
+  getReports,
   reportModuleErrorHandler
 }

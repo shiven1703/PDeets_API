@@ -73,6 +73,7 @@ const updateAllCallBackRequestById = async (req, res, next) => {
       schema.updateCallBackRequestSchema,
       req.body
     )
+    reqBody.patientId = req.patient.id
     const callbackRequest = await callBackRequestService.updateAllCallRequestById(reqBody)
     res.status(200).json({
       message: 'callback request updated',
@@ -88,7 +89,7 @@ const updateAllCallBackRequestById = async (req, res, next) => {
 const deleteCallBackRequest = async (req, res, next) => {
   try {
     if (req.params.callbackRequestId) {
-      await callBackRequestService.deleteCallBackRequest(req.params.callbackRequestId)
+      await callBackRequestService.deleteCallBackRequest(req.params.callbackRequestId, req.patient.id)
       res.status(200).json({
         message: 'callback request deleted.',
         data: {}

@@ -93,6 +93,7 @@ const getAllCallRequestById = async (patientId) => {
 }
 
 const updateAllCallRequestById = async ({
+  patientId,
   callbackRequestId,
   callbackReasonId,
   preferredContactOption,
@@ -110,7 +111,8 @@ const updateAllCallRequestById = async ({
     status
   }, {
     where: {
-      id: callbackRequestId
+      id: callbackRequestId,
+      patient_id: patientId
     },
     returning: true
   })
@@ -122,10 +124,11 @@ const updateAllCallRequestById = async ({
   }
 }
 
-const deleteCallBackRequest = async (callbackRequestId) => {
+const deleteCallBackRequest = async (callbackRequestId, patientId) => {
   const isDeleted = await db.callback_request.destroy({
     where: {
-      id: callbackRequestId
+      id: callbackRequestId,
+      patient_id: patientId
     }
   })
 

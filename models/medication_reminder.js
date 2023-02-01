@@ -58,5 +58,11 @@ module.exports = (sequelize) => {
     }
   })
 
+  medicationReminder.registerRelationships = (model) => {
+    medicationReminder.belongsTo(model.patient, {
+      foreignKey: 'patient_id'
+    })
+  }
+
   return medicationReminder
 }

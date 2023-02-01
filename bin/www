@@ -1,5 +1,6 @@
 // loading .env file
 require('dotenv').config()
+require('../db/redis')
 
 const app = require('../app')
 const config = require('config')

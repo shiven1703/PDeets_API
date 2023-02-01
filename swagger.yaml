@@ -1484,7 +1484,7 @@ paths:
                       time:
                         type: string
                         required: true
-                        format: date-time
+                        description: HH:MM:SS
                 reminderTime:
                   type: number
                   description: The number of day/week/month this reminder should go on
@@ -1739,7 +1739,7 @@ paths:
                       time:
                         type: string
                         required: true
-                        format: date-time
+                        description: HH:MM:SS
                 reminderTime:
                   type: number
                   description: The number of day/week/month this reminder should go on

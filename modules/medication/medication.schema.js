@@ -30,8 +30,7 @@ const addMedicationReminderSchema = {
             enum: ['before_breakfast', 'after_breakfast', 'before_meal', 'after_meal', 'before_dinner', 'after_dinner']
           },
           time: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
           }
         },
         required: ['unit', 'time']
@@ -85,8 +84,7 @@ const updateMedicationReminderSchema = {
             enum: ['before_breakfast', 'after_breakfast', 'before_meal', 'after_meal', 'before_dinner', 'after_dinner']
           },
           time: {
-            type: 'string',
-            format: 'date-time'
+            type: 'string'
           }
         },
         required: ['unit', 'time']

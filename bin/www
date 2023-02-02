@@ -5,6 +5,9 @@ require('../db/redis')
 const app = require('../app')
 const config = require('config')
 const database = require('../db')
+const { Settings } = require('luxon')
+
+Settings.defaultZone = config.get('crons.timezone')
 
 const port = process.env.PORT || config.get('app.port');
 

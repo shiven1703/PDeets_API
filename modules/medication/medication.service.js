@@ -33,6 +33,7 @@ const addMedicationReminder = async ({ patientId, medicineName, dosageQty, dosag
         special_remarks: specialRemarks
       })
     }))
+    await loadMedicationRemindersForTheDay()
     return reminders
   } catch (err) {
     console.log(err)
@@ -81,12 +82,12 @@ const loadMedicationRemindersForTheDay = async () => {
           data = JSON.parse(data)
           if (data.records[reminder.patient_id] && data.records[reminder.patient_id].reminders) {
             data.records[reminder.patient_id].reminders.push(reminder)
-            return await redis.set(medication.time, JSON.stringify(data))
+            await redis.set(medication.time, JSON.stringify(data))
           } else {
             data.records[reminder.patient_id] = {}
             data.records[reminder.patient_id].devices = await db.device_token.findAll({ where: { patient_id: reminder.patient_id }, raw: true })
             data.records[reminder.patient_id].reminders = [reminder]
-            return await redis.set(medication.time, JSON.stringify(data))
+            await redis.set(medication.time, JSON.stringify(data))
           }
         } else {
           const initialData = { records: {} }

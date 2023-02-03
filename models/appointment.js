@@ -49,13 +49,21 @@ module.exports = (sequelize) => {
       foreignKey: 'appointment_id'
     })
 
-    appointment.belongsTo(model.location)
+    appointment.belongsTo(model.location, {
+      foreignKey: 'location_id'
+    })
 
-    appointment.belongsTo(model.department)
+    appointment.belongsTo(model.department, {
+      foreignKey: 'department_id'
+    })
 
-    appointment.belongsTo(model.doctor)
+    appointment.belongsTo(model.doctor, {
+      foreignKey: 'doctor_id'
+    })
 
-    appointment.belongsTo(model.patient)
+    appointment.belongsTo(model.patient, {
+      foreignKey: 'patient_id'
+    })
   }
 
   return appointment

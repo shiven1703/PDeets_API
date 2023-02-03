@@ -318,7 +318,7 @@ const bookAppointment = async ({ locationId, departmentId, doctorId, patientId, 
   }
 }
 
-const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) => {
+const updateAppointment = async ({ appointmentId, patientId, ...updatedAppointmentdata }) => {
   const updatedAppointment = await db.appointment.update({
     location_id: updatedAppointmentdata.locationId,
     department_id: updatedAppointmentdata.departmentId,
@@ -328,34 +328,23 @@ const updateAppointment = async ({ appointmentId, ...updatedAppointmentdata }) =
     questionary_answers: updatedAppointmentdata.questionaryAnswers,
     status: updatedAppointmentdata.status
   }, {
-    where: { id: appointmentId },
+    where: { id: appointmentId, patient_id: patientId },
     returning: true,
     raw: true
   })
-  const updatedAppointmentString = JSON.parse(JSON.stringify(updatedAppointment[1]))[0]
-  if (updatedAppointmentString) {
-    // renaming major ids from camplecase to snake
-    updatedAppointmentString.location_id = updatedAppointmentString.locationId
-    delete updatedAppointmentString.locationId
 
-    updatedAppointmentString.department_id = updatedAppointmentString.departmentId
-    delete updatedAppointmentString.departmentId
-
-    updatedAppointmentString.doctor_id = updatedAppointmentString.doctorId
-    delete updatedAppointmentString.doctorId
-
-    updatedAppointmentString.patient_id = updatedAppointmentString.patientId
-    delete updatedAppointmentString.patientId
-    return updatedAppointmentString
+  if (updatedAppointment.length > 0 && updatedAppointment[1]) {
+    return updatedAppointment[1][0]
   } else {
-    throw new DatabaseError('No appointment found with the provided id.')
+    throw new DatabaseError('No appointment found with the provided id or no updated were supplied.')
   }
 }
 
-const deleteAppointment = async (appointmentId) => {
+const deleteAppointment = async (appointmentId, patientId) => {
   const isDeleted = await db.appointment.destroy({
     where: {
-      id: appointmentId
+      id: appointmentId,
+      patient_id: patientId
     }
   })
 

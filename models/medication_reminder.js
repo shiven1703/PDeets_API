@@ -20,8 +20,7 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     dosage_unit: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     },
     dosage_interval: {
       type: DataTypes.INTEGER,
@@ -32,15 +31,14 @@ module.exports = (sequelize) => {
       allowNull: false
     },
     medication_time: {
-      type: DataTypes.DATE,
+      type: DataTypes.JSON,
       allowNull: false
     },
     medication_time_unit: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.STRING
     },
     reminder_time: {
-      type: DataTypes.DATE,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     reminder_unit: {
@@ -59,6 +57,12 @@ module.exports = (sequelize) => {
       type: DataTypes.TEXT
     }
   })
+
+  medicationReminder.registerRelationships = (model) => {
+    medicationReminder.belongsTo(model.patient, {
+      foreignKey: 'patient_id'
+    })
+  }
 
   return medicationReminder
 }

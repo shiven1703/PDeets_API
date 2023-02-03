@@ -1081,7 +1081,7 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError' 
     
-  # appointment update
+  # appointment update & delete
   /appointment/{appointmentId}:
     put:
       tags:
@@ -1131,7 +1131,7 @@ paths:
                   data:
                     type: object
                     properties:
-                      updatedAppointment:
+                      appointment:
                         type: object
                         properties:
                           id:
@@ -1431,3 +1431,1159 @@ paths:
 
         '500':
           $ref: '#/components/responses/UnknownServerError'
+  
+  # medication creation
+  /medication/reminder:
+    post:
+      tags:
+        - Medication
+      summary: Allows creation of medication reminders
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                medicineName:
+                  type: array
+                  required: true
+                  description: pass multiple names if two or more medications are having same details. This will create new db entry for each medicineName array value
+                  items:
+                    type: string
+                dosageQty:
+                  type: number
+                  description: Number of medicine count (1 or 2 ...)
+                  required: true
+                dosageInterval:
+                  type: number
+                  description: 2 time per day/week/month
+                  required: true
+                dosageIntervalUnit:
+                  type: string
+                  description: Allowed values - 'day', 'week', 'month'
+                  required: true
+                medicationTime:
+                  type: array
+                  description: if one medicine has multiple intervals, then it could be taken at diffrent times in a day/week/month.
+                  required: true
+                  items:
+                    type: object
+                    properties:
+                      unit:
+                        type: string
+                        description: Allowed values - 'before_breakfast', 'after_breakfast', 'before_meal', 'after_meal', 'before_dinner', 'after_dinner'
+                        required: true
+                      time:
+                        type: string
+                        required: true
+                        description: HH:MM:SS
+                reminderTime:
+                  type: number
+                  description: The number of day/week/month this reminder should go on
+                  required: true
+                reminderTimeUnit:
+                  type: string
+                  description: Allowed values - 'day', 'week', 'month'
+                  required: true
+                startDate:
+                  type: string
+                  format: date-time
+                specialRemarks:
+                  type: string
+                  required: true
+                
+      
+      responses:
+        '200':
+          description: Booked reminders details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      reminders:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            patient_id:
+                              type: string
+                              format: uuid
+                            medicine_name:
+                              type: string
+                            dosage_qty:
+                              type: number
+                            dosage_unit:
+                              type: string
+                              nullable: true
+                            dosage_interval:
+                              type: number
+                            dosage_interval_unit:
+                              type: string
+                            medication_time:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  unit:
+                                    type: string
+                                  time:
+                                    type: string
+                                    format: date-time
+                            medication_time_unit:
+                              type: string
+                              nullable: true
+                            reminder_time:
+                              type: number
+                            reminder_unit:
+                              type: string
+                            start_date:
+                              type: string
+                              format: date-time
+                            end_date:
+                              type: string
+                              format: date-time
+                            special_remarks:
+                              type: string
+                            updatedAt:
+                              type: string
+                              format: date-time
+                            createdAt:
+                              type: string
+                              format: date-time
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    get:
+      tags:
+        - Medication
+      summary: Allows listing of medication reminders
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true
+        - in: query
+          name: filterBy
+          required: false
+          schema:
+            type: string
+          description: Will perform filter by on medication name
+      
+                
+      
+      responses:
+        '200':
+          description: Booked reminders listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      reminders:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            patient_id:
+                              type: string
+                              format: uuid
+                            medicine_name:
+                              type: string
+                            dosage_qty:
+                              type: number
+                            dosage_unit:
+                              type: string
+                              nullable: true
+                            dosage_interval:
+                              type: number
+                            dosage_interval_unit:
+                              type: string
+                            medication_time:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  unit:
+                                    type: string
+                                  time:
+                                    type: string
+                                    format: date-time
+                            medication_time_unit:
+                              type: string
+                              nullable: true
+                            reminder_time:
+                              type: number
+                            reminder_unit:
+                              type: string
+                            start_date:
+                              type: string
+                              format: date-time
+                            end_date:
+                              type: string
+                              format: date-time
+                            special_remarks:
+                              type: string
+                            updatedAt:
+                              type: string
+                              format: date-time
+                            createdAt:
+                              type: string
+                              format: date-time
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # medication update & delete
+  /medication/reminder/{reminderId}:
+    put:
+      tags:
+        - Medication
+      summary: Allows updation of medication reminder
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                medicineName:
+                  type: string
+                dosageQty:
+                  type: number
+                  description: Number of medicine count (1 or 2 ...)
+                  required: true
+                dosageInterval:
+                  type: number
+                  description: 2 time per day/week/month
+                  required: true
+                dosageIntervalUnit:
+                  type: string
+                  description: Allowed values - 'day', 'week', 'month'
+                  required: true
+                medicationTime:
+                  type: array
+                  description: if one medicine has multiple intervals, then it could be taken at diffrent times in a day/week/month.
+                  required: true
+                  items:
+                    type: object
+                    properties:
+                      unit:
+                        type: string
+                        description: Allowed values - 'before_breakfast', 'after_breakfast', 'before_meal', 'after_meal', 'before_dinner', 'after_dinner'
+                        required: true
+                      time:
+                        type: string
+                        required: true
+                        description: HH:MM:SS
+                reminderTime:
+                  type: number
+                  description: The number of day/week/month this reminder should go on
+                  required: true
+                reminderTimeUnit:
+                  type: string
+                  description: Allowed values - 'day', 'week', 'month'
+                  required: true
+                startDate:
+                  type: string
+                  format: date-time
+                specialRemarks:
+                  type: string
+                  required: true
+                
+      
+      responses:
+        '200':
+          description: updated reminder
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      reminder:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          patient_id:
+                            type: string
+                            format: uuid
+                          medicine_name:
+                            type: string
+                          dosage_qty:
+                            type: number
+                          dosage_unit:
+                            type: string
+                            nullable: true
+                          dosage_interval:
+                            type: number
+                          dosage_interval_unit:
+                            type: string
+                          medication_time:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                unit:
+                                  type: string
+                                time:
+                                  type: string
+                                  format: date-time
+                          medication_time_unit:
+                            type: string
+                            nullable: true
+                          reminder_time:
+                            type: number
+                          reminder_unit:
+                            type: string
+                          start_date:
+                            type: string
+                            format: date-time
+                          end_date:
+                            type: string
+                            format: date-time
+                          special_remarks:
+                            type: string
+                          updatedAt:
+                            type: string
+                            format: date-time
+                          createdAt:
+                            type: string
+                            format: date-time
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    delete:
+        tags:
+          - Medication
+        summary: Allows deletion of medication reminder
+        security:
+          - basicAuth: []
+        parameters:
+          - in: header
+            name: Authorization
+            description: pass access token
+            required: true
+        
+        responses:
+          '200':
+            description: deleted reminder
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: message from the server
+                    data:
+                      type: object
+                              
+          '400':
+            description: JSON validation error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error: 
+                      type: string
+                      description: A error message from server
+
+          '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+          '500':
+            $ref: '#/components/responses/UnknownServerError'
+
+  # callback reasons listing
+  /callback-request/reasons:
+    get:
+      tags:
+        - Callback Reuqest
+      summary: Allows listing of callback reasons
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true      
+              
+      
+      responses:
+        '200':
+          description: Callback reasons listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      reasons:
+                        type: array
+                        items:
+                          properties: 
+                            id:
+                              type: string
+                            name:
+                              type: string
+                            updatedAt:
+                              type: string
+                            createdAt:
+                              type: string
+                            
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # callback request creation & listing
+  /callback-request:
+    post:
+      tags:
+        - Callback Reuqest
+      summary: Allows creation of callback request
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callbackReasonId:
+                  type: string
+                  required: true
+                preferredContactOption:
+                  type: string
+                  description: Allowed values - 'phone', 'email'
+                  required: true
+                preferredTime:
+                  type: string
+                  required: true
+                isSevere:
+                  type: string
+                  required: false
+                remarks:
+                  type: string
+                  required: false
+                status:
+                  type: string
+                  description: Allowed values - 'pending', 'contacted', 'not_reachable'
+                  required: true
+                
+      
+      responses:
+        '200':
+          description: added callback request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: object
+                        properties: 
+                          id:
+                            type: string
+                          patient_id:
+                            type: string
+                          callback_reason_id:
+                            type: string
+                          preferred_contact_option:
+                            type: string
+                          preferred_time:
+                            type: string
+                          is_severe:
+                            type: string
+                          remark:
+                            type: string
+                          status:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    get:
+      tags:
+        - Callback Reuqest
+      summary: Allows listing of callback requests
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true      
+              
+      
+      responses:
+        '200':
+          description: Callback request listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: array
+                        items:
+                          properties: 
+                            id:
+                              type: string
+                            patient_id:
+                              type: string
+                            callback_reason_id:
+                              type: string
+                            preferred_contact_option:
+                              type: string
+                            preferred_time:
+                              type: string
+                            is_severe:
+                              type: string
+                            remark:
+                              type: string
+                            status:
+                              type: string
+                            updatedAt:
+                              type: string
+                            createdAt:
+                              type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # callback request update & delete
+  /callback-request/{callbackRequestId}:
+    put:
+      tags:
+        - Callback Reuqest
+      summary: Allows updation of callback request
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callbackReasonId:
+                  type: string
+                preferredContactOption:
+                  type: string
+                  description: Allowed values - 'phone', 'email'
+                preferredTime:
+                  type: string
+                isSevere:
+                  type: string
+                remarks:
+                  type: string
+                status:
+                  type: string
+                  description: Allowed values - 'pending', 'contacted', 'not_reachable'
+                
+      
+      responses:
+        '200':
+          description: updated callback request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: object
+                        properties: 
+                          id:
+                            type: string
+                          patient_id:
+                            type: string
+                          callback_reason_id:
+                            type: string
+                          preferred_contact_option:
+                            type: string
+                          preferred_time:
+                            type: string
+                          is_severe:
+                            type: string
+                          remark:
+                            type: string
+                          status:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    delete:
+      tags:
+        - Callback Reuqest
+      summary: Allows deletion of callback requests
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true      
+              
+      
+      responses:
+        '200':
+          description: Callback request listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                            
+        '400':
+          description: JSON validation error | Invalid callback request id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # Lab report upload
+  /reports/lab:
+    post:
+      tags:
+        - Lab report
+      summary: Internal - REST- Interface - Allows to upload a report 
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: patientId
+          name: patientId
+          type: string
+          required: true
+
+        - in: appointmentId
+          name: appointmentId
+          type: string
+          required: true
+
+        - in: reportName
+          name: reportName
+          type: string
+          required: true
+
+        - in: reportFiles
+          name: reportFiles
+          type: file
+          required: true
+          description: Multiple files related to report can be uploaded. Allowed file types - "jpeg", "png", "jpg", "pdf". Allowed max file size - 2MB
+
+        - in: remarks
+          name: remarks
+          type: string
+
+        - in: generationDate
+          name: generationDate
+          type: string
+
+        - in: status
+          name: status
+          type: string
+      
+      responses:
+        '200':
+          description: Report details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      report:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          patient_id:
+                            type: string
+                          appointment_id:
+                            type: string
+                          report_name:
+                            type: string
+                          generation_date:
+                            type: string
+                          status:
+                            type: string
+                          remarks:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+                          report_files:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                fieldname:
+                                  type: string
+                                originalname:
+                                  type: string
+                                encoding:
+                                  type: string
+                                mimetype:
+                                  type: string
+                                destination:
+                                  type: string
+                                filename:
+                                  type: string
+                                path:
+                                  type: string
+                                size:
+                                  type: string
+                                download_url:
+                                  type: string
+                            
+        '400':
+          description: JSON validation error | File upload error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    get:
+        tags:
+          - Lab report
+        summary: Allows to list all the report of a patient 
+        security:
+        - basicAuth: []
+        parameters:
+          - in: header
+            name: Authorization
+            description: pass access token
+            required: true
+        
+        responses:
+          '200':
+            description: Report listing
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: message from the server
+                    data:
+                      type: object
+                      properties:
+                        report:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                              patient_id:
+                                type: string
+                              appointment_id:
+                                type: string
+                              report_name:
+                                type: string
+                              generation_date:
+                                type: string
+                              status:
+                                type: string
+                              remarks:
+                                type: string
+                              updatedAt:
+                                type: string
+                              createdAt:
+                                type: string
+                              report_files:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    fieldname:
+                                      type: string
+                                    originalname:
+                                      type: string
+                                    encoding:
+                                      type: string
+                                    mimetype:
+                                      type: string
+                                    destination:
+                                      type: string
+                                    filename:
+                                      type: string
+                                    path:
+                                      type: string
+                                    size:
+                                      type: string
+                                    download_url:
+                                      type: string
+                              
+          '400':
+            description: JSON validation error | File upload error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error: 
+                      type: string
+                      description: A error message from server
+
+          '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+          '500':
+            $ref: '#/components/responses/UnknownServerError'
+
+  # Lab report update & delete
+  /report/lab/{reportId}:
+    delete:
+        tags:
+          - Lab report
+        summary: Internal - REST- Interface - Allows to delete a report
+        responses:
+          '200':
+            description: Report listing
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: message from the server
+                    data:
+                      type: object
+                              
+          '400':
+            description: JSON validation error 
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error: 
+                      type: string
+                      description: A error message from server
+
+          '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+          '500':
+            $ref: '#/components/responses/UnknownServerError'
+
+    put:
+        tags:
+          - Lab report
+        summary: Internal - REST- Interface - Allows to update a report 
+        consumes:
+          - multipart/form-data
+        parameters:
+          - in: patientId
+            name: patientId
+            type: string
+
+          - in: appointmentId
+            name: appointmentId
+            type: string
+
+          - in: reportName
+            name: reportName
+            type: string
+
+          - in: reportFiles
+            name: reportFiles
+            type: file
+            description: Multiple files related to report can be uploaded. Allowed file types - "jpeg", "png", "jpg", "pdf". Allowed max file size - 2MB
+
+          - in: remarks
+            name: remarks
+            type: string
+
+          - in: generationDate
+            name: generationDate
+            type: string
+
+          - in: status
+            name: status
+            type: string
+        
+        responses:
+          '200':
+            description: Updated Report details
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: message from the server
+                    data:
+                      type: object
+                      properties:
+                        report:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            patient_id:
+                              type: string
+                            appointment_id:
+                              type: string
+                            report_name:
+                              type: string
+                            generation_date:
+                              type: string
+                            status:
+                              type: string
+                            remarks:
+                              type: string
+                            updatedAt:
+                              type: string
+                            createdAt:
+                              type: string
+                            report_files:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  fieldname:
+                                    type: string
+                                  originalname:
+                                    type: string
+                                  encoding:
+                                    type: string
+                                  mimetype:
+                                    type: string
+                                  destination:
+                                    type: string
+                                  filename:
+                                    type: string
+                                  path:
+                                    type: string
+                                  size:
+                                    type: string
+                                  download_url:
+                                    type: string
+                              
+          '400':
+            description: JSON validation error | File upload error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error: 
+                      type: string
+                      description: A error message from server
+
+          '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+          '500':
+            $ref: '#/components/responses/UnknownServerError'

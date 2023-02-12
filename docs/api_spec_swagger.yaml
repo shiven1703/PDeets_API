@@ -1,0 +1,727 @@
+openapi: "3.0.0"
+
+info:
+  title: PDeets - Data requirement
+  description: This documentation contains information regarding the possible endpoints for the purpose of data exchange with kielstein.
+  version: 1.0.0
+
+# reuseable components
+components:
+  responses:
+    UnknownServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: 
+                type: string
+    Unauhtorized:
+      description: Unauthorized request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: 
+                type: string
+
+
+paths:
+  # patient registration endpoint
+  /patient/register:
+    post:
+      tags:
+        - Patient
+      summary: Allows patient registration
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName: 
+                  type: string
+                  required: true
+                lastName:
+                  type: string
+                  required: true
+                email:
+                  type: string
+                  format: email
+                phoneNumber:
+                  type: string
+                  maxLength: 15
+                  description: The phoneNumber is unqiue among patients.
+                  required: true
+                gender:
+                  type: string
+                  description: 'male, female, other'
+                dateOfBirth:
+                  type: 'string'
+                  format: date-time
+                  description: 'Date with timezone. i.e 1994-11-05T08:15:30-05:00'
+                password:
+                  type: 'string'
+                  format: password
+                  required: true
+      responses:
+        '201':
+          description: Patient registration successful. Will return newly registed patient.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          fist_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                            format: email
+                          phone_number:
+                            type: string
+                            maxLength: 15
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                            format: date-time
+                          image_url:
+                            type: string
+                            description: This field contains dummy image for user profile. We plan to offer profile section for the patients.
+
+        '400':
+          description: JSON payload validation error | Unqiue phone number error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+  
+  # patient login endpoint
+  /patient/login:
+    post:
+      tags:
+        - Patient
+      summary: Allows patient to login
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                phoneNumber:
+                  type: string
+                  maxLenght: 15
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                password:
+                  type: string
+                  type: password
+                  required: true
+                deviceToken: 
+                  type: string
+                  description: The device token is collected for providing push notification feature.
+                  required: true
+      responses:
+        '200':
+          description: Patient login successful. Will return access and refresh tokens.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      tokens:
+                        type: object
+                        properties:
+                          accessToken:
+                            type: string
+                            description: JWT token with short validity.
+                          refreshToken:
+                            description: JWT token with longer validity. The refresh token will allow patient to obtain new token pair upon access token expiration. We are using token rotation for better security.
+                            type: string
+                      patient:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          fist_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                            format: email
+                          phone_number:
+                            type: string
+                            maxLength: 15
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                            format: date-time
+                          image_url:
+                            type: string
+                            description: This field contains dummy image for user profile. We plan to offer profile section for the patients.
+        '401':
+          description: Invalid username or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+  
+  # change & reset password endpoint
+  /patient/password:
+    post:
+      tags:
+        - Patient
+      summary: Allows to change and reset the password.
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action: 
+                  type: string
+                  description: supply "change_password" or "reset_password". We have our own OTP based validation workflow for resetting the password. The patient will be verified first and then we will allow password reset.
+                  required: true
+                email:
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                phoneNumber:
+                  type: string
+                  description: email or phoneNumber, supply one of them
+                  required: true
+                oldPassword:
+                  type: string
+                  description: reqired while action is set to "change_password"
+                  require: true
+                newPassword:
+                  type: string
+                  description: reqired while action is set to "change_password" and "reset_password"
+                  require: true
+
+      responses:
+        '200':
+          description: Successful password change | Successful password reset.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+
+        '400':
+          description: JSON payload validation error - missing required params (see schema)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # patient details endpoint
+  /patient/{patientId}:
+    get:
+      tags:
+        - Patient
+      summary: Allows to fetch details of a perticular patient by id. (Needed for showing details of patient to doctor while video calling session is on going.)
+      parameters:
+        - in: query
+          name: patientId
+          schema:
+            type: string
+            format: uuid
+          required: true
+
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          fist_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                            format: email
+                          phone_number:
+                            type: string
+                            maxLength: 15
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                            format: date-time
+                          image_url:
+                            type: string
+                            description: This field contains dummy image for user profile. We plan to offer profile section for the patients.
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+        
+        '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment location listing
+  /appointment/locations:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of available locations
+      parameters:
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          description: This is a gloabl filter. The filter should performe a search on location name, description, address, pincode, latitude, longitude and city columns possibly.
+  
+      responses:
+        '200':
+          description: List of locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      locations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            lan:
+                              type: string
+                            lon:
+                              type: string
+                            address:
+                              type: string
+                            pincode:
+                              type: string
+                            city:
+                              type: string
+                            image_url:
+                              type: string
+                          
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+  
+  # appointment department listing
+  /appointment/departments:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of available departments
+      parameters:
+        - in: query
+          name: locationId
+          schema:
+            type: string
+          required: true
+          description: Based on locationId, api should return all the departments available at that location.
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          description: This is a gloabl filter. The filter should performe a search on department name and description possibly.
+  
+      responses:
+        '200':
+          description: List of departments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      departments:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            image_url:
+                              type: string
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'  
+
+  # appointment doctor listing
+  /appointment/doctors:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of available doctors
+      parameters:
+        - in: query
+          name: locationId
+          schema:
+            type: string
+          required: true
+          description: Based on locationId & departmentId, api should return all the doctors.
+        - in: query
+          name: departmentId
+          schema:
+            type: string
+          required: true
+          description: Based on locationId & departmentId, api should return all the doctors.
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          description: This is a gloabl filter. The filter should performe a search on available doctor information.
+     
+  
+      responses:
+        '200':
+          description: List of doctors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      doctors:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            doctor_id:
+                              type: string
+                              format: uuid
+                            first_name:
+                              type: string
+                            last_name:
+                              type: string
+                            email:
+                              type: string
+                            phone_number:
+                              type: string
+                            about:
+                              type: string
+                            doctor_speciality:
+                              type: string
+                            image_url:
+                              type: string
+                            avg_review:
+                              type: number
+                            reviews:
+                             type: array
+                             items:
+                              properties:
+                               number_of_stars:
+                                type: string
+                               review_text:
+                                type: string
+                            
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # Lab report listing
+  /reports/lab/{patientId}:
+    get:
+        tags:
+          - Lab report
+        summary: Allows to list all the report of a patient 
+        parameters:
+        - in: query
+          name: patientId
+          schema:
+            type: string
+            format: uuid
+          required: true
+
+        responses:
+          '200':
+            description: Report listing
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: message from the server
+                    data:
+                      type: object
+                      properties:
+                        reports:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uuid
+                              patient_id:
+                                type: string
+                                format: uuid
+                              report_name:
+                                type: string
+                              generation_date:
+                                type: string
+                                format: date-time
+                              status:
+                                type: string
+                              remarks:
+                                type: string
+                              report_files:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    mimetype:
+                                      type: string
+                                    filename:
+                                      type: string
+                                    size:
+                                      type: string
+                                    download_url:
+                                      type: string
+                              
+          '400':
+            description: Invalid request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error: 
+                      type: string
+                      description: A error message from server
+
+          '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+          '500':
+            $ref: '#/components/responses/UnknownServerError'
+
+  # News listing
+  /news:
+    get:
+        tags:
+          - News
+        summary: Allows to list all the news and latest events
+        parameters:
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          description: Possible filters on news
+
+        responses:
+          '200':
+            description: News listing
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: message from the server
+                    data:
+                      type: object
+                      properties:
+                        news:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uuid
+                              title:
+                                type: string
+                              text:
+                                type: string
+                              image_url:
+                                type: string
+                              publish_date:
+                                type: string
+                                format: date-time
+                              category:
+                                type: string
+                              
+                              
+          '400':
+            description: Invalid request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error: 
+                      type: string
+                      description: A error message from server
+
+          '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+          '500':
+            $ref: '#/components/responses/UnknownServerError'

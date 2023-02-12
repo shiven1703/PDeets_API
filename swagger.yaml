@@ -2231,7 +2231,7 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
-  # Lab report upload
+  # Lab report upload & listing
   /reports/lab:
     post:
       tags:

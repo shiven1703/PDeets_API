@@ -29,263 +29,6 @@ components:
 
 
 paths:
-  # patient registration endpoint
-  /patient/register:
-    post:
-      tags:
-        - Patient
-      summary: Allows patient registration
-      requestBody:
-        description: Takes below properties
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName: 
-                  type: string
-                  required: true
-                lastName:
-                  type: string
-                  required: true
-                email:
-                  type: string
-                  format: email
-                phoneNumber:
-                  type: string
-                  maxLength: 15
-                  description: The phoneNumber is unqiue among patients.
-                  required: true
-                gender:
-                  type: string
-                  description: 'male, female, other'
-                dateOfBirth:
-                  type: 'string'
-                  format: date-time
-                  description: 'Date with timezone. i.e 1994-11-05T08:15:30-05:00'
-                password:
-                  type: 'string'
-                  format: password
-                  required: true
-      responses:
-        '201':
-          description: Patient registration successful. Will return newly registed patient.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: message from the server
-                  data:
-                    type: object
-                    properties:
-                      patient:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            format: uuid
-                          fist_name:
-                            type: string
-                          last_name:
-                            type: string
-                          email:
-                            type: string
-                            format: email
-                          phone_number:
-                            type: string
-                            maxLength: 15
-                          gender:
-                            type: string
-                          date_of_birth:
-                            type: string
-                            format: date-time
-                          image_url:
-                            type: string
-                            description: This field contains dummy image for user profile. We plan to offer profile section for the patients.
-
-        '400':
-          description: JSON payload validation error | Unqiue phone number error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error: 
-                    type: string
-                    description: A error message from server
-
-
-        '500':
-          $ref: '#/components/responses/UnknownServerError' 
-  
-  # patient login endpoint
-  /patient/login:
-    post:
-      tags:
-        - Patient
-      summary: Allows patient to login
-      requestBody:
-        description: Takes below properties
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email: 
-                  type: string
-                  description: email or phoneNumber, supply one of them
-                  required: true
-                phoneNumber:
-                  type: string
-                  maxLenght: 15
-                  description: email or phoneNumber, supply one of them
-                  required: true
-                password:
-                  type: string
-                  type: password
-                  required: true
-                deviceToken: 
-                  type: string
-                  description: The device token is collected for providing push notification feature.
-                  required: true
-      responses:
-        '200':
-          description: Patient login successful. Will return access and refresh tokens.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: message from the server
-                  data:
-                    type: object
-                    properties:
-                      tokens:
-                        type: object
-                        properties:
-                          accessToken:
-                            type: string
-                            description: JWT token with short validity.
-                          refreshToken:
-                            description: JWT token with longer validity. The refresh token will allow patient to obtain new token pair upon access token expiration. We are using token rotation for better security.
-                            type: string
-                      patient:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            format: uuid
-                          fist_name:
-                            type: string
-                          last_name:
-                            type: string
-                          email:
-                            type: string
-                            format: email
-                          phone_number:
-                            type: string
-                            maxLength: 15
-                          gender:
-                            type: string
-                          date_of_birth:
-                            type: string
-                            format: date-time
-                          image_url:
-                            type: string
-                            description: This field contains dummy image for user profile. We plan to offer profile section for the patients.
-        '401':
-          description: Invalid username or password.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error: 
-                    type: string
-                    description: A error message from server
-
-        '400':
-          description: JSON payload validation error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error: 
-                    type: string
-                    description: A error message from server
-
-
-        '500':
-          $ref: '#/components/responses/UnknownServerError' 
-  
-  # change & reset password endpoint
-  /patient/password:
-    post:
-      tags:
-        - Patient
-      summary: Allows to change and reset the password.
-      requestBody:
-        description: Takes below properties
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                action: 
-                  type: string
-                  description: supply "change_password" or "reset_password". We have our own OTP based validation workflow for resetting the password. The patient will be verified first and then we will allow password reset.
-                  required: true
-                email:
-                  type: string
-                  description: email or phoneNumber, supply one of them
-                  required: true
-                phoneNumber:
-                  type: string
-                  description: email or phoneNumber, supply one of them
-                  required: true
-                oldPassword:
-                  type: string
-                  description: reqired while action is set to "change_password"
-                  require: true
-                newPassword:
-                  type: string
-                  description: reqired while action is set to "change_password" and "reset_password"
-                  require: true
-
-      responses:
-        '200':
-          description: Successful password change | Successful password reset.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: message from the server
-                  data:
-                    type: object
-
-        '400':
-          description: JSON payload validation error - missing required params (see schema)
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error: 
-                    type: string
-                    description: A error message from server
-
-        '500':
-          $ref: '#/components/responses/UnknownServerError'
-
   # patient details endpoint
   /patient/{patientId}:
     get:
@@ -317,7 +60,7 @@ paths:
                       patient:
                         type: object
                         properties:
-                          id:
+                          patient_id:
                             type: string
                             format: uuid
                           fist_name:
@@ -388,7 +131,7 @@ paths:
                         items:
                           type: object
                           properties:
-                            id:
+                            location_id:
                               type: string
                               format: uuid
                             name:
@@ -464,7 +207,7 @@ paths:
                         items:
                           type: object
                           properties:
-                            id:
+                            department_id:
                               type: string
                               format: uuid
                             name:
@@ -553,16 +296,6 @@ paths:
                               type: string
                             image_url:
                               type: string
-                            avg_review:
-                              type: number
-                            reviews:
-                             type: array
-                             items:
-                              properties:
-                               number_of_stars:
-                                type: string
-                               review_text:
-                                type: string
                             
 
         '400':
@@ -581,6 +314,427 @@ paths:
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment doctor schedule listing
+  /appointment/doctor/availability:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of doctor schedule
+      parameters:
+      - in: query
+        name: locationId
+        schema:
+          type: string
+        required: true
+        description: Based on locationId & departmentId & doctorId, api should return the doctor schedule.
+      - in: query
+        name: departmentId
+        schema:
+          type: string
+        required: true
+        description: Based on locationId & departmentId & doctorId, api should return the doctor schedule.
+      - in: query
+        name: doctorId
+        schema:
+          type: string
+        required: true
+        description: Based on locationId & departmentId & doctorId, api should return the doctor schedule.
+      - in: query
+        name: availability_of
+        schema:
+          type: string
+        required: true
+        description: Days, weeks, months from the current day's date. i.e "1day", "1week", "1month"
+      
+      responses:
+        '200':
+          description: List of doctor schedule
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      schedule:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          doctor_id:
+                            type: string
+                            format: uuid
+                          start_time:
+                            type: string
+                            format: date-time
+                            description: start time of the shift
+                          end_time:
+                            type: string
+                            format: date-time
+                            description: end time of the shift
+                          appointment_duration:
+                            type: number
+                      bookedSlots:
+                        type: array
+                        items:
+                          properties:
+                            date:
+                              type: string
+                              format: date
+                            time:
+                              type: string
+                              format: time
+                            duration:
+                              type: number
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+   # appointment booking and listing 
+  
+  # appointment booking & listing & update
+  /appointment:
+    post:
+      tags:
+        - Appointment
+      summary: Allows booking of an appointment
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                  type: string
+                  format: uuid
+                  required: true
+                departmentId:
+                  type: string
+                  format: uuid
+                  required: true
+                doctorId:
+                  type: string
+                  format: uuid
+                  required: true
+                patientId:
+                  type: string
+                  format: uuid
+                  required: true
+                appointmentTime:
+                  type: string
+                  format: date-time
+                  required: true
+                appointmentDuration:
+                  type: number
+                status:
+                  type: string
+                  description: The values can be pending, cancelled or attended
+                
+      
+      responses:
+        '200':
+          description: details of booked appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: object
+                        properties:
+                          appointment_id:
+                            type: string
+                            format: uuid
+                          location_id:
+                            type: string
+                            format: uuid
+                          department_id:
+                            type: string
+                            format: uuid
+                          doctor_id:
+                            type: string
+                            format: uuid
+                          patient_id:
+                            type: string
+                            format: uuid
+                          appointment_time:
+                            type: string
+                            format: date-time
+                          appointment_duration:
+                            type: number
+                          status:
+                            type: string
+                          
+                  
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+    get:
+      tags:
+        - Appointment
+      summary: Allows listing of booked appointments by a patient
+      parameters:
+        - in: query
+          name: patientId
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+            description: should allow filter with appointment id.
+      responses:
+        '200':
+          description: List of booked appointments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            appointment_id:
+                              type: string
+                              format: uuid
+                            appointment_time:
+                              type: string
+                              format: date-time
+                            appointment_duration:
+                              type: number
+                            status:
+                              type: string
+                            location:
+                              type: object
+                              properties:
+                                location_id:
+                                  type: string
+                                  format: uuid
+                                name:
+                                  type: string
+                                description:
+                                  type: string
+                                address:
+                                  type: string
+                                pincode:
+                                  type: string
+                                city:
+                                  type: string
+                                image_url:
+                                  type: string
+                            department:
+                              type: object
+                              properties:
+                                department_id:
+                                  type: string
+                                  format: uuid
+                                name:
+                                  type: string
+                                description:
+                                  type: string
+                                image_url:
+                                  type: string
+                            doctor:
+                              type: object
+                              properties:
+                                doctor_id:
+                                  type: string
+                                  format: uuid
+                                first_name:
+                                  type: string
+                                last_name:
+                                  type: string
+                                doctor_speciality:
+                                  type: string
+                                image_url:
+                                  type: string
+                            patient:
+                              type: object
+                              properties:
+                                patient_id:
+                                  type: string
+                                  format: uuid
+
+    put:
+      tags:
+        - Appointment
+      summary: Allows to update the booked appointment
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appointment_id:
+                  type: string
+                  format: uuid
+                locationId:
+                  type: string
+                  format: uuid
+                departmentId:
+                  type: string
+                  format: uuid
+                doctorId:
+                  type: string
+                  format: uuid
+                appointmentTime:
+                  type: string
+                  format: date-time
+                appointmentDuration:
+                  type: number
+                status:
+                  type: string
+                
+      
+      responses:
+        '200':
+          description: details of updated appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: object
+                        properties:
+                          appointment_id:
+                            type: string
+                            format: uuid
+                          location_id:
+                            type: string
+                            format: uuid
+                          department_id:
+                            type: string
+                            format: uuid
+                          doctor_id:
+                            type: string
+                            format: uuid
+                          appointment_time:
+                            type: string
+                          appointment_duration:
+                            type: number
+                          status:
+                            type: string
+                  
+        '400':
+          description: JSON payload validation error | Invalid appointment id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+   # appointment update & delete
+  
+  # appointment delete
+  /appointment/{appointmentId}: 
+    delete:
+      tags:
+        - Appointment
+      summary: Allows to delete the booked appointment
+      parameters:
+        - in: query
+          name: appointmentId
+          schema:
+            type: string
+            format: uuid
+          required: true
+      
+      responses:
+        '200':
+          description: details of deleted appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  
+        '400':
+          description: Invalid appointment id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
 
   # Lab report listing
   /reports/lab/{patientId}:
@@ -615,7 +769,7 @@ paths:
                           items:
                             type: object
                             properties:
-                              id:
+                              report_id:
                                 type: string
                                 format: uuid
                               patient_id:
@@ -630,19 +784,6 @@ paths:
                                 type: string
                               remarks:
                                 type: string
-                              report_files:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    mimetype:
-                                      type: string
-                                    filename:
-                                      type: string
-                                    size:
-                                      type: string
-                                    download_url:
-                                      type: string
                               
           '400':
             description: Invalid request

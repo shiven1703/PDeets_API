@@ -63,7 +63,7 @@ paths:
                           patient_id:
                             type: string
                             format: uuid
-                          fist_name:
+                          first_name:
                             type: string
                           last_name:
                             type: string

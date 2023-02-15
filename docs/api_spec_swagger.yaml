@@ -36,7 +36,7 @@ paths:
         - Patient
       summary: Allows to fetch details of a perticular patient by id. (Needed for showing details of patient to doctor while video calling session is on going.)
       parameters:
-        - in: query
+        - in: path
           name: patientId
           schema:
             type: string
@@ -84,6 +84,134 @@ paths:
 
         '400':
           description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+        
+        '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+    # patient details endpoint
+  
+  # patient activation code
+  /patient/activation-code:
+    get:
+      tags:
+        - Patient
+      summary: Allows to generate activation code. (The activation code would allow patiend to register on the app)
+      parameters:
+        - in: query
+          name: patientId
+          schema:
+            type: string
+            format: uuid
+          required: true
+
+      responses:
+        '200':
+          description: Patient activation code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          activation_code:
+                            type: number
+                            default: 521526
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+        
+        '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # patient activation
+  /patient/activation:
+    post:
+      tags:
+        - Patient
+      summary: Returns patiend details by validating activation code. (This will allow us to register the patiend in app backend database)
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activationCode:
+                  type: number
+                  default: 521526
+                  required: true
+
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          patient_id:
+                            type: string
+                            format: uuid
+                          first_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                            format: email
+                          phone_number:
+                            type: string
+                            maxLength: 15
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                            format: date-time
+                          image_url:
+                            type: string
+                            description: This field contains dummy image for user profile. We plan to offer profile section for the patients.
+
+        '400':
+          description: Invalid request | Invalid activation code
           content:
             application/json:
               schema:
@@ -379,7 +507,8 @@ paths:
                             format: date-time
                             description: end time of the shift
                           appointment_duration:
-                            type: number
+                            type: string
+                            default: "15min"
                       bookedSlots:
                         type: array
                         items:
@@ -410,8 +539,6 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
-   # appointment booking and listing 
-  
   # appointment booking & listing & update
   /appointment:
     post:
@@ -446,7 +573,8 @@ paths:
                   format: date-time
                   required: true
                 appointmentDuration:
-                  type: number
+                  type: string
+                  default: "15min"
                 status:
                   type: string
                   description: The values can be pending, cancelled or attended
@@ -488,7 +616,8 @@ paths:
                             type: string
                             format: date-time
                           appointment_duration:
-                            type: number
+                            type: string
+                            default: "15min"
                           status:
                             type: string
                           
@@ -552,7 +681,8 @@ paths:
                               type: string
                               format: date-time
                             appointment_duration:
-                              type: number
+                              type: string
+                              default: "15min"
                             status:
                               type: string
                             location:
@@ -633,7 +763,8 @@ paths:
                   type: string
                   format: date-time
                 appointmentDuration:
-                  type: number
+                  type: string
+                  default: "15min"
                 status:
                   type: string
                 
@@ -670,7 +801,8 @@ paths:
                           appointment_time:
                             type: string
                           appointment_duration:
-                            type: number
+                            type: string
+                            default: "15min"
                           status:
                             type: string
                   
@@ -700,7 +832,7 @@ paths:
         - Appointment
       summary: Allows to delete the booked appointment
       parameters:
-        - in: query
+        - in: path
           name: appointmentId
           schema:
             type: string
@@ -736,6 +868,341 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
+  # callback reasons listing
+  /callback-request/reasons:
+    get:
+      tags:
+        - Callback Reuqest
+      summary: Allows listing of callback reasons
+      
+      responses:
+        '200':
+          description: Callback reasons listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      reasons:
+                        type: array
+                        items:
+                          properties: 
+                            reason_id:
+                              type: string
+                              format: uuid
+                            reason_name:
+                              type: string
+                            
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # callback request creation & listing
+  /callback-request:
+    post:
+      tags:
+        - Callback Reuqest
+      summary: Allows creation of callback request
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callbackReasonId:
+                  type: string
+                  format: uuid
+                  required: true
+                preferredContactOption:
+                  type: string
+                  description: Allowed values - 'phone', 'email'
+                  required: true
+                preferredTime:
+                  type: string
+                  format: date-time
+                  required: true
+                isSevere:
+                  type: boolean
+                  required: true
+                remarks:
+                  type: string
+                  required: false
+                status:
+                  type: string
+                  description: Allowed values - 'pending', 'contacted', 'not_reachable'
+                  required: true
+                
+      
+      responses:
+        '200':
+          description: added callback request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: object
+                        properties: 
+                          callback_request_id:
+                            type: string
+                            format: uuid
+                          patient_id:
+                            type: string
+                            format: uuid
+                          callback_reason_id:
+                            type: string
+                            format: uuid
+                          preferred_contact_option:
+                            type: string
+                          preferred_time:
+                            type: string
+                          is_severe:
+                            type: boolean
+                          remark:
+                            type: string
+                          status:
+                            type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    get:
+      tags:
+        - Callback Reuqest
+      summary: Allows listing of callback requests
+      parameters:
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          required: false
+          description: should be able to filter callback request based on available properties
+              
+      
+      responses:
+        '200':
+          description: Callback request listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: array
+                        items:
+                          properties: 
+                            callback_request_id:
+                              type: string
+                              format: uuid
+                            patient_id:
+                              type: string
+                              format: uuid
+                            callback_reason_id:
+                              type: string
+                              format: uuid
+                            preferred_contact_option:
+                              type: string
+                            preferred_time:
+                              type: string
+                              format: date-time
+                            is_severe:
+                              type: boolean
+                            remark:
+                              type: string
+                            status:
+                              type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    put:
+      tags:
+        - Callback Reuqest
+      summary: Allows updation of callback request
+      parameters:
+        - in: query
+          name: callbackRequestId
+          schema:
+            type: string
+            format: uuid
+          required: true
+      
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callbackReasonId:
+                  type: string
+                  format: uuid
+                preferredContactOption:
+                  type: string
+                  description: Allowed values - 'phone', 'email'
+                preferredTime:
+                  type: string
+                  format: date-time
+                isSevere:
+                  type: boolean
+                remarks:
+                  type: string
+                status:
+                  type: string
+                  description: Allowed values - 'pending', 'contacted', 'not_reachable'
+                
+      
+      responses:
+        '200':
+          description: updated callback request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: object
+                        properties: 
+                          callback_request_id:
+                            type: string
+                            format: uuid
+                          patient_id:
+                            type: string
+                            format: uuid
+                          callback_reason_id:
+                            type: string
+                            format: uuid
+                          preferred_contact_option:
+                            type: string
+                          preferred_time:
+                            type: string
+                            format: date-time
+                          is_severe:
+                            type: boolean
+                          remark:
+                            type: string
+                          status:
+                            type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # callback request update & delete
+  /callback-request/{callbackRequestId}:
+    delete:
+      tags:
+        - Callback Reuqest
+      summary: Allows deletion of callback requests
+      parameters:
+        - in: path
+          name: callbackRequestId
+          schema:
+            type: string
+            format: uuid
+          required: true
+              
+      
+      responses:
+        '200':
+          description: Callback request listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                            
+        '400':
+          description: JSON validation error | Invalid callback request id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
   # Lab report listing
   /reports/lab/{patientId}:
     get:
@@ -743,7 +1210,7 @@ paths:
           - Lab report
         summary: Allows to list all the report of a patient 
         parameters:
-        - in: query
+        - in: path
           name: patientId
           schema:
             type: string

@@ -1,0 +1,1335 @@
+openapi: "3.0.0"
+
+info:
+  title: PDeets - Data requirement
+  description: This documentation contains information regarding the possible endpoints for the purpose of data exchange with kielstein.
+  version: 1.0.0
+
+# reuseable components
+components:
+  responses:
+    UnknownServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: 
+                type: string
+    Unauhtorized:
+      description: Unauthorized request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error: 
+                type: string
+
+
+paths:
+  # patient details endpoint
+  /patient/{patientId}:
+    get:
+      tags:
+        - Patient
+      summary: Allows to fetch details of a perticular patient by id. (Needed for showing details of patient to doctor while video calling session is on going.)
+      parameters:
+        - in: path
+          name: patientId
+          schema:
+            type: string
+            format: uuid
+          required: true
+
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          patient_id:
+                            type: string
+                            format: uuid
+                          first_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                            format: email
+                          phone_number:
+                            type: string
+                            maxLength: 15
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                            format: date-time
+                          image_url:
+                            type: string
+                            description: This field contains dummy image for user profile. We plan to offer profile section for the patients.
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+        
+        '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+    # patient details endpoint
+  
+  # patient activation code
+  /patient/activation-code:
+    get:
+      tags:
+        - Patient
+      summary: Allows to generate activation code. (The activation code would allow patiend to register on the app)
+      parameters:
+        - in: query
+          name: patientId
+          schema:
+            type: string
+            format: uuid
+          required: true
+
+      responses:
+        '200':
+          description: Patient activation code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          activation_code:
+                            type: number
+                            default: 521526
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+        
+        '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # patient activation
+  /patient/activation:
+    post:
+      tags:
+        - Patient
+      summary: Returns patiend details by validating activation code. (This will allow us to register the patiend in app backend database)
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activationCode:
+                  type: number
+                  default: 521526
+                  required: true
+
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          patient_id:
+                            type: string
+                            format: uuid
+                          first_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                            format: email
+                          phone_number:
+                            type: string
+                            maxLength: 15
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                            format: date-time
+                          image_url:
+                            type: string
+                            description: This field contains dummy image for user profile. We plan to offer profile section for the patients.
+
+        '400':
+          description: Invalid request | Invalid activation code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+        
+        '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment location listing
+  /appointment/locations:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of available locations
+      parameters:
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          description: This is a gloabl filter. The filter should performe a search on location name, description, address, pincode, latitude, longitude and city columns possibly.
+  
+      responses:
+        '200':
+          description: List of locations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      locations:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            location_id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            lan:
+                              type: string
+                            lon:
+                              type: string
+                            address:
+                              type: string
+                            pincode:
+                              type: string
+                            city:
+                              type: string
+                            image_url:
+                              type: string
+                          
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+  
+  # appointment department listing
+  /appointment/departments:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of available departments
+      parameters:
+        - in: query
+          name: locationId
+          schema:
+            type: string
+          required: true
+          description: Based on locationId, api should return all the departments available at that location.
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          description: This is a gloabl filter. The filter should performe a search on department name and description possibly.
+  
+      responses:
+        '200':
+          description: List of departments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      departments:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            department_id:
+                              type: string
+                              format: uuid
+                            name:
+                              type: string
+                            description:
+                              type: string
+                            image_url:
+                              type: string
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'  
+
+  # appointment doctor listing
+  /appointment/doctors:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of available doctors
+      parameters:
+        - in: query
+          name: locationId
+          schema:
+            type: string
+          required: true
+          description: Based on locationId & departmentId, api should return all the doctors.
+        - in: query
+          name: departmentId
+          schema:
+            type: string
+          required: true
+          description: Based on locationId & departmentId, api should return all the doctors.
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          description: This is a gloabl filter. The filter should performe a search on available doctor information.
+     
+  
+      responses:
+        '200':
+          description: List of doctors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      doctors:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            doctor_id:
+                              type: string
+                              format: uuid
+                            first_name:
+                              type: string
+                            last_name:
+                              type: string
+                            email:
+                              type: string
+                            phone_number:
+                              type: string
+                            about:
+                              type: string
+                            doctor_speciality:
+                              type: string
+                            image_url:
+                              type: string
+                            
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+  # appointment doctor schedule listing
+  /appointment/doctor/availability:
+    get:
+      tags:
+        - Appointment
+      summary: Allows fetching of doctor schedule
+      parameters:
+      - in: query
+        name: locationId
+        schema:
+          type: string
+        required: true
+        description: Based on locationId & departmentId & doctorId, api should return the doctor schedule.
+      - in: query
+        name: departmentId
+        schema:
+          type: string
+        required: true
+        description: Based on locationId & departmentId & doctorId, api should return the doctor schedule.
+      - in: query
+        name: doctorId
+        schema:
+          type: string
+        required: true
+        description: Based on locationId & departmentId & doctorId, api should return the doctor schedule.
+      - in: query
+        name: availability_of
+        schema:
+          type: string
+        required: true
+        description: Days, weeks, months from the current day's date. i.e "1day", "1week", "1month"
+      
+      responses:
+        '200':
+          description: List of doctor schedule
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      schedule:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            format: uuid
+                          doctor_id:
+                            type: string
+                            format: uuid
+                          start_time:
+                            type: string
+                            format: date-time
+                            description: start time of the shift
+                          end_time:
+                            type: string
+                            format: date-time
+                            description: end time of the shift
+                          appointment_duration:
+                            type: string
+                            default: "15min"
+                      bookedSlots:
+                        type: array
+                        items:
+                          properties:
+                            date:
+                              type: string
+                              format: date
+                            time:
+                              type: string
+                              format: time
+                            duration:
+                              type: number
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # appointment booking & listing & update
+  /appointment:
+    post:
+      tags:
+        - Appointment
+      summary: Allows booking of an appointment
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locationId:
+                  type: string
+                  format: uuid
+                  required: true
+                departmentId:
+                  type: string
+                  format: uuid
+                  required: true
+                doctorId:
+                  type: string
+                  format: uuid
+                  required: true
+                patientId:
+                  type: string
+                  format: uuid
+                  required: true
+                appointmentTime:
+                  type: string
+                  format: date-time
+                  required: true
+                appointmentDuration:
+                  type: string
+                  default: "15min"
+                status:
+                  type: string
+                  description: The values can be pending, cancelled or attended
+                
+      
+      responses:
+        '200':
+          description: details of booked appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: object
+                        properties:
+                          appointment_id:
+                            type: string
+                            format: uuid
+                          location_id:
+                            type: string
+                            format: uuid
+                          department_id:
+                            type: string
+                            format: uuid
+                          doctor_id:
+                            type: string
+                            format: uuid
+                          patient_id:
+                            type: string
+                            format: uuid
+                          appointment_time:
+                            type: string
+                            format: date-time
+                          appointment_duration:
+                            type: string
+                            default: "15min"
+                          status:
+                            type: string
+                          
+                  
+        '400':
+          description: JSON payload validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
+
+    get:
+      tags:
+        - Appointment
+      summary: Allows listing of booked appointments by a patient
+      parameters:
+        - in: query
+          name: patientId
+          schema:
+            type: string
+            format: uuid
+          required: true
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+            description: should allow filter with appointment id.
+      responses:
+        '200':
+          description: List of booked appointments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            appointment_id:
+                              type: string
+                              format: uuid
+                            appointment_time:
+                              type: string
+                              format: date-time
+                            appointment_duration:
+                              type: string
+                              default: "15min"
+                            status:
+                              type: string
+                            location:
+                              type: object
+                              properties:
+                                location_id:
+                                  type: string
+                                  format: uuid
+                                name:
+                                  type: string
+                                description:
+                                  type: string
+                                address:
+                                  type: string
+                                pincode:
+                                  type: string
+                                city:
+                                  type: string
+                                image_url:
+                                  type: string
+                            department:
+                              type: object
+                              properties:
+                                department_id:
+                                  type: string
+                                  format: uuid
+                                name:
+                                  type: string
+                                description:
+                                  type: string
+                                image_url:
+                                  type: string
+                            doctor:
+                              type: object
+                              properties:
+                                doctor_id:
+                                  type: string
+                                  format: uuid
+                                first_name:
+                                  type: string
+                                last_name:
+                                  type: string
+                                doctor_speciality:
+                                  type: string
+                                image_url:
+                                  type: string
+                            patient:
+                              type: object
+                              properties:
+                                patient_id:
+                                  type: string
+                                  format: uuid
+
+    put:
+      tags:
+        - Appointment
+      summary: Allows to update the booked appointment
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appointment_id:
+                  type: string
+                  format: uuid
+                locationId:
+                  type: string
+                  format: uuid
+                departmentId:
+                  type: string
+                  format: uuid
+                doctorId:
+                  type: string
+                  format: uuid
+                appointmentTime:
+                  type: string
+                  format: date-time
+                appointmentDuration:
+                  type: string
+                  default: "15min"
+                status:
+                  type: string
+                
+      
+      responses:
+        '200':
+          description: details of updated appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      appointment:
+                        type: object
+                        properties:
+                          appointment_id:
+                            type: string
+                            format: uuid
+                          location_id:
+                            type: string
+                            format: uuid
+                          department_id:
+                            type: string
+                            format: uuid
+                          doctor_id:
+                            type: string
+                            format: uuid
+                          appointment_time:
+                            type: string
+                          appointment_duration:
+                            type: string
+                            default: "15min"
+                          status:
+                            type: string
+                  
+        '400':
+          description: JSON payload validation error | Invalid appointment id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+   # appointment update & delete
+  
+  # appointment delete
+  /appointment/{appointmentId}: 
+    delete:
+      tags:
+        - Appointment
+      summary: Allows to delete the booked appointment
+      parameters:
+        - in: path
+          name: appointmentId
+          schema:
+            type: string
+            format: uuid
+          required: true
+      
+      responses:
+        '200':
+          description: details of deleted appointment
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  
+        '400':
+          description: Invalid appointment id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # callback reasons listing
+  /callback-request/reasons:
+    get:
+      tags:
+        - Callback Reuqest
+      summary: Allows listing of callback reasons
+      
+      responses:
+        '200':
+          description: Callback reasons listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      reasons:
+                        type: array
+                        items:
+                          properties: 
+                            reason_id:
+                              type: string
+                              format: uuid
+                            reason_name:
+                              type: string
+                            
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # callback request creation & listing
+  /callback-request:
+    post:
+      tags:
+        - Callback Reuqest
+      summary: Allows creation of callback request
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callbackReasonId:
+                  type: string
+                  format: uuid
+                  required: true
+                preferredContactOption:
+                  type: string
+                  description: Allowed values - 'phone', 'email'
+                  required: true
+                preferredTime:
+                  type: string
+                  format: date-time
+                  required: true
+                isSevere:
+                  type: boolean
+                  required: true
+                remarks:
+                  type: string
+                  required: false
+                status:
+                  type: string
+                  description: Allowed values - 'pending', 'contacted', 'not_reachable'
+                  required: true
+                
+      
+      responses:
+        '200':
+          description: added callback request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: object
+                        properties: 
+                          callback_request_id:
+                            type: string
+                            format: uuid
+                          patient_id:
+                            type: string
+                            format: uuid
+                          callback_reason_id:
+                            type: string
+                            format: uuid
+                          preferred_contact_option:
+                            type: string
+                          preferred_time:
+                            type: string
+                          is_severe:
+                            type: boolean
+                          remark:
+                            type: string
+                          status:
+                            type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    get:
+      tags:
+        - Callback Reuqest
+      summary: Allows listing of callback requests
+      parameters:
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          required: false
+          description: should be able to filter callback request based on available properties
+              
+      
+      responses:
+        '200':
+          description: Callback request listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: array
+                        items:
+                          properties: 
+                            callback_request_id:
+                              type: string
+                              format: uuid
+                            patient_id:
+                              type: string
+                              format: uuid
+                            callback_reason_id:
+                              type: string
+                              format: uuid
+                            preferred_contact_option:
+                              type: string
+                            preferred_time:
+                              type: string
+                              format: date-time
+                            is_severe:
+                              type: boolean
+                            remark:
+                              type: string
+                            status:
+                              type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+    put:
+      tags:
+        - Callback Reuqest
+      summary: Allows updation of callback request
+      parameters:
+        - in: query
+          name: callbackRequestId
+          schema:
+            type: string
+            format: uuid
+          required: true
+      
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callbackReasonId:
+                  type: string
+                  format: uuid
+                preferredContactOption:
+                  type: string
+                  description: Allowed values - 'phone', 'email'
+                preferredTime:
+                  type: string
+                  format: date-time
+                isSevere:
+                  type: boolean
+                remarks:
+                  type: string
+                status:
+                  type: string
+                  description: Allowed values - 'pending', 'contacted', 'not_reachable'
+                
+      
+      responses:
+        '200':
+          description: updated callback request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      callbackRequest:
+                        type: object
+                        properties: 
+                          callback_request_id:
+                            type: string
+                            format: uuid
+                          patient_id:
+                            type: string
+                            format: uuid
+                          callback_reason_id:
+                            type: string
+                            format: uuid
+                          preferred_contact_option:
+                            type: string
+                          preferred_time:
+                            type: string
+                            format: date-time
+                          is_severe:
+                            type: boolean
+                          remark:
+                            type: string
+                          status:
+                            type: string
+                            
+        '400':
+          description: JSON validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # callback request update & delete
+  /callback-request/{callbackRequestId}:
+    delete:
+      tags:
+        - Callback Reuqest
+      summary: Allows deletion of callback requests
+      parameters:
+        - in: path
+          name: callbackRequestId
+          schema:
+            type: string
+            format: uuid
+          required: true
+              
+      
+      responses:
+        '200':
+          description: Callback request listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                            
+        '400':
+          description: JSON validation error | Invalid callback request id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # Lab report listing
+  /reports/lab/{patientId}:
+    get:
+        tags:
+          - Lab report
+        summary: Allows to list all the report of a patient 
+        parameters:
+        - in: path
+          name: patientId
+          schema:
+            type: string
+            format: uuid
+          required: true
+
+        responses:
+          '200':
+            description: Report listing
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: message from the server
+                    data:
+                      type: object
+                      properties:
+                        reports:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              report_id:
+                                type: string
+                                format: uuid
+                              patient_id:
+                                type: string
+                                format: uuid
+                              report_name:
+                                type: string
+                              generation_date:
+                                type: string
+                                format: date-time
+                              status:
+                                type: string
+                              remarks:
+                                type: string
+                              
+          '400':
+            description: Invalid request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error: 
+                      type: string
+                      description: A error message from server
+
+          '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+          '500':
+            $ref: '#/components/responses/UnknownServerError'
+
+  # News listing
+  /news:
+    get:
+        tags:
+          - News
+        summary: Allows to list all the news and latest events
+        parameters:
+        - in: query
+          name: filterBy
+          schema:
+            type: string
+          description: Possible filters on news
+
+        responses:
+          '200':
+            description: News listing
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    message:
+                      type: string
+                      description: message from the server
+                    data:
+                      type: object
+                      properties:
+                        news:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                format: uuid
+                              title:
+                                type: string
+                              text:
+                                type: string
+                              image_url:
+                                type: string
+                              publish_date:
+                                type: string
+                                format: date-time
+                              category:
+                                type: string
+                              
+                              
+          '400':
+            description: Invalid request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    error: 
+                      type: string
+                      description: A error message from server
+
+          '401':
+            $ref: '#/components/responses/Unauhtorized'
+
+          '500':
+            $ref: '#/components/responses/UnknownServerError'

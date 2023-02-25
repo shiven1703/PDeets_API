@@ -1,16 +1,12 @@
 
 # Pdeets app poc API
-The repository contains code for the backend API of planspiel poc app.
+The repository contains code for the backend API of planspiel poc app Version 2.
 
 ## Commands
 - npm run start-dev
 - npm run start
 - npm run lint
 - npm run lint-fix
-
-## Docker
-- docker build . -t pdeets_poc_api:latest
-- docker run -p 4000:4000  pdeets_poc_api
 
 ## Documentation url
 - /api-docs

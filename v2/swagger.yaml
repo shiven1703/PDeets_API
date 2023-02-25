@@ -6,12 +6,12 @@ info:
   version: 2.0.0
 
 servers:
-  - url: http://3.123.27.22/
+  - url: http://localhost
     variables:
       port:
         enum:
-          - "80"
-        default: "80"
+          - "5000"
+        default: "5000"
     description: Development server API endpoint
 
 # reuseable components

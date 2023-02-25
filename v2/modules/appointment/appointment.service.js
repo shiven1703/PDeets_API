@@ -136,71 +136,8 @@ const getDepartments = async ({ locationId, filterBy }) => {
 
 const getDoctors = async ({ locationId, departmentId, filterBy }) => {
   try {
-    const locationDepartment = await db.location_has_department.findOne({
-      attributes: ['location_department_id'],
-      where: {
-        location_id: locationId,
-        department_id: departmentId
-      },
-      raw: true
-    })
-
-    let query = null
-
-    if (filterBy) {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience, CONCAT('${process.env.HOST}', doctors.image_url) as image_url
-      FROM department_has_doctor 
-      LEFT JOIN doctors as doctors 
-      ON doctor_id=doctors.id 
-      WHERE location_department_id='${locationDepartment.location_department_id}' AND (
-        doctors.first_name ILIKE '%${filterBy}%' OR
-        doctors.last_name ILIKE '%${filterBy}%' OR
-        doctors.email ILIKE '%${filterBy}%' OR
-        doctors.phone_number ILIKE '%${filterBy}%' OR
-        doctors.address ILIKE '%${filterBy}%' OR
-        doctors.pincode ILIKE '%${filterBy}%' OR
-        doctors.licence_no ILIKE '%${filterBy}%'
-      );`
-    } else {
-      query = `SELECT doctor_id, doctors.first_name, doctors.last_name, doctors.email, doctors.phone_number, doctors.education, doctors.about, doctors.address, doctors.pincode, doctors.doctor_speciality, doctors.licence_no, doctors.experience, CONCAT('${process.env.HOST}', doctors.image_url) as image_url
-      FROM department_has_doctor 
-      LEFT JOIN doctors as doctors 
-      ON doctor_id=doctors.id 
-      WHERE location_department_id='${locationDepartment.location_department_id}';`
-    }
-
-    let doctorList = await sequelize.query(query, { type: QueryTypes.SELECT })
-    doctorList = JSON.parse(JSON.stringify(doctorList))
-
-    // fetching reviews for each doctor
-    let doctorListWithReviews = await Promise.all(doctorList.map(async (doctor) => {
-      const query = `SELECT patients.first_name, patients.last_name, patients.image_url, number_of_stars, review_text FROM reviews
-      LEFT JOIN doctors ON doctors.id = reviews.doctor_id
-      LEFT JOIN patients ON patients.id = reviews.patient_id
-      WHERE reviews.doctor_id = '${doctor.doctor_id}';`
-      const reviews = await sequelize.query(query, { type: QueryTypes.SELECT })
-      doctor.reviews = reviews
-      return doctor
-    }))
-
-    // avg review
-    doctorListWithReviews = doctorListWithReviews.map((doctor) => {
-      const reviewCount = doctor.reviews.length
-      let reviewTotal = 0
-
-      if (reviewCount > 0) {
-        doctor.reviews.forEach((review) => {
-          reviewTotal = reviewTotal + review.number_of_stars
-        })
-
-        doctor.avg_review = reviewTotal / reviewCount
-      } else {
-        doctor.avg_review = 5
-      }
-      return doctor
-    })
-
-    return doctorListWithReviews
+    const doctorsRequest = await axios.get(process.env.KIELSTEIN_API + `/doctors?locationId=${locationId}`)
+    return doctorsRequest.data
   } catch (err) {
     throw new DatabaseError(err.message)
   }

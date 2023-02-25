@@ -493,76 +493,76 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
 
   # appointment department listing
-  /v2/appointment/departments:
-    post:
-      tags:
-        - Appointment
-      summary: Allows fetching of available departments
-      security:
-        - basicAuth: []
-      parameters:
-        - in: header
-          name: Authorization
-          description: pass the access token
-          required: true
-      requestBody:
-        description: Takes below properties
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                locationId:
-                  type: string
-                  required: true
-                filterBy: 
-                  type: string
-                  description: This is a gloabl filter. Pass the user input and search will be performed on department name and description
+  # /v2/appointment/departments:
+  #   post:
+  #     tags:
+  #       - Appointment
+  #     summary: Allows fetching of available departments
+  #     security:
+  #       - basicAuth: []
+  #     parameters:
+  #       - in: header
+  #         name: Authorization
+  #         description: pass the access token
+  #         required: true
+  #     requestBody:
+  #       description: Takes below properties
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               locationId:
+  #                 type: string
+  #                 required: true
+  #               filterBy: 
+  #                 type: string
+  #                 description: This is a gloabl filter. Pass the user input and search will be performed on department name and description
   
-      responses:
-        '200':
-          description: List of departments
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: message from the server
-                  data:
-                    type: object
-                    properties:
-                      departments:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: string
-                            name:
-                              type: string
-                            description:
-                              type: string
-                            image_url:
-                              type: string
+  #     responses:
+  #       '200':
+  #         description: List of departments
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 message:
+  #                   type: string
+  #                   description: message from the server
+  #                 data:
+  #                   type: object
+  #                   properties:
+  #                     departments:
+  #                       type: array
+  #                       items:
+  #                         type: object
+  #                         properties:
+  #                           id:
+  #                             type: string
+  #                           name:
+  #                             type: string
+  #                           description:
+  #                             type: string
+  #                           image_url:
+  #                             type: string
 
-        '400':
-          description: JSON payload validation error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error: 
-                    type: string
-                    description: A error message from server
+  #       '400':
+  #         description: JSON payload validation error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 error: 
+  #                   type: string
+  #                   description: A error message from server
 
-        '401':
-          $ref: '#/components/responses/Unauhtorized'
+  #       '401':
+  #         $ref: '#/components/responses/Unauhtorized'
 
-        '500':
-          $ref: '#/components/responses/UnknownServerError' 
+  #       '500':
+  #         $ref: '#/components/responses/UnknownServerError' 
 
   # appointment doctor listing
   /v2/appointment/doctors:
@@ -587,12 +587,6 @@ paths:
                 locationId:
                   type: string
                   required: true,
-                departmentId:
-                  type: string
-                  required: true
-                filterBy: 
-                  type: string
-                  description: This is a gloabl filter. Pass the user input and search will be performed on doctor proerties.
   
       responses:
         '200':
@@ -613,49 +607,14 @@ paths:
                         items:
                           type: object
                           properties:
-                            doctor_id:
-                              type: string
-                            first_name:
-                              type: string
-                            last_name:
-                              type: string
-                            email:
-                              type: string
-                            phone_number:
-                              type: string
-                            education:
-                              type: string
-                            about:
-                              type: string
-                            address:
-                              type: string
-                            pincode:
-                              type: string
-                            doctor_speciality:
-                              type: string
-                            licence_no:
-                              type: string
-                            experience:
-                              type: string
-                            image_url:
-                              type: string
-                            avg_review:
+                            doctorId:
                               type: number
-                            reviews:
-                             type: array
-                             items:
-                              properties:
-                               first_name:
-                                type: string
-                               last_name:
-                                type: string
-                               image_url:
-                                type: string
-                               number_of_stars:
-                                type: string
-                               review_text:
-                                type: string
-                            
+                            locationId:
+                              type: number
+                            name:
+                              type: string
+                            specialization:
+                              type: string
 
         '400':
           description: JSON payload validation error

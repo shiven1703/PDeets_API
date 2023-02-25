@@ -35,7 +35,7 @@ const doctorListSchema = {
       type: 'string'
     }
   },
-  required: ['locationId', 'departmentId'],
+  required: ['locationId'],
   additionalProperties: false
 }
 

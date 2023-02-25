@@ -16,7 +16,7 @@ module.exports = (app) => {
 
   app.use('/v1/reports', reportsModule)
 
-  app.get('/', (req, res) => { res.json({ message: 'Pdeets API home', version: 'v1' }) })
+  app.get('/v1/', (req, res) => { res.json({ message: 'Pdeets API home', version: 'v1' }) })
 
   app.use(gloablErrorHandler)
 }

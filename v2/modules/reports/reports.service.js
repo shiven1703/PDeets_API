@@ -3,6 +3,7 @@ const { db } = require('../../db')
 
 // lib import
 const config = require('config')
+const axios = require('axios')
 const fs = require('fs')
 
 // custom eror
@@ -34,18 +35,8 @@ const addReport = async (reportData, reportFiles) => {
 }
 
 const getReports = async (patientId) => {
-  let reports = await db.lab_report.findAll({
-    where: {
-      patient_id: patientId
-    },
-    raw: true
-  })
-  reports = await Promise.all(reports.map(async (report) => {
-    const updatedReport = await addReportDownloadUrl(report)
-    return updatedReport
-  }))
-
-  return reports
+  const reportRequest = await axios.get(process.env.KIELSTEIN_API + `/patient/${patientId}/labreports`)
+  return reportRequest.data
 }
 
 const updateReport = async (reportData, reportFiles) => {

@@ -2040,121 +2040,121 @@ paths:
 
   # Lab report upload & listing
   /v2/reports/lab:
-    post:
-      tags:
-        - Lab report
-      summary: Internal - REST- Interface - Allows to upload a report 
-      consumes:
-        - multipart/form-data
-      parameters:
-        - in: patientId
-          name: patientId
-          type: string
-          required: true
+    # post:
+    #   tags:
+    #     - Lab report
+    #   summary: Internal - REST- Interface - Allows to upload a report 
+    #   consumes:
+    #     - multipart/form-data
+    #   parameters:
+    #     - in: patientId
+    #       name: patientId
+    #       type: string
+    #       required: true
 
-        - in: appointmentId
-          name: appointmentId
-          type: string
-          required: true
+    #     - in: appointmentId
+    #       name: appointmentId
+    #       type: string
+    #       required: true
 
-        - in: reportName
-          name: reportName
-          type: string
-          required: true
+    #     - in: reportName
+    #       name: reportName
+    #       type: string
+    #       required: true
 
-        - in: reportFiles
-          name: reportFiles
-          type: file
-          required: true
-          description: Multiple files related to report can be uploaded. Allowed file types - "jpeg", "png", "jpg", "pdf". Allowed max file size - 2MB
+    #     - in: reportFiles
+    #       name: reportFiles
+    #       type: file
+    #       required: true
+    #       description: Multiple files related to report can be uploaded. Allowed file types - "jpeg", "png", "jpg", "pdf". Allowed max file size - 2MB
 
-        - in: remarks
-          name: remarks
-          type: string
+    #     - in: remarks
+    #       name: remarks
+    #       type: string
 
-        - in: generationDate
-          name: generationDate
-          type: string
+    #     - in: generationDate
+    #       name: generationDate
+    #       type: string
 
-        - in: status
-          name: status
-          type: string
+    #     - in: status
+    #       name: status
+    #       type: string
       
-      responses:
-        '200':
-          description: Report details
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: message from the server
-                  data:
-                    type: object
-                    properties:
-                      report:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                          patient_id:
-                            type: string
-                          appointment_id:
-                            type: string
-                          report_name:
-                            type: string
-                          generation_date:
-                            type: string
-                          status:
-                            type: string
-                          remarks:
-                            type: string
-                          updatedAt:
-                            type: string
-                          createdAt:
-                            type: string
-                          report_files:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                fieldname:
-                                  type: string
-                                originalname:
-                                  type: string
-                                encoding:
-                                  type: string
-                                mimetype:
-                                  type: string
-                                destination:
-                                  type: string
-                                filename:
-                                  type: string
-                                path:
-                                  type: string
-                                size:
-                                  type: string
-                                download_url:
-                                  type: string
+    #   responses:
+    #     '200':
+    #       description: Report details
+    #       content:
+    #         application/json:
+    #           schema:
+    #             type: object
+    #             properties:
+    #               message:
+    #                 type: string
+    #                 description: message from the server
+    #               data:
+    #                 type: object
+    #                 properties:
+    #                   report:
+    #                     type: object
+    #                     properties:
+    #                       id:
+    #                         type: string
+    #                       patient_id:
+    #                         type: string
+    #                       appointment_id:
+    #                         type: string
+    #                       report_name:
+    #                         type: string
+    #                       generation_date:
+    #                         type: string
+    #                       status:
+    #                         type: string
+    #                       remarks:
+    #                         type: string
+    #                       updatedAt:
+    #                         type: string
+    #                       createdAt:
+    #                         type: string
+    #                       report_files:
+    #                         type: array
+    #                         items:
+    #                           type: object
+    #                           properties:
+    #                             fieldname:
+    #                               type: string
+    #                             originalname:
+    #                               type: string
+    #                             encoding:
+    #                               type: string
+    #                             mimetype:
+    #                               type: string
+    #                             destination:
+    #                               type: string
+    #                             filename:
+    #                               type: string
+    #                             path:
+    #                               type: string
+    #                             size:
+    #                               type: string
+    #                             download_url:
+    #                               type: string
                             
-        '400':
-          description: JSON validation error | File upload error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error: 
-                    type: string
-                    description: A error message from server
+    #     '400':
+    #       description: JSON validation error | File upload error
+    #       content:
+    #         application/json:
+    #           schema:
+    #             type: object
+    #             properties:
+    #               error: 
+    #                 type: string
+    #                 description: A error message from server
 
-        '401':
-          $ref: '#/components/responses/Unauhtorized'
+    #     '401':
+    #       $ref: '#/components/responses/Unauhtorized'
 
-        '500':
-          $ref: '#/components/responses/UnknownServerError'
+    #     '500':
+    #       $ref: '#/components/responses/UnknownServerError'
 
     get:
         tags:
@@ -2187,47 +2187,12 @@ paths:
                           items:
                             type: object
                             properties:
-                              id:
+                              ident:
                                 type: string
-                              patient_id:
+                              value:
                                 type: string
-                              appointment_id:
-                                type: string
-                              report_name:
-                                type: string
-                              generation_date:
-                                type: string
-                              status:
-                                type: string
-                              remarks:
-                                type: string
-                              updatedAt:
-                                type: string
-                              createdAt:
-                                type: string
-                              report_files:
-                                type: array
-                                items:
-                                  type: object
-                                  properties:
-                                    fieldname:
-                                      type: string
-                                    originalname:
-                                      type: string
-                                    encoding:
-                                      type: string
-                                    mimetype:
-                                      type: string
-                                    destination:
-                                      type: string
-                                    filename:
-                                      type: string
-                                    path:
-                                      type: string
-                                    size:
-                                      type: string
-                                    download_url:
-                                      type: string
+                              critical:
+                                type: boolean
                               
           '400':
             description: JSON validation error | File upload error
@@ -2247,153 +2212,153 @@ paths:
             $ref: '#/components/responses/UnknownServerError'
 
   # Lab report update & delete
-  /v2/report/lab/{reportId}:
-    delete:
-        tags:
-          - Lab report
-        summary: Internal - REST- Interface - Allows to delete a report
-        responses:
-          '200':
-            description: Report listing
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
-                      description: message from the server
-                    data:
-                      type: object
+  # /v2/report/lab/{reportId}:
+  #   delete:
+  #       tags:
+  #         - Lab report
+  #       summary: Internal - REST- Interface - Allows to delete a report
+  #       responses:
+  #         '200':
+  #           description: Report listing
+  #           content:
+  #             application/json:
+  #               schema:
+  #                 type: object
+  #                 properties:
+  #                   message:
+  #                     type: string
+  #                     description: message from the server
+  #                   data:
+  #                     type: object
                               
-          '400':
-            description: JSON validation error 
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    error: 
-                      type: string
-                      description: A error message from server
+  #         '400':
+  #           description: JSON validation error 
+  #           content:
+  #             application/json:
+  #               schema:
+  #                 type: object
+  #                 properties:
+  #                   error: 
+  #                     type: string
+  #                     description: A error message from server
 
-          '401':
-            $ref: '#/components/responses/Unauhtorized'
+  #         '401':
+  #           $ref: '#/components/responses/Unauhtorized'
 
-          '500':
-            $ref: '#/components/responses/UnknownServerError'
+  #         '500':
+  #           $ref: '#/components/responses/UnknownServerError'
 
-    put:
-        tags:
-          - Lab report
-        summary: Internal - REST- Interface - Allows to update a report 
-        consumes:
-          - multipart/form-data
-        parameters:
-          - in: patientId
-            name: patientId
-            type: string
+  #   put:
+  #       tags:
+  #         - Lab report
+  #       summary: Internal - REST- Interface - Allows to update a report 
+  #       consumes:
+  #         - multipart/form-data
+  #       parameters:
+  #         - in: patientId
+  #           name: patientId
+  #           type: string
 
-          - in: appointmentId
-            name: appointmentId
-            type: string
+  #         - in: appointmentId
+  #           name: appointmentId
+  #           type: string
 
-          - in: reportName
-            name: reportName
-            type: string
+  #         - in: reportName
+  #           name: reportName
+  #           type: string
 
-          - in: reportFiles
-            name: reportFiles
-            type: file
-            description: Multiple files related to report can be uploaded. Allowed file types - "jpeg", "png", "jpg", "pdf". Allowed max file size - 2MB
+  #         - in: reportFiles
+  #           name: reportFiles
+  #           type: file
+  #           description: Multiple files related to report can be uploaded. Allowed file types - "jpeg", "png", "jpg", "pdf". Allowed max file size - 2MB
 
-          - in: remarks
-            name: remarks
-            type: string
+  #         - in: remarks
+  #           name: remarks
+  #           type: string
 
-          - in: generationDate
-            name: generationDate
-            type: string
+  #         - in: generationDate
+  #           name: generationDate
+  #           type: string
 
-          - in: status
-            name: status
-            type: string
+  #         - in: status
+  #           name: status
+  #           type: string
         
-        responses:
-          '200':
-            description: Updated Report details
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    message:
-                      type: string
-                      description: message from the server
-                    data:
-                      type: object
-                      properties:
-                        report:
-                          type: object
-                          properties:
-                            id:
-                              type: string
-                            patient_id:
-                              type: string
-                            appointment_id:
-                              type: string
-                            report_name:
-                              type: string
-                            generation_date:
-                              type: string
-                            status:
-                              type: string
-                            remarks:
-                              type: string
-                            updatedAt:
-                              type: string
-                            createdAt:
-                              type: string
-                            report_files:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  fieldname:
-                                    type: string
-                                  originalname:
-                                    type: string
-                                  encoding:
-                                    type: string
-                                  mimetype:
-                                    type: string
-                                  destination:
-                                    type: string
-                                  filename:
-                                    type: string
-                                  path:
-                                    type: string
-                                  size:
-                                    type: string
-                                  download_url:
-                                    type: string
+  #       responses:
+  #         '200':
+  #           description: Updated Report details
+  #           content:
+  #             application/json:
+  #               schema:
+  #                 type: object
+  #                 properties:
+  #                   message:
+  #                     type: string
+  #                     description: message from the server
+  #                   data:
+  #                     type: object
+  #                     properties:
+  #                       report:
+  #                         type: object
+  #                         properties:
+  #                           id:
+  #                             type: string
+  #                           patient_id:
+  #                             type: string
+  #                           appointment_id:
+  #                             type: string
+  #                           report_name:
+  #                             type: string
+  #                           generation_date:
+  #                             type: string
+  #                           status:
+  #                             type: string
+  #                           remarks:
+  #                             type: string
+  #                           updatedAt:
+  #                             type: string
+  #                           createdAt:
+  #                             type: string
+  #                           report_files:
+  #                             type: array
+  #                             items:
+  #                               type: object
+  #                               properties:
+  #                                 fieldname:
+  #                                   type: string
+  #                                 originalname:
+  #                                   type: string
+  #                                 encoding:
+  #                                   type: string
+  #                                 mimetype:
+  #                                   type: string
+  #                                 destination:
+  #                                   type: string
+  #                                 filename:
+  #                                   type: string
+  #                                 path:
+  #                                   type: string
+  #                                 size:
+  #                                   type: string
+  #                                 download_url:
+  #                                   type: string
                               
-          '400':
-            description: JSON validation error | File upload error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    error: 
-                      type: string
-                      description: A error message from server
+  #         '400':
+  #           description: JSON validation error | File upload error
+  #           content:
+  #             application/json:
+  #               schema:
+  #                 type: object
+  #                 properties:
+  #                   error: 
+  #                     type: string
+  #                     description: A error message from server
 
-          '401':
-            $ref: '#/components/responses/Unauhtorized'
+  #         '401':
+  #           $ref: '#/components/responses/Unauhtorized'
 
-          '500':
-            $ref: '#/components/responses/UnknownServerError'
+  #         '500':
+  #           $ref: '#/components/responses/UnknownServerError'
 
   # news 
   /v2/news:

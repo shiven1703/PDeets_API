@@ -7,6 +7,7 @@ const { Op, QueryTypes } = require('sequelize')
 // helpers imports
 const luxon = require('luxon')
 const tokenHelper = require('../../utils/token')
+const axios = require('axios')
 const { sendPushNotification } = require('../push-notification/push-notification.service')
 // custom errors
 const {
@@ -78,44 +79,8 @@ const generateAppointmentQR = async (appointmentId) => {
 
 const getLocations = async ({ filterBy }) => {
   try {
-    let locations = []
-    if (filterBy) {
-      // setting up filter value (search value in all columns)
-      const where = {
-        [Op.or]: [{
-          name: {
-            [Op.iLike]: `%${filterBy}%`
-          }
-        },
-        {
-          description: {
-            [Op.iLike]: `%${filterBy}%`
-          }
-        },
-        {
-          address: {
-            [Op.iLike]: `%${filterBy}%`
-          }
-        },
-        {
-          pincode: {
-            [Op.iLike]: `%${filterBy}%`
-          }
-        },
-        {
-          city: {
-            [Op.iLike]: `%${filterBy}%`
-          }
-        }]
-      }
-      // fetching data
-      locations = await db.location.findAll({
-        where
-      })
-    } else {
-      locations = await db.location.findAll()
-    }
-    return locations
+    const locationRequest = await axios.get(process.env.KIELSTEIN_API + '/locations')
+    return locationRequest.data
   } catch (err) {
     throw new DatabaseError(err.message)
   }

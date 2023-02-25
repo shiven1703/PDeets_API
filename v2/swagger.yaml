@@ -460,29 +460,20 @@ paths:
                         items:
                           type: object
                           properties:
-                            id:
+                            locationId:
+                              type: number
+                            locationName:
                               type: string
-                            name:
+                            latitude:
                               type: string
-                            description:
-                              type: string
-                            lan:
-                              type: string
-                            lon:
+                            longitude:
                               type: string
                             address:
                               type: string
-                            pincode:
+                            zipCode:
                               type: string
                             city:
                               type: string
-                            image_url:
-                              type: string
-                            createdAt:
-                              type: string
-                            updatedAt:
-                              type: string
-                          
 
         '400':
           description: JSON payload validation error

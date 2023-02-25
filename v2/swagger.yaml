@@ -653,15 +653,10 @@ paths:
             schema:
               type: object
               properties:
-                locationId:
-                    type: string
-                    required: true,
-                departmentId:
-                  type: string
-                  required: true,      
                 doctorId:
                   type: string
-                  required: true,
+                  required: true
+
       responses:
         '200':
           description: List of doctor schedule
@@ -679,30 +674,16 @@ paths:
                       schedule:
                         type: object
                         properties:
-                          id:
+                          timeSlotId:
+                            type: number
+                          startDate:
                             type: string
-                          doctor_id:
-                            type: string
-                          start_time:
-                            type: string
-                          end_time:
-                            type: string
-                          appointment_duration:
-                            type: string
-                          createdAt:
-                            type: string
-                          updatedAt:
-                            type: string
-                      bookedSlots:
-                        type: array
-                        items:
-                          properties:
-                            date:
-                              type: string
-                            time:
-                              type: string
-                            duration:
-                              type: string
+                            format: date-time
+                          doctorId:
+                            type: number
+                          locationId:
+                            type: number
+                          
 
         '400':
           description: JSON payload validation error

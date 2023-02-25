@@ -52,7 +52,7 @@ const doctorScheduleSchema = {
       type: 'string'
     }
   },
-  required: ['locationId', 'departmentId', 'doctorId'],
+  required: ['doctorId'],
   additionalProperties: false
 }
 

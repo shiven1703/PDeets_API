@@ -145,17 +145,8 @@ const getDoctors = async ({ locationId, departmentId, filterBy }) => {
 
 const getDoctorSchedule = async ({ locationId, departmentId, doctorId }) => {
   try {
-    const doctorSchedule = await db.doctor_schedule.findAll({
-      where: {
-        doctor_id: doctorId
-      }
-    })
-
-    const unavailableSlots = await getDoctorUnavailableSlots({ locationId, departmentId, doctorId })
-    return {
-      doctorSchedule,
-      unavailableSlots
-    }
+    const doctorSchedulRequest = await axios.get(process.env.KIELSTEIN_API + `/appointments?doctorId=${doctorId}`)
+    return doctorSchedulRequest.data
   } catch (err) {
     throw new DatabaseError(err.message)
   }

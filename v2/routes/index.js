@@ -3,6 +3,7 @@ const appointmentModule = require('../modules/appointment')
 const medicationModule = require('../modules/medication')
 const callBackRquestModule = require('../modules/callback-request')
 const reportsModule = require('../modules/reports')
+const newsModule = require('../modules/news')
 const gloablErrorHandler = require('../middleware/error')
 
 module.exports = (app) => {
@@ -15,6 +16,8 @@ module.exports = (app) => {
   app.use('/v2/callback-request', callBackRquestModule)
 
   app.use('/v2/reports', reportsModule)
+
+  app.use('/v2/news', newsModule)
 
   app.get('/v2/', (req, res) => { res.json({ message: 'Pdeets API home', version: 'v2' }) })
 

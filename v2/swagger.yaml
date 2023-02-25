@@ -3,19 +3,16 @@ openapi: "3.0.0"
 info:
   title: PDeets app poc api
   description: This documentation contains information regarding the available endpoints for poc app of planspiel project.
-  version: 1.0.0
+  version: 2.0.0
 
 servers:
-  - url: http://18.184.191.74/
+  - url: http://3.123.27.22/
     variables:
       port:
         enum:
           - "80"
         default: "80"
     description: Development server API endpoint
-  # - url: https://agile-plains-29279.herokuapp.com/
-  #   description: Production API endpoint
-
 
 # reuseable components
 components:
@@ -47,7 +44,7 @@ components:
 
 paths:
   # api doc endpoint
-  /api-docs:
+  /v2/api-docs:
     get:
       tags:
         - Documentation
@@ -57,7 +54,7 @@ paths:
           description: OK
 
   # patient registration endpoint
-  /patient/register:
+  /v2/patient/register:
     post:
       tags:
         - Patient
@@ -149,7 +146,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
   
   # patient login endpoint
-  /patient/login:
+  /v2/patient/login:
     post:
       tags:
         - Patient
@@ -246,7 +243,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
   
   # token refresh endpoint
-  /patient/token/refresh:
+  /v2/patient/token/refresh:
     post:
       tags:
         - Patient
@@ -295,7 +292,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
 
   # password reset token endpoint
-  /patient/token/password_reset:
+  /v2/patient/token/password_reset:
     post:
       tags:
         - Patient
@@ -348,7 +345,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
 
   # change & reset password endpoint
-  /patient/password:
+  /v2/patient/password:
     post:
       tags:
         - Patient
@@ -421,7 +418,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
 
   # appointment location listing
-  /appointment/locations:
+  /v2/appointment/locations:
     post:
       tags:
         - Appointment
@@ -505,7 +502,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
 
   # appointment department listing
-  /appointment/departments:
+  /v2/appointment/departments:
     post:
       tags:
         - Appointment
@@ -577,7 +574,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
 
   # appointment doctor listing
-  /appointment/doctors:
+  /v2/appointment/doctors:
     post:
       tags:
         - Appointment
@@ -687,7 +684,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
 
   # appointment doctor schedule listing
-  /appointment/doctor/availability:
+  /v2/appointment/doctor/availability:
     post:
       tags:
         - Appointment
@@ -775,7 +772,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
 
   # appointment questionary
-  /appointment/questionnaire:
+  /v2/appointment/questionnaire:
     post:
       tags:
         - Appointment
@@ -824,7 +821,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
 
   # appointment booking and listing 
-  /appointment:
+  /v2/appointment:
     post:
       tags:
         - Appointment
@@ -1082,7 +1079,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
     
   # appointment update & delete
-  /appointment/{appointmentId}:
+  /v2/appointment/{appointmentId}:
     put:
       tags:
         - Appointment
@@ -1218,7 +1215,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
 
   # appointmemt qr generation
-  /appointment/qr/{appointmentId}:
+  /v2/appointment/qr/{appointmentId}:
     post:
       tags:
         - Appointment
@@ -1269,7 +1266,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
   
   # appointmemt qr decode
-  /appointment/qr:
+  /v2/appointment/qr:
     post:
       tags:
         - Appointment
@@ -1433,7 +1430,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
   
   # medication creation
-  /medication/reminder:
+  /v2/medication/reminder:
     post:
       tags:
         - Medication
@@ -1692,7 +1689,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
 
   # medication update & delete
-  /medication/reminder/{reminderId}:
+  /v2/medication/reminder/{reminderId}:
     put:
       tags:
         - Medication
@@ -1883,7 +1880,7 @@ paths:
             $ref: '#/components/responses/UnknownServerError'
 
   # callback reasons listing
-  /callback-request/reasons:
+  /v2/callback-request/reasons:
     get:
       tags:
         - Callback Reuqest
@@ -1931,7 +1928,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
 
   # callback request creation & listing
-  /callback-request:
+  /v2/callback-request:
     post:
       tags:
         - Callback Reuqest
@@ -2097,7 +2094,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
 
   # callback request update & delete
-  /callback-request/{callbackRequestId}:
+  /v2/callback-request/{callbackRequestId}:
     put:
       tags:
         - Callback Reuqest
@@ -2232,7 +2229,7 @@ paths:
           $ref: '#/components/responses/UnknownServerError'
 
   # Lab report upload & listing
-  /reports/lab:
+  /v2/reports/lab:
     post:
       tags:
         - Lab report
@@ -2440,7 +2437,7 @@ paths:
             $ref: '#/components/responses/UnknownServerError'
 
   # Lab report update & delete
-  /report/lab/{reportId}:
+  /v2/report/lab/{reportId}:
     delete:
         tags:
           - Lab report
@@ -2587,3 +2584,47 @@ paths:
 
           '500':
             $ref: '#/components/responses/UnknownServerError'
+
+  # news 
+  /v2/news:
+    get:
+      tags:
+        - News
+      summary: Allows listing of news
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass access token
+          required: true      
+              
+      
+      responses:
+        '200':
+          description: News listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      news:
+                        type: array
+                        items:
+                          properties: 
+                            title:
+                              type: string
+                            content:
+                              type: string
+                            
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'

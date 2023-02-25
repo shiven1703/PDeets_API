@@ -140,8 +140,9 @@ const deleteAppointment = async (req, res, next) => {
 const getAppointmentQR = async (req, res, next) => {
   try {
     const appintmentId = req.params.appointmentId
+    const patientId = req.patient.id
     if (appintmentId) {
-      const qrCode = await appointmentService.generateAppointmentQR(appintmentId)
+      const qrCode = await appointmentService.generateAppointmentQR(appintmentId, patientId)
       res.status(200).json({
         message: 'QR code generated.',
         data: {
@@ -158,10 +159,7 @@ const getAppointmentQR = async (req, res, next) => {
 
 const decodeAppointmentQR = async (req, res, next) => {
   try {
-    const params = await validator.validate(schema.qrCodeDecodeSchema, req.body)
-    params.appointmentId = req.appointmentId
-
-    const appointment = await appointmentService.decodeAppointmentQR(params)
+    const appointment = await appointmentService.decodeAppointmentQR(req.appointmentId, req.patientId)
     res.status(200).json({
       message: 'Appointment Details',
       data: {

@@ -116,17 +116,6 @@ const appointmentDeleteSchema = {
   additionalProperties: false
 }
 
-const qrCodeDecodeSchema = {
-  type: 'object',
-  properties: {
-    status: {
-      type: 'string',
-      enum: ['pending', 'done', 'cancelled']
-    }
-  },
-  additionalProperties: false
-}
-
 module.exports = {
   updateAppointmentSchema,
   locationSchema,
@@ -134,6 +123,5 @@ module.exports = {
   doctorListSchema,
   doctorScheduleSchema,
   appointmentBookingSchema,
-  appointmentDeleteSchema,
-  qrCodeDecodeSchema
+  appointmentDeleteSchema
 }

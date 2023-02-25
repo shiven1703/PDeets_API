@@ -48,11 +48,19 @@ const sendAppointmentReminder = async () => {
   }
 }
 
-const generateAppointmentQR = async (appointmentId) => {
-  const appointment = await db.appointment.findOne({ where: { id: appointmentId } })
-  if (appointment) {
+const generateAppointmentQR = async (appointmentId, patientId) => {
+  const appointments = await showAppointments(patientId)
+  let isValidAppointment = false
+  await Promise.all(appointments.map(async (appointment) => {
+    if (parseInt(appointment.appointmentId) === parseInt(appointmentId)) {
+      isValidAppointment = true
+    }
+  }))
+
+  if (isValidAppointment) {
     const token = await tokenHelper.generateAppointmentQrToken({
-      appointment: appointment.id
+      appointmentId,
+      patientId
     })
     return {
       token
@@ -232,34 +240,19 @@ const deleteAppointment = async ({ appointmentId, patientId }) => {
   }
 }
 
-const decodeAppointmentQR = async ({ appointmentId, ...updatedAppointmentdata }) => {
-  const appointment = await db.appointment.findOne({
-    attributes: ['id', 'appointment_time', 'appointment_duration', 'questionary_answers', 'status', 'prescription_image_url'],
-    where: {
-      id: appointmentId
-    },
-    include: [{
-      model: db.location
-    }, {
-      model: db.department
-    }, {
-      model: db.doctor
-    }, {
-      model: db.patient,
-      attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login', 'image_url']
-    }],
-    nest: true
+const decodeAppointmentQR = async (appointmentId, patientId) => {
+  const appointments = await showAppointments(patientId)
+  let decodedAppointment = null
+
+  appointments.forEach((appointment) => {
+    if (parseInt(appointment.appointmentId) === parseInt(appointmentId)) {
+      decodedAppointment = appointment
+    }
   })
 
-  if (appointment) {
-    if (updatedAppointmentdata.status) {
-      await db.appointment.update({ status: updatedAppointmentdata.status }, { where: { id: appointmentId } })
-      appointment.status = updatedAppointmentdata.status
-    }
-    return appointment
-  } else {
-    throw new DatabaseError('No appointment found with the provided id.')
-  }
+  if (!decodedAppointment) { throw new DatabaseError('Invalid Qr code data') }
+
+  return decodedAppointment
 }
 
 module.exports = {

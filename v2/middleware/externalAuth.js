@@ -11,7 +11,8 @@ module.exports = () => {
 
         if (decodedReceivedToken.payload.isAppointmentQrToken) {
           const qrToken = await token.verifyQrToken(receivedToken)
-          req.appointmentId = qrToken.appointment
+          req.appointmentId = qrToken.appointmentId
+          req.patientId = qrToken.patientId
         } else {
           res.status(401).json({
             error: 'Invalid token supplied'

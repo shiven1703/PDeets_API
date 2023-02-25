@@ -3,8 +3,8 @@ const { DataTypes } = require('sequelize')
 module.exports = (sequelize) => {
   const department = sequelize.define('departments', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     name: {

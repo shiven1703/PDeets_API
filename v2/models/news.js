@@ -3,12 +3,12 @@ const { DataTypes } = require('sequelize')
 module.exports = (sequelize) => {
   const news = sequelize.define('news', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     news_category_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     title: {

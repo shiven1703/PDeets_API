@@ -3,12 +3,12 @@ const { DataTypes } = require('sequelize')
 module.exports = (sequelize) => {
   const deviceToken = sequelize.define('device_tokens', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     patient_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     device_token: {

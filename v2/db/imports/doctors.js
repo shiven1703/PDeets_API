@@ -1,5 +1,5 @@
 module.exports = [{
-  id: '4953d960-963f-41e1-a905-f41b026f8760',
+  id: 1,
   first_name: 'James',
   last_name: 'Smith',
   email: 'contact.jamesh@gmail.com',
@@ -13,7 +13,7 @@ module.exports = [{
   image_url: '/doctors/James.png'
 },
 {
-  id: '718b86d7-bdee-4bed-9623-2f32e546e5bc',
+  id: 2,
   first_name: 'Michael',
   last_name: 'Smith',
   email: 'contact.Michael@gmail.com',
@@ -27,7 +27,7 @@ module.exports = [{
   image_url: '/doctors/Michael.png'
 },
 {
-  id: '48d8cc09-e6ed-4627-a6d7-72be0ed9a803',
+  id: 3,
   first_name: 'Maria',
   last_name: 'Hernandez',
   email: 'contact.Maria@gmail.com',
@@ -41,7 +41,7 @@ module.exports = [{
   image_url: '/doctors/Maria.png'
 },
 {
-  id: 'f7d5e280-39f3-4ad8-88da-6cbf5ccc2eda',
+  id: 4,
   first_name: 'James',
   last_name: 'Johnson',
   email: 'contact.James@gmail.com',
@@ -55,7 +55,7 @@ module.exports = [{
   image_url: '/doctors/James2.png'
 },
 {
-  id: 'dab02153-5929-4545-abeb-87544f68d1bc',
+  id: 5,
   first_name: 'David',
   last_name: 'Smith',
   email: 'contact.David@gmail.com',

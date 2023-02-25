@@ -3,16 +3,16 @@ const { DataTypes } = require('sequelize')
 module.exports = (sequelize) => {
   const callbackRequest = sequelize.define('callback_requests', {
     id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
       primaryKey: true
     },
     patient_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     callback_reason_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     preferred_contact_option: {

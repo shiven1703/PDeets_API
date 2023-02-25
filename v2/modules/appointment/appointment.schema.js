@@ -26,7 +26,7 @@ const doctorListSchema = {
   type: 'object',
   properties: {
     locationId: {
-      type: 'string'
+      type: 'number'
     },
     departmentId: {
       type: 'string'
@@ -49,7 +49,7 @@ const doctorScheduleSchema = {
       type: 'string'
     },
     doctorId: {
-      type: 'string'
+      type: 'number'
     }
   },
   required: ['doctorId'],
@@ -59,33 +59,17 @@ const doctorScheduleSchema = {
 const appointmentBookingSchema = {
   type: 'object',
   properties: {
-    locationId: {
-      type: 'string'
-    },
-    departmentId: {
-      type: 'string'
-    },
-    doctorId: {
-      type: 'string'
+    appointmentId: {
+      type: 'number'
     },
     patientId: {
-      type: 'string'
+      type: 'number'
     },
-    appointmentTime: {
-      type: 'string'
-    },
-    appointmentDuration: {
-      type: 'string'
-    },
-    questionaryAnswer: {
-      type: 'string'
-    },
-    status: {
-      type: 'string',
-      enum: ['pending', 'done', 'cancelled']
+    isPreliminaryCheckup: {
+      type: 'boolean'
     }
   },
-  required: ['locationId', 'departmentId', 'doctorId', 'patientId', 'appointmentTime', 'questionaryAnswer'],
+  required: ['appointmentId', 'patientId', 'isPreliminaryCheckup'],
   additionalProperties: false
 }
 

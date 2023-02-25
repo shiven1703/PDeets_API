@@ -764,6 +764,7 @@ paths:
           name: Authorization
           description: pass the access token
           required: true
+          
       requestBody:
         description: Takes below properties
         content:
@@ -771,28 +772,15 @@ paths:
             schema:
               type: object
               properties:
-                locationId:
-                  type: string
-                  required: true
-                departmentId:
-                  type: string
-                  required: true
-                doctorId:
-                  type: string
+                appointmentId:
+                  type: number
                   required: true
                 patientId:
-                  type: string
+                  type: number
                   required: true
-                appointmentTime:
-                  type: string
+                isPreliminaryCheckup:
+                  type: boolean
                   required: true
-                appointmentDuration:
-                  type: string
-                questionaryAnswer:
-                  type: string
-                  required: true
-                status:
-                  type: string
                 
       
       responses:
@@ -808,37 +796,9 @@ paths:
                     description: message from the server
                   data:
                     type: object
-                    properties:
-                      appointment:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                          location_id:
-                            type: string
-                          department_id:
-                            type: string
-                          doctor_id:
-                            type: string
-                          patient_id:
-                            type: string
-                          appointment_time:
-                            type: string
-                          appointment_duration:
-                            type: string
-                          questionary_answers:
-                            type: string
-                          status:
-                            type: string
-                          prescription_image_url:
-                            type: string
-                          updatedAt:
-                            type: string
-                          createdAt:
-                            type: string
                   
         '400':
-          description: JSON payload validation error
+          description: JSON payload validation error | Appointment not available
           content:
             application/json:
               schema:

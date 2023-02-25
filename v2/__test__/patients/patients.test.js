@@ -11,7 +11,7 @@ describe('Registration', () => {
       firstName: 'test',
       lastName: 'user',
       email: 'test@user.com',
-      phoneNumber: '+491245226985',
+      phoneNumber: '+495262523254',
       gender: 'male',
       dateOfBirth: '1994-11-05 13:15:30+00',
       password: 'test'
@@ -30,7 +30,7 @@ describe('Registration', () => {
     newlyAddedPatient = await patientService.addPatient(patient)
 
     expect(newlyAddedPatient).toMatchObject({
-      id: expect.any(String)
+      id: expect.any(Number)
     })
   })
 })

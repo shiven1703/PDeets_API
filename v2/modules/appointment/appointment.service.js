@@ -17,23 +17,8 @@ const {
 
 const showAppointments = async (patientId) => {
   try {
-    const listOfAppointments = await db.appointment.findAll({
-      attributes: ['id', 'appointment_time', 'appointment_duration', 'questionary_answers', 'status', 'prescription_image_url'],
-      where: {
-        patient_id: patientId
-      },
-      include: [{
-        model: db.location
-      }, {
-        model: db.department
-      }, {
-        model: db.doctor
-      }, {
-        model: db.patient,
-        attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login', 'image_url']
-      }]
-    })
-    return listOfAppointments
+    const appointmentRequest = await axios.get(process.env.KIELSTEIN_API + `/patients/${patientId}/appointments`)
+    return appointmentRequest.data
   } catch (err) {
     if (!err.name === 'InvalidUser') {
       throw new UnknownServerError()

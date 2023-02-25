@@ -845,112 +845,15 @@ paths:
                         items:
                           type: object
                           properties:
-                            id:
+                            appointmentId:
+                              type: number
+                            startDate:
                               type: string
-                            appointment_time:
-                              type: string
-                            appointment_duration:
-                              type: string
-                            questionary_answers:
-                              type: string
-                            status:
-                              type: string
-                            prescription_image_url:
-                              type: string
-                            location:
-                              type: object
-                              properties:
-                                id:
-                                  type: string
-                                name:
-                                  type: string
-                                description:
-                                  type: string
-                                lan:
-                                  type: number
-                                lon:
-                                  type: number
-                                address:
-                                  type: string
-                                pincode:
-                                  type: string
-                                city:
-                                  type: string
-                                image_url:
-                                  type: string
-                                createdAt:
-                                  type: string
-                                updatedAt:
-                                  type: string
-                            department:
-                              type: object
-                              properties:
-                                id:
-                                  type: string
-                                name:
-                                  type: string
-                                description:
-                                  type: string
-                                image_url:
-                                  type: string
-                                createdAt:
-                                  type: string
-                                updatedAt:
-                                  type: string
-                            doctor:
-                              type: object
-                              properties:
-                                id:
-                                  type: string
-                                first_name:
-                                  type: string
-                                last_name:
-                                  type: string
-                                email:
-                                  type: string
-                                phone_number:
-                                  type: string
-                                address:
-                                  type: string
-                                pincode:
-                                  type: string
-                                education:
-                                  type: string
-                                about:
-                                  type: string
-                                doctor_speciality:
-                                  type: string
-                                licence_no:
-                                  type: string
-                                experience:
-                                  type: number
-                                image_url:
-                                  type: string
-                                createdAt:
-                                  type: string
-                                updatedAt:
-                                  type: string
-                            patient:
-                              type: object
-                              properties:
-                                id:
-                                  type: string
-                                fist_name:
-                                  type: string
-                                last_name:
-                                  type: string
-                                email:
-                                  type: string
-                                phone_number:
-                                  type: string
-                                gender:
-                                  type: string
-                                date_of_birth:
-                                  type: string
-                                last_login:
-                                  type: string
-                                image_url:
-                                  type: string
+                              format: date-time
+                            doctorId:
+                              type: number
+                            isPreliminaryCheckup:
+                              type: boolean
                   
         '400':
           description: JSON payload validation error

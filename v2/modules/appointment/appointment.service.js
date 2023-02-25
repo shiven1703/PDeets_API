@@ -231,18 +231,20 @@ const updateAppointment = async ({ appointmentId, patientId, ...updatedAppointme
   }
 }
 
-const deleteAppointment = async (appointmentId, patientId) => {
-  const isDeleted = await db.appointment.destroy({
-    where: {
-      id: appointmentId,
-      patient_id: patientId
+const deleteAppointment = async ({ appointmentId, patientId }) => {
+  try {
+    const appointmentBookingRequest = await axios.post(process.env.KIELSTEIN_API + '/deleteappointment', {
+      appointmentId,
+      patientId
+    })
+    return appointmentBookingRequest.data
+  } catch (err) {
+    if (err instanceof axios.AxiosError) {
+      throw new DatabaseError('Appointment does not exist.')
+    } else {
+      throw err
     }
-  })
-
-  if (!isDeleted) {
-    throw new DatabaseError('No appointment found with the provided id.')
   }
-  return true
 }
 
 const decodeAppointmentQR = async ({ appointmentId, ...updatedAppointmentdata }) => {

@@ -703,53 +703,53 @@ paths:
           $ref: '#/components/responses/UnknownServerError' 
 
   # appointment questionary
-  /v2/appointment/questionnaire:
-    post:
-      tags:
-        - Appointment
-      summary: Allows fetching of questionnaire
-      security:
-        - basicAuth: []
-      parameters:
-        - in: header
-          name: Authorization
-          description: pass the access token
-          required: true
+  # /v2/appointment/questionnaire:
+  #   post:
+  #     tags:
+  #       - Appointment
+  #     summary: Allows fetching of questionnaire
+  #     security:
+  #       - basicAuth: []
+  #     parameters:
+  #       - in: header
+  #         name: Authorization
+  #         description: pass the access token
+  #         required: true
       
-      responses:
-        '200':
-          description: List of questionnaire with option
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: message from the server
-                  data:
-                    type: object
-                    properties:
-                      questionnaire:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            question:
-                              type: string
-                            question_options:
-                              type: array
-                              items:
-                                type: object
-                                properties:
-                                  option:
-                                    type: string
+  #     responses:
+  #       '200':
+  #         description: List of questionnaire with option
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 message:
+  #                   type: string
+  #                   description: message from the server
+  #                 data:
+  #                   type: object
+  #                   properties:
+  #                     questionnaire:
+  #                       type: array
+  #                       items:
+  #                         type: object
+  #                         properties:
+  #                           question:
+  #                             type: string
+  #                           question_options:
+  #                             type: array
+  #                             items:
+  #                               type: object
+  #                               properties:
+  #                                 option:
+  #                                   type: string
 
-        '401':
-          $ref: '#/components/responses/Unauhtorized'
+  #       '401':
+  #         $ref: '#/components/responses/Unauhtorized'
 
-        '500':
-          $ref: '#/components/responses/UnknownServerError' 
+  #       '500':
+  #         $ref: '#/components/responses/UnknownServerError' 
 
   # appointment booking and listing 
   /v2/appointment:
@@ -969,102 +969,104 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError' 
     
-  # appointment update & delete
-  /v2/appointment/{appointmentId}:
-    put:
-      tags:
-        - Appointment
-      summary: Allows to update the booked appointment
-      security:
-        - basicAuth: []
-      parameters:
-        - in: header
-          name: Authorization
-          description: pass the access token
-          required: true
-      requestBody:
-        description: Takes below properties
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                locationId:
-                  type: string
-                departmentId:
-                  type: string
-                doctorId:
-                  type: string
-                appointmentTime:
-                  type: string
-                appointmentDuration:
-                  type: number
-                questionaryAnswer:
-                  type: string
-                status:
-                  type: string
+  # appointment update
+  # /v2/appointment/{appointmentId}:
+  #   put:
+  #     tags:
+  #       - Appointment
+  #     summary: Allows to update the booked appointment
+  #     security:
+  #       - basicAuth: []
+  #     parameters:
+  #       - in: header
+  #         name: Authorization
+  #         description: pass the access token
+  #         required: true
+  #     requestBody:
+  #       description: Takes below properties
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               locationId:
+  #                 type: string
+  #               departmentId:
+  #                 type: string
+  #               doctorId:
+  #                 type: string
+  #               appointmentTime:
+  #                 type: string
+  #               appointmentDuration:
+  #                 type: number
+  #               questionaryAnswer:
+  #                 type: string
+  #               status:
+  #                 type: string
                 
       
-      responses:
-        '200':
-          description: details of updated appointment
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    description: message from the server
-                  data:
-                    type: object
-                    properties:
-                      appointment:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                          location_id:
-                            type: string
-                          department_id:
-                            type: string
-                          doctor_id:
-                            type: string
-                          patient_id:
-                            type: string
-                          appointment_time:
-                            type: string
-                          appointment_duration:
-                            type: string
-                          questionary_answers:
-                            type: string
-                          status:
-                            type: string
-                          prescription_image_url:
-                            type: string
-                          updatedAt:
-                            type: string
-                          createdAt:
-                            type: string
+  #     responses:
+  #       '200':
+  #         description: details of updated appointment
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 message:
+  #                   type: string
+  #                   description: message from the server
+  #                 data:
+  #                   type: object
+  #                   properties:
+  #                     appointment:
+  #                       type: object
+  #                       properties:
+  #                         id:
+  #                           type: string
+  #                         location_id:
+  #                           type: string
+  #                         department_id:
+  #                           type: string
+  #                         doctor_id:
+  #                           type: string
+  #                         patient_id:
+  #                           type: string
+  #                         appointment_time:
+  #                           type: string
+  #                         appointment_duration:
+  #                           type: string
+  #                         questionary_answers:
+  #                           type: string
+  #                         status:
+  #                           type: string
+  #                         prescription_image_url:
+  #                           type: string
+  #                         updatedAt:
+  #                           type: string
+  #                         createdAt:
+  #                           type: string
                   
-        '400':
-          description: JSON payload validation error | Invalid appointment id
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  error: 
-                    type: string
-                    description: A error message from server
+  #       '400':
+  #         description: JSON payload validation error | Invalid appointment id
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 error: 
+  #                   type: string
+  #                   description: A error message from server
                     
-        '401':
-          $ref: '#/components/responses/Unauhtorized'
+  #       '401':
+  #         $ref: '#/components/responses/Unauhtorized'
 
-        '500':
-          $ref: '#/components/responses/UnknownServerError' 
+  #       '500':
+  #         $ref: '#/components/responses/UnknownServerError' 
 
-    delete:
+  # appointment delete
+  /v2/appointment/deleteAppointment:
+    post:
       tags:
         - Appointment
       summary: Allows to delete the booked appointment
@@ -1075,6 +1077,20 @@ paths:
           name: Authorization
           description: pass the access token
           required: true
+
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appointmentId:
+                  type: number
+                  required: true
+                patientId:
+                  type: number
+                  required: true
       
       responses:
         '200':

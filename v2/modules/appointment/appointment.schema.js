@@ -102,6 +102,20 @@ const updateAppointmentSchema = {
   additionalProperties: false
 }
 
+const appointmentDeleteSchema = {
+  type: 'object',
+  properties: {
+    appointmentId: {
+      type: 'number'
+    },
+    patientId: {
+      type: 'number'
+    }
+  },
+  required: ['appointmentId', 'patientId'],
+  additionalProperties: false
+}
+
 const qrCodeDecodeSchema = {
   type: 'object',
   properties: {
@@ -120,5 +134,6 @@ module.exports = {
   doctorListSchema,
   doctorScheduleSchema,
   appointmentBookingSchema,
+  appointmentDeleteSchema,
   qrCodeDecodeSchema
 }

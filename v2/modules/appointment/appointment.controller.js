@@ -127,14 +127,11 @@ const updateAppointment = async (req, res, next) => {
 
 const deleteAppointment = async (req, res, next) => {
   try {
-    if (req.params.id) {
-      await appointmentService.deleteAppointment(req.params.id, req.patient.id)
-      res.status(200).json({
-        message: 'Appointment deleted'
-      })
-    } else {
-      throw new DatabaseError('Missing appointment id in request url')
-    }
+    const params = await validator.validate(schema.appointmentDeleteSchema, req.body)
+    await appointmentService.deleteAppointment(params)
+    res.status(200).json({
+      message: 'Appointment deleted'
+    })
   } catch (err) {
     next(err)
   }

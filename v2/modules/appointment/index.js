@@ -9,7 +9,7 @@ router.get('/', authMiddleware(), appointmentController.appointmentList)
 
 router.put('/:id', authMiddleware(), appointmentController.updateAppointment)
 
-router.delete('/:id', authMiddleware(), appointmentController.deleteAppointment)
+router.post('/deleteAppointment', authMiddleware(), appointmentController.deleteAppointment)
 
 router.post('/locations', authMiddleware(), appointmentController.locations)
 

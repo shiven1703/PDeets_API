@@ -3,6 +3,7 @@
 The repository contains code for the backend API of planspiel poc app Version 2.
 
 ## Follow below steps to start the api locally
+- Checkout branch to - development
 - Change Dir to V2 folder
 - Create a .env file and paste the content from https://pdeets.atlassian.net/wiki/spaces/PSPIEL/pages/9732097/Backend+Api+details?parentProduct=JSW&initialAllowedFeatures=byline-contributors.byline-extensions.page-comments.edit.delete.page-reactions&locale=en-US#ENV-file-(development)(create-an-.env-file-at-the-project-root)
 - Run command : npm install

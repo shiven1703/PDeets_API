@@ -14,7 +14,7 @@ const port = process.env.PORT || config.get('app.port');
 (async () => {
   database.isConnected().then(() => {
     app.listen(port, () => {
-      console.log(`Server started on port ${port}`)
+      console.log(`API Endpoint: ${process.env.HOST}:${process.env.PORT}/v2/`)
     })
   }).catch(() => {
     console.log('Error while making connection with the database...')

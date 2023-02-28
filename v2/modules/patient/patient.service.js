@@ -60,6 +60,11 @@ const addPatient = async ({
   }
 }
 
+const getPatient = async (patientId) => {
+  const patient = await db.patient.findAll({ attributes: { exclude: ['password'] }, where: { id: patientId } })
+  return patient
+}
+
 const validatePatientLogin = async ({
   email = null,
   phoneNumber = null,
@@ -266,6 +271,7 @@ const getAllDeviceTokens = async () => {
 
 module.exports = {
   addPatient,
+  getPatient,
   validatePatientLogin,
   issueNewTokenPair,
   performPasswordAction,

@@ -16,6 +16,8 @@ router.post('/token/password_reset', patientController.passwordResetToken)
 
 router.post('/test_route', authMiddleware(), (req, res, next) => { res.send('hit') })
 
+router.get('/', authMiddleware(), patientController.getPatient)
+
 router.use(patientController.patientErrorHandler)
 
 module.exports = router

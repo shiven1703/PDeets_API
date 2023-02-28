@@ -43,6 +43,21 @@ const patientLogin = async (req, res, next) => {
   }
 }
 
+const getPatient = async (req, res, next) => {
+  try {
+    const patientId = req.patient.id
+    const patient = await patientService.getPatient(patientId)
+    res.status(200).json({
+      message: 'Patient fetched',
+      data: {
+        patient
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const refreshTokens = async (req, res, next) => {
   try {
     const receivedRefreshToken = req.headers.authorization
@@ -126,7 +141,7 @@ const patientPasswordActionHandler = async (req, res, next) => {
 }
 
 const patientErrorHandler = (err, req, res, next) => {
-  // console.log(err)
+  console.log(err)
   switch (err.name) {
     case 'DbError':
       res.status(400).json({
@@ -146,6 +161,7 @@ const patientErrorHandler = (err, req, res, next) => {
 module.exports = {
   registerPatient,
   patientLogin,
+  getPatient,
   refreshTokens,
   passwordResetToken,
   patientPasswordActionHandler,

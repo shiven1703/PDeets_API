@@ -241,7 +241,7 @@ paths:
 
         '500':
           $ref: '#/components/responses/UnknownServerError' 
-  
+
   # token refresh endpoint
   /v2/patient/token/refresh:
     post:
@@ -413,6 +413,85 @@ paths:
                   error: 
                     type: string
                     description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
+  # patient fetch by id
+  /v2/patient:
+    get:
+      tags:
+        - Patient
+      summary: Allows to fetch patient details
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+
+      responses:
+        '200':
+          description: Patient details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      patient:
+                        type: object
+                        properties:
+                          id:
+                            type: number
+                          fist_name:
+                            type: string
+                          last_name:
+                            type: string
+                          email:
+                            type: string
+                          phone_number:
+                            type: string
+                          gender:
+                            type: string
+                          date_of_birth:
+                            type: string
+                          last_login:
+                            type: string
+                          image_url:
+                            type: string
+                          updatedAt:
+                            type: string
+                          createdAt:
+                            type: string
+        '401':
+          description: Invalid username or password.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
 
         '500':
           $ref: '#/components/responses/UnknownServerError'

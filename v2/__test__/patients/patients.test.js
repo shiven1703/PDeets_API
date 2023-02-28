@@ -182,7 +182,7 @@ describe('Reset password', () => {
       firstName: 'test',
       lastName: 'user',
       email: 'test@user.com',
-      phoneNumber: '+491245226985',
+      phoneNumber: '+491248226985',
       gender: 'male',
       dateOfBirth: '1994-11-05 13:15:30+00',
       password: 'test'

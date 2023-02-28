@@ -62,6 +62,16 @@ const appointmentBookingSchema = {
     appointmentId: {
       type: 'number'
     },
+    appointmentType: {
+      type: 'string',
+      enum: ['general', 'special', 'digital']
+    },
+    meetingUrl: {
+      type: 'string'
+    },
+    appointmentNotes: {
+      type: 'string'
+    },
     locationId: {
       type: 'number'
     },
@@ -82,7 +92,7 @@ const appointmentBookingSchema = {
       enum: ['pending', 'done', 'cancelled']
     }
   },
-  required: ['appointmentId', 'locationId', 'doctorId', 'patientId', 'isPreliminaryCheckup'],
+  required: ['appointmentId', 'appointmentType', 'locationId', 'doctorId', 'patientId', 'isPreliminaryCheckup'],
   additionalProperties: false
 }
 

@@ -797,6 +797,10 @@ paths:
                 appointmentId:
                   type: number
                   required: true
+                appointmentType:
+                  type: string
+                  description: allows values - ['general', 'special', 'digital']
+                  required: true
                 locationId:
                   type: string
                   required: true
@@ -809,6 +813,12 @@ paths:
                 patientId:
                   type: number
                   required: true
+                meetingUrl:
+                  type: string
+                  required: false
+                appointmentNotes:
+                  type: string
+                  required: false
                 isPreliminaryCheckup:
                   type: boolean
                   required: true
@@ -833,6 +843,8 @@ paths:
                           properties:
                             id:
                               type: number
+                            appointment_type:
+                              type: string
                             location_id:
                               type: number
                             department_id:
@@ -841,6 +853,10 @@ paths:
                               type: number
                             patient_id:
                               type: number
+                            meeting_url:
+                              type: string
+                            appointment_notes: 
+                              type: string
                             appointment_time:
                               type: string
                             appointment_duration:
@@ -906,6 +922,12 @@ paths:
                           properties:
                             id:
                               type: number
+                            appointment_type:
+                              type: string
+                            meeting_url:
+                              type: string
+                            appointment_notes: 
+                              type: string
                             appointment_time:
                               type: string
                             appointment_duration:

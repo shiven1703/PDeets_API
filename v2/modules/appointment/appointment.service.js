@@ -20,7 +20,7 @@ const showAppointments = async (patientId) => {
     const appointmentRequest = await axios.get(process.env.KIELSTEIN_API + `/patients/${patientId}/appointments`)
     let appointmentList = appointmentRequest.data
     const internalAppointmentList = await db.appointment.findAll({
-      attributes: ['id', 'appointment_time', 'appointment_duration', 'questionary_answers', 'status', 'prescription_image_url'],
+      attributes: ['id', 'appointment_type', 'appointment_time', 'appointment_duration', 'questionary_answers', 'status', 'meeting_url', 'appointment_notes', 'prescription_image_url'],
       where: {
         patient_id: patientId
       },
@@ -232,7 +232,7 @@ const getQuestionnaire = async () => {
   }
 }
 
-const bookAppointment = async ({ appointmentId, locationId, departmentId, doctorId, patientId, isPreliminaryCheckup, appointmentTime, appointmentDuration = 30, questionaryAnswer, status = 'pending' }) => {
+const bookAppointment = async ({ appointmentId, appointmentType, locationId, departmentId, doctorId, patientId, isPreliminaryCheckup, meetingUrl, appointmentNotes, appointmentTime, appointmentDuration = 30, questionaryAnswer, status = 'pending' }) => {
   try {
     // adding to kielstein db
     await axios.post(process.env.KIELSTEIN_API + '/addappointment', {
@@ -243,10 +243,13 @@ const bookAppointment = async ({ appointmentId, locationId, departmentId, doctor
     // adding to local db
     const bookedAppointment = await db.appointment.create({
       id: appointmentId,
+      appointment_type: appointmentType,
       location_id: locationId,
       department_id: departmentId,
       doctor_id: doctorId,
       patient_id: patientId,
+      meeting_url: meetingUrl,
+      appointment_notes: appointmentNotes,
       status
     })
     return bookedAppointment

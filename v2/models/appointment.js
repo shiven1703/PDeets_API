@@ -23,6 +23,18 @@ module.exports = (sequelize) => {
       type: DataTypes.INTEGER,
       allowNull: true
     },
+    appointment_type: {
+      type: DataTypes.ENUM,
+      values: ['general', 'special', 'digital']
+    },
+    meeting_url: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
+    appointment_notes: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    },
     appointment_time: {
       type: DataTypes.DATE,
       allowNull: true

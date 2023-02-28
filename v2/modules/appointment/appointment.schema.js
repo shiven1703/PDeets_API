@@ -12,7 +12,7 @@ const departmentSchema = {
   type: 'object',
   properties: {
     locationId: {
-      type: 'string'
+      type: 'number'
     },
     filterBy: {
       type: 'string'

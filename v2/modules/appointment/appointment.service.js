@@ -73,7 +73,16 @@ const generateAppointmentQR = async (appointmentId, patientId) => {
 const getLocations = async ({ filterBy }) => {
   try {
     const locationRequest = await axios.get(process.env.KIELSTEIN_API + '/locations')
-    return locationRequest.data
+    let locations = locationRequest.data
+
+    const internalLocations = await db.location.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } })
+    locations = locations.map((location) => {
+      const iLocation = internalLocations.filter((internalLocation) => {
+        return parseInt(internalLocation.id) === parseInt(location.locationId)
+      })
+      return iLocation[0]
+    })
+    return locations
   } catch (err) {
     throw new DatabaseError(err.message)
   }

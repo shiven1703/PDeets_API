@@ -460,19 +460,23 @@ paths:
                         items:
                           type: object
                           properties:
-                            locationId:
+                            id:
                               type: number
-                            locationName:
+                            name:
                               type: string
-                            latitude:
+                            description:
                               type: string
-                            longitude:
+                            lan:
+                              type: string
+                            lon:
                               type: string
                             address:
                               type: string
-                            zipCode:
+                            pincode:
                               type: string
                             city:
+                              type: string
+                            image_url:
                               type: string
 
         '400':

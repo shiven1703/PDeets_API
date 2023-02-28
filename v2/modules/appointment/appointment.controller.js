@@ -78,10 +78,12 @@ const questionnaire = async (req, res, next) => {
 const bookAppointment = async (req, res, next) => {
   try {
     const params = await validator.validate(schema.appointmentBookingSchema, req.body)
-    await appointmentService.bookAppointment(params)
+    const bookedAppointment = await appointmentService.bookAppointment(params)
     res.status(200).json({
       message: 'Appointment booked.',
-      data: {}
+      data: {
+        appointment: bookedAppointment
+      }
     })
   } catch (err) {
     next(err)

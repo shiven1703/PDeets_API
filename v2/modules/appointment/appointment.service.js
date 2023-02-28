@@ -205,12 +205,22 @@ const getQuestionnaire = async () => {
 
 const bookAppointment = async ({ appointmentId, locationId, departmentId, doctorId, patientId, isPreliminaryCheckup, appointmentTime, appointmentDuration = 30, questionaryAnswer, status = 'pending' }) => {
   try {
-    const appointmentBookingRequest = await axios.post(process.env.KIELSTEIN_API + '/addappointment', {
+    // adding to kielstein db
+    await axios.post(process.env.KIELSTEIN_API + '/addappointment', {
       appointmentId,
       patientId,
       isPreliminaryCheckup
     })
-    return appointmentBookingRequest.data
+    // adding to local db
+    const bookedAppointment = await db.appointment.create({
+      id: appointmentId,
+      location_id: locationId,
+      department_id: departmentId,
+      doctor_id: doctorId,
+      patient_id: patientId,
+      status
+    })
+    return bookedAppointment
   } catch (err) {
     if (err instanceof axios.AxiosError) {
       throw new DatabaseError('Appointment not available')

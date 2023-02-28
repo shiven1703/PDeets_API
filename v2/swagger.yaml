@@ -797,6 +797,15 @@ paths:
                 appointmentId:
                   type: number
                   required: true
+                locationId:
+                  type: string
+                  required: true
+                departmentId:
+                  type: string
+                  required: true
+                doctorId:
+                  type: string
+                  required: true
                 patientId:
                   type: number
                   required: true
@@ -818,6 +827,34 @@ paths:
                     description: message from the server
                   data:
                     type: object
+                    properties:
+                      appointment:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            location_id:
+                              type: number
+                            department_id:
+                              type: number
+                            doctor_id:
+                              type: number
+                            patient_id:
+                              type: number
+                            appointment_time:
+                              type: string
+                            appointment_duration:
+                              type: string
+                            questionary_answers:
+                              type: string
+                            status:
+                              type: string
+                            prescription_image_url:
+                              type: string
+                            updatedAt:
+                              type: string
+                            createdAt:
+                              type: string
                   
         '400':
           description: JSON payload validation error | Appointment not available

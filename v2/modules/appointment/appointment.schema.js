@@ -62,14 +62,27 @@ const appointmentBookingSchema = {
     appointmentId: {
       type: 'number'
     },
+    locationId: {
+      type: 'number'
+    },
+    departmentId: {
+      type: 'number'
+    },
+    doctorId: {
+      type: 'number'
+    },
     patientId: {
       type: 'number'
     },
     isPreliminaryCheckup: {
       type: 'boolean'
+    },
+    status: {
+      type: 'string',
+      enum: ['pending', 'done', 'cancelled']
     }
   },
-  required: ['appointmentId', 'patientId', 'isPreliminaryCheckup'],
+  required: ['appointmentId', 'locationId', 'doctorId', 'patientId', 'isPreliminaryCheckup'],
   additionalProperties: false
 }
 

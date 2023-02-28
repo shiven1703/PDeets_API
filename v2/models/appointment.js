@@ -9,31 +9,31 @@ module.exports = (sequelize) => {
     },
     location_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     department_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     doctor_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     patient_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     appointment_time: {
       type: DataTypes.DATE,
-      allowNull: false
+      allowNull: true
     },
     appointment_duration: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     questionary_answers: {
       type: DataTypes.JSON,
-      allowNull: false
+      allowNull: true
     },
     status: {
       type: DataTypes.ENUM,

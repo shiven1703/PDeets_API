@@ -282,9 +282,17 @@ const updateAppointment = async ({ appointmentId, patientId, ...updatedAppointme
 
 const deleteAppointment = async ({ appointmentId, patientId }) => {
   try {
+    // deleting from kielstein db
     const appointmentBookingRequest = await axios.post(process.env.KIELSTEIN_API + '/deleteappointment', {
       appointmentId,
       patientId
+    })
+    // deleting from local db
+    await db.appointment.destroy({
+      where: {
+        id: appointmentId,
+        patient_id: patientId
+      }
     })
     return appointmentBookingRequest.data
   } catch (err) {

@@ -159,6 +159,20 @@ const addFavDoctor = async (req, res, next) => {
   }
 }
 
+const getFavDoctor = async (req, res, next) => {
+  try {
+    const favDoctors = await patientService.getFavDoctor(req.patient.id)
+    res.status(200).json({
+      message: 'fav doctor listing',
+      data: {
+        favDoctors
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const patientErrorHandler = (err, req, res, next) => {
   console.log(err)
   switch (err.name) {
@@ -185,5 +199,6 @@ module.exports = {
   passwordResetToken,
   patientPasswordActionHandler,
   patientErrorHandler,
-  addFavDoctor
+  addFavDoctor,
+  getFavDoctor
 }

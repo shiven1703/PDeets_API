@@ -498,6 +498,149 @@ paths:
 
   # patient fav doctor adding, listing
   /v2/patient/fav-doctor:
+    get:
+      tags:
+        - Patient
+      summary: Will allow to fetcg the fav doctors for a patient
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+
+      responses:
+        '200':
+          description: Fav doctor added.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      favDoctors:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: number
+                            location:
+                              type: object
+                              properties:
+                                id:
+                                  type: number
+                                name:
+                                  type: string
+                                description:
+                                  type: string
+                                lan:
+                                  type: string
+                                lon:
+                                  type: string
+                                address:
+                                  type: string
+                                pincode:
+                                  type: string
+                                city:
+                                  type: string
+                                image_url:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                updatedAt:
+                                  type: string
+                            department:
+                              type: object
+                              properties:
+                                id:
+                                  type: number
+                                name:
+                                  type: string
+                                description:
+                                  type: string
+                                image_url:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                updatedAt:
+                                  type: string
+                            doctor:
+                              type: object
+                              properties:
+                                id:
+                                  type: number
+                                first_name:
+                                  type: string
+                                last_name:
+                                  type: string
+                                email:
+                                  type: string
+                                phone_number:
+                                  type: string
+                                address:
+                                  type: string
+                                pincode:
+                                  type: string
+                                education:
+                                  type: string
+                                about:
+                                  type: string
+                                doctor_speciality:
+                                  type: string
+                                licence_no:
+                                  type: string
+                                experience:
+                                  type: number
+                                image_url:
+                                  type: string
+                                createdAt:
+                                  type: string
+                                updatedAt:
+                                  type: string
+                            patient:
+                              type: object
+                              properties:
+                                id:
+                                  type: number
+                                fist_name:
+                                  type: string
+                                last_name:
+                                  type: string
+                                email:
+                                  type: string
+                                phone_number:
+                                  type: string
+                                gender:
+                                  type: string
+                                date_of_birth:
+                                  type: string
+                                last_login:
+                                  type: string
+                                image_url:
+                                  type: string
+                        
+
+        '400':
+          description: JSON payload validation error - invalid email or phoneNumber
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
     post:
       tags:
         - Patient

@@ -279,6 +279,26 @@ const addFavDoctor = async ({ doctorId, patientId, locationId, departmentId }) =
   return favDoctor
 }
 
+const getFavDoctor = async (patientId) => {
+  const favDoctor = await db.doctor_fav.findAll({
+    attributes: ['id'],
+    where: {
+      patient_id: patientId
+    },
+    include: [{
+      model: db.location
+    }, {
+      model: db.department
+    }, {
+      model: db.doctor
+    }, {
+      model: db.patient,
+      attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login', 'image_url']
+    }]
+  })
+  return favDoctor
+}
+
 module.exports = {
   addPatient,
   getPatient,
@@ -287,5 +307,6 @@ module.exports = {
   performPasswordAction,
   storeDeviceToken,
   getAllDeviceTokens,
-  addFavDoctor
+  addFavDoctor,
+  getFavDoctor
 }

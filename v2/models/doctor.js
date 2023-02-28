@@ -60,6 +60,10 @@ module.exports = (sequelize) => {
       foreignKey: 'doctor_id'
     })
 
+    doctor.hasMany(models.doctor_fav, {
+      foreignKey: 'doctor_id'
+    })
+
     doctor.hasMany(models.doctor_schedule, {
       foreignKey: 'doctor_id'
     })

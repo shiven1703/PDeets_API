@@ -53,6 +53,23 @@ const patientLoginSchema = {
   additionalProperties: false
 }
 
+const favDoctorSchema = {
+  type: 'object',
+  properties: {
+    doctorId: {
+      type: 'number'
+    },
+    locationId: {
+      type: 'number'
+    },
+    departmentId: {
+      type: 'number'
+    }
+  },
+  required: ['doctorId', 'locationId'],
+  additionalProperties: false
+}
+
 const passwordResetTokenSchema = {
   type: 'object',
   properties: {
@@ -110,5 +127,6 @@ module.exports = {
   patientRegitserSchema,
   patientLoginSchema,
   passwordResetTokenSchema,
-  patientPasswordUpdateSchema
+  patientPasswordUpdateSchema,
+  favDoctorSchema
 }

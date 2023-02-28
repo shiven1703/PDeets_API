@@ -496,6 +496,84 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
+  # patient fav doctor adding, listing
+  /v2/patient/fav-doctor:
+    post:
+      tags:
+        - Patient
+      summary: Will allow to add a fav doctor for a patient
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                doctorId: 
+                  type: number
+                  required: true
+                locationId:
+                  type: number
+                  required: true
+                departmentId:
+                  type: number
+                  required: false
+
+      responses:
+        '200':
+          description: Fav doctor added.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                    properties:
+                      favDoctor:
+                        type: object
+                        properties:
+                          id: 
+                            type: number
+                          doctor_id:
+                            type: number
+                          patient_id:
+                            type: number
+                          location_id:
+                            type: number
+                          department_id:
+                            type: number
+                          updatedAt:
+                            type: string
+                            format: date-time
+                          createdAt:
+                            type: string
+                            format: date-time
+
+        '400':
+          description: JSON payload validation error - invalid email or phoneNumber
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
   # appointment location listing
   /v2/appointment/locations:
     post:

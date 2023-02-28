@@ -43,6 +43,10 @@ module.exports = (sequelize) => {
       foreignKey: 'location_id'
     })
 
+    location.hasMany(models.doctor_fav, {
+      foreignKey: 'location_id'
+    })
+
     // many-to-many relationship with department table
     location.belongsToMany(models.department, {
       through: models.location_has_department

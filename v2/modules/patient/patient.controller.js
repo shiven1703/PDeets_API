@@ -140,6 +140,25 @@ const patientPasswordActionHandler = async (req, res, next) => {
   }
 }
 
+const addFavDoctor = async (req, res, next) => {
+  try {
+    const params = await validator.validate(
+      schema.favDoctorSchema,
+      req.body
+    )
+    params.patientId = req.patient.id
+    const favDoctor = await patientService.addFavDoctor(params)
+    res.status(200).json({
+      message: 'added fav doctor',
+      data: {
+        favDoctor
+      }
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const patientErrorHandler = (err, req, res, next) => {
   console.log(err)
   switch (err.name) {
@@ -165,5 +184,6 @@ module.exports = {
   refreshTokens,
   passwordResetToken,
   patientPasswordActionHandler,
-  patientErrorHandler
+  patientErrorHandler,
+  addFavDoctor
 }

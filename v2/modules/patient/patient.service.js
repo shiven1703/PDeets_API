@@ -269,6 +269,16 @@ const getAllDeviceTokens = async () => {
   }
 }
 
+const addFavDoctor = async ({ doctorId, patientId, locationId, departmentId }) => {
+  const favDoctor = await db.doctor_fav.create({
+    doctor_id: doctorId,
+    patient_id: patientId,
+    location_id: locationId,
+    department_id: departmentId
+  })
+  return favDoctor
+}
+
 module.exports = {
   addPatient,
   getPatient,
@@ -276,5 +286,6 @@ module.exports = {
   issueNewTokenPair,
   performPasswordAction,
   storeDeviceToken,
-  getAllDeviceTokens
+  getAllDeviceTokens,
+  addFavDoctor
 }

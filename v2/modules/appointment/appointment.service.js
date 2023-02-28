@@ -139,7 +139,15 @@ const getDepartments = async ({ locationId, filterBy }) => {
 const getDoctors = async ({ locationId, departmentId, filterBy }) => {
   try {
     const doctorsRequest = await axios.get(process.env.KIELSTEIN_API + `/doctors?locationId=${locationId}`)
-    return doctorsRequest.data
+    let doctorsList = doctorsRequest.data
+    const internalDoctors = await db.doctor.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } })
+    doctorsList = doctorsList.map((doctor) => {
+      const idoctor = internalDoctors.filter((idoctor) => {
+        return parseInt(idoctor.id) === parseInt(doctor.doctorId)
+      })
+      return idoctor[0]
+    })
+    return doctorsList
   } catch (err) {
     throw new DatabaseError(err.message)
   }

@@ -717,6 +717,41 @@ paths:
         '500':
           $ref: '#/components/responses/UnknownServerError'
 
+  # delete fav doctor
+  # patient fav doctor adding, listing
+  /v2/patient/fav-doctor/:favDoctorId:
+    delete:
+      tags:
+        - Patient
+      summary: Will allow to fetcg the fav doctors for a patient
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+        - in: path
+          name: favDoctorId
+          required: true
+
+      responses:
+        '200':
+          description: Fav doctor deleted.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError'
+
   # appointment location listing
   /v2/appointment/locations:
     post:

@@ -3,6 +3,7 @@ const validator = require('../../utils/schemaValidator')
 const patientService = require('./patient.service')
 const tokenHelper = require('../../utils/token')
 const { PasswordActionEnum } = require('../../utils/enums')
+const { DatabaseError } = require('sequelize')
 
 const registerPatient = async (req, res, next) => {
   try {
@@ -173,6 +174,22 @@ const getFavDoctor = async (req, res, next) => {
   }
 }
 
+const deleteFavDoctor = async (req, res, next) => {
+  try {
+    if (req.params.favDoctorId) {
+      await patientService.deleteFavDoctor(req.params.favDoctorId, req.patient.id)
+      res.status(200).json({
+        message: 'fav doctor deleted',
+        data: {}
+      })
+    } else {
+      throw new DatabaseError('Missing favDoctorId param')
+    }
+  } catch (err) {
+    next(err)
+  }
+}
+
 const patientErrorHandler = (err, req, res, next) => {
   console.log(err)
   switch (err.name) {
@@ -200,5 +217,6 @@ module.exports = {
   patientPasswordActionHandler,
   patientErrorHandler,
   addFavDoctor,
-  getFavDoctor
+  getFavDoctor,
+  deleteFavDoctor
 }

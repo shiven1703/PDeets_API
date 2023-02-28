@@ -299,6 +299,15 @@ const getFavDoctor = async (patientId) => {
   return favDoctor
 }
 
+const deleteFavDoctor = async (favDoctorId, patientId) => {
+  await db.doctor_fav.destroy({
+    where: {
+      id: favDoctorId,
+      patient_id: patientId
+    }
+  })
+}
+
 module.exports = {
   addPatient,
   getPatient,
@@ -308,5 +317,6 @@ module.exports = {
   storeDeviceToken,
   getAllDeviceTokens,
   addFavDoctor,
-  getFavDoctor
+  getFavDoctor,
+  deleteFavDoctor
 }

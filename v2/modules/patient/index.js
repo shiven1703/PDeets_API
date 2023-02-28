@@ -18,6 +18,8 @@ router.post('/fav-doctor', authMiddleware(), patientController.addFavDoctor)
 
 router.get('/fav-doctor', authMiddleware(), patientController.getFavDoctor)
 
+router.delete('/fav-doctor/:favDoctorId', authMiddleware(), patientController.deleteFavDoctor)
+
 router.post('/test_route', authMiddleware(), (req, res, next) => { res.send('hit') })
 
 router.get('/', authMiddleware(), patientController.getPatient)

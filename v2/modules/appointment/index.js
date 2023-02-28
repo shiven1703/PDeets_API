@@ -21,11 +21,13 @@ router.post('/doctor/availability', authMiddleware(), appointmentController.doct
 
 router.post('/questionnaire', authMiddleware(), appointmentController.questionnaire)
 
-router.post('/', authMiddleware(), appointmentController.bookAppointment)
+router.post('/notes', authMiddleware(), appointmentController.addNotes)
 
 router.post('/qr/:appointmentId', authMiddleware(), appointmentController.getAppointmentQR)
 
 router.post('/qr', externalAuthMiddleware(), appointmentController.decodeAppointmentQR)
+
+router.post('/', authMiddleware(), appointmentController.bookAppointment)
 
 router.use(appointmentController.locationModuleErrorHandler)
 

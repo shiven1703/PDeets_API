@@ -1222,7 +1222,63 @@ paths:
   #         $ref: '#/components/responses/Unauhtorized'
 
   #       '500':
-  #         $ref: '#/components/responses/UnknownServerError' 
+  #         $ref: '#/components/responses/UnknownServerError'
+
+  # add notes
+  /v2/appointment/notes:
+    post:
+      tags:
+        - Appointment
+      summary: Allows to add notes to the booked appointment
+      security:
+        - basicAuth: []
+      parameters:
+        - in: header
+          name: Authorization
+          description: pass the access token
+          required: true
+      requestBody:
+        description: Takes below properties
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                appointmentId:
+                  type: number
+                text:
+                  type: string
+      
+      responses:
+        '200':
+          description: 200 OK if notes was added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: message from the server
+                  data:
+                    type: object
+                  
+        '400':
+          description: JSON payload validation error | Invalid appointment id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error: 
+                    type: string
+                    description: A error message from server
+                    
+        '401':
+          $ref: '#/components/responses/Unauhtorized'
+
+        '500':
+          $ref: '#/components/responses/UnknownServerError' 
 
   # appointment delete
   /v2/appointment/deleteAppointment:

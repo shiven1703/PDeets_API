@@ -283,6 +283,14 @@ const updateAppointment = async ({ appointmentId, patientId, ...updatedAppointme
   }
 }
 
+const addNotes = async ({ appointmentId, text, patientId }) => {
+  await db.appointment.update({
+    appointment_notes: text
+  }, {
+    where: { id: appointmentId, patient_id: patientId }
+  })
+}
+
 const deleteAppointment = async ({ appointmentId, patientId }) => {
   try {
     // deleting from kielstein db
@@ -328,6 +336,7 @@ module.exports = {
   generateAppointmentQR,
   decodeAppointmentQR,
   updateAppointment,
+  addNotes,
   deleteAppointment,
   getLocations,
   getDepartments,

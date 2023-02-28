@@ -125,6 +125,20 @@ const updateAppointmentSchema = {
   additionalProperties: false
 }
 
+const addNotesSchema = {
+  type: 'object',
+  properties: {
+    appointmentId: {
+      type: 'number'
+    },
+    text: {
+      type: 'string'
+    }
+  },
+  required: ['appointmentId', 'text'],
+  additionalProperties: false
+}
+
 const appointmentDeleteSchema = {
   type: 'object',
   properties: {
@@ -141,6 +155,7 @@ const appointmentDeleteSchema = {
 
 module.exports = {
   updateAppointmentSchema,
+  addNotesSchema,
   locationSchema,
   departmentSchema,
   doctorListSchema,

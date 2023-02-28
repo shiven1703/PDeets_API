@@ -127,6 +127,20 @@ const updateAppointment = async (req, res, next) => {
   }
 }
 
+const addNotes = async (req, res, next) => {
+  try {
+    const params = await validator.validate(schema.addNotesSchema, req.body)
+    params.patientId = req.patient.id
+    await appointmentService.addNotes(params)
+    res.status(200).json({
+      messsage: 'notes added',
+      data: {}
+    })
+  } catch (err) {
+    next(err)
+  }
+}
+
 const deleteAppointment = async (req, res, next) => {
   try {
     const params = await validator.validate(schema.appointmentDeleteSchema, req.body)
@@ -195,6 +209,7 @@ const locationModuleErrorHandler = (err, req, res, next) => {
 module.exports = {
   appointmentList,
   updateAppointment,
+  addNotes,
   deleteAppointment,
   locations,
   departments,

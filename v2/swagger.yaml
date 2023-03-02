@@ -1235,7 +1235,7 @@ paths:
           name: Authorization
           description: pass the access token
           required: true
-        - in: header
+        - in: query
           name: appointmentId
           description: appointment id based filter
           required: false

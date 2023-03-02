@@ -93,7 +93,8 @@ const bookAppointment = async (req, res, next) => {
 const appointmentList = async (req, res, next) => {
   try {
     const patientId = req.patient.id
-    const patientAppointmentList = await appointmentService.showAppointments(patientId)
+    const appointmentId = req.query.appointmentId
+    const patientAppointmentList = await appointmentService.showAppointments(patientId, appointmentId)
     res.status(200).json({
       message: 'Patient appointment list fetched successful',
       data: {

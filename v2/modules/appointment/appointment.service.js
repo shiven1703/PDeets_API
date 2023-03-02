@@ -15,7 +15,7 @@ const {
   UnknownServerError
 } = require('../../utils/customErrors')
 
-const showAppointments = async (patientId) => {
+const showAppointments = async (patientId, appointmentId) => {
   try {
     const appointmentRequest = await axios.get(process.env.KIELSTEIN_API + `/patients/${patientId}/appointments`)
     let appointmentList = appointmentRequest.data
@@ -33,7 +33,9 @@ const showAppointments = async (patientId) => {
       }, {
         model: db.patient,
         attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login', 'image_url']
-      }]
+      }],
+      raw: true,
+      nest: true
     })
 
     if (appointmentList.length > 0) {
@@ -43,8 +45,12 @@ const showAppointments = async (patientId) => {
         })
         return iappointment[0]
       })
-    } else {
-      appointmentList = []
+    }
+
+    if (appointmentList.length > 0 && appointmentId != null) {
+      appointmentList = appointmentList.filter((appointment) => {
+        return appointment.id === parseInt(appointmentId)
+      })
     }
 
     return appointmentList

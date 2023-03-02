@@ -1235,6 +1235,10 @@ paths:
           name: Authorization
           description: pass the access token
           required: true
+        - in: header
+          name: appointmentId
+          description: appointment id based filter
+          required: false
               
       responses:
         '200':

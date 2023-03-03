@@ -33,9 +33,7 @@ const showAppointments = async (patientId, appointmentId) => {
       }, {
         model: db.patient,
         attributes: ['id', 'first_name', 'last_name', 'email', 'phone_number', 'gender', 'date_of_birth', 'last_login', 'image_url']
-      }],
-      raw: true,
-      nest: true
+      }]
     })
 
     if (appointmentList.length > 0) {

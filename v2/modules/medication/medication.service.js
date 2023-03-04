@@ -62,7 +62,7 @@ const loadMedicationRemindersForTheDay = async () => {
     const reminders = await db.medication_reminder.findAll({
       where: {
         start_date: {
-          [Op.lte]: luxon.DateTime.now().startOf('day').toString()
+          [Op.lte]: luxon.DateTime.now().endOf('day').toString()
         },
         end_date: {
           [Op.gte]: luxon.DateTime.now().endOf('day').toString()
@@ -71,6 +71,7 @@ const loadMedicationRemindersForTheDay = async () => {
       raw: true
     })
 
+    console.log(reminders)
     // clearning entries
     await redis.flushDb()
 

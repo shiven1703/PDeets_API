@@ -302,13 +302,19 @@ const deleteAppointment = async ({ appointmentId, patientId }) => {
       appointmentId,
       patientId
     })
+
     // deleting from local db
-    await db.appointment.destroy({
-      where: {
-        id: appointmentId,
-        patient_id: patientId
-      }
-    })
+    if (appointmentBookingRequest.status === 200) {
+      await db.appointment.destroy({
+        where: {
+          id: appointmentId,
+          patient_id: patientId
+        }
+      })
+    } else {
+      throw new DatabaseError('Appointment does not exist.')
+    }
+
     return appointmentBookingRequest.data
   } catch (err) {
     if (err instanceof axios.AxiosError) {

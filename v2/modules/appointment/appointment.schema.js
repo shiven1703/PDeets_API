@@ -87,6 +87,10 @@ const appointmentBookingSchema = {
     isPreliminaryCheckup: {
       type: 'boolean'
     },
+    appointmentTime: {
+      type: 'string',
+      format: 'date-time'
+    },
     status: {
       type: 'string',
       enum: ['pending', 'done', 'cancelled']

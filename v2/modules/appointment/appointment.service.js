@@ -255,6 +255,7 @@ const bookAppointment = async ({ appointmentId, appointmentType, locationId, dep
       doctor_id: doctorId,
       patient_id: patientId,
       meeting_url: meetingUrl,
+      appointment_time: appointmentTime,
       appointment_notes: appointmentNotes,
       status
     })

@@ -1136,6 +1136,9 @@ paths:
                   type: string
                   description: allows values - ['general', 'special', 'digital']
                   required: true
+                appointmentTime:
+                  type: string
+                  required: false
                 locationId:
                   type: string
                   required: true

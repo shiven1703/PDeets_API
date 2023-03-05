@@ -51,6 +51,8 @@ const showAppointments = async (patientId, appointmentId) => {
       })
     }
 
+    appointmentList = appointmentList.filter((appointment) => appointment != null)
+
     return appointmentList
   } catch (err) {
     if (!err.name === 'InvalidUser') {

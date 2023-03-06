@@ -37,18 +37,26 @@ const showAppointments = async (patientId, appointmentId) => {
     })
 
     if (appointmentList.length > 0) {
-      appointmentList = appointmentList.map((appointment) => {
-        const iappointment = internalAppointmentList.filter((iappointment) => {
-          return parseInt(iappointment.id) === parseInt(appointment.appointmentId)
+      if (appointmentId == null) {
+        appointmentList = appointmentList.map((appointment) => {
+          const iappointment = internalAppointmentList.filter((iappointment) => {
+            return parseInt(iappointment.id) === parseInt(appointment.appointmentId)
+          })
+          return iappointment[0]
         })
-        return iappointment[0]
-      })
-    }
+      } else {
+        appointmentList = appointmentList.map((appointment) => {
+          const iappointment = internalAppointmentList.filter((iappointment) => {
+            return parseInt(iappointment.id) === parseInt(appointment.appointmentId)
+          })
 
-    if (appointmentList.length > 0 && appointmentId != null) {
-      appointmentList = appointmentList.filter((appointment) => {
-        return appointment.id === parseInt(appointmentId)
-      })
+          if (iappointment.length > 0) {
+            if (parseInt(iappointment[0].id) === parseInt(appointmentId)) { return iappointment[0] } else { return null }
+          } else {
+            return null
+          }
+        })
+      }
     }
 
     appointmentList = appointmentList.filter((appointment) => appointment != null)

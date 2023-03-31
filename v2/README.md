@@ -3,27 +3,24 @@
 The repository contains code for the backend API of planspiel poc app Version 2.
 
 ## Follow below steps to start the api locally
-- Checkout branch to - development
-- Change Dir to V2 folder
-- Create a .env file and paste the content from https://pdeets.atlassian.net/wiki/spaces/PSPIEL/pages/9732097/Backend+Api+details?parentProduct=JSW&initialAllowedFeatures=byline-contributors.byline-extensions.page-comments.edit.delete.page-reactions&locale=en-US#ENV-file-(development)(create-an-.env-file-at-the-project-root)
-- Run command : npm install
-- Run command : npm run start-dev
-- Api will start on port no 5000 at localhost
-- URL: http://localhost:5000/v2/api-docs
+- please enure that you have installed docker and docker-compose on your system.
+- Step 1: Open command prompt or terminal and move to the root location of the backend api code.
+- Step 2: Run - docker-componse up
+- Step 3: The api will be running locally on the port 5000. (see the logs in terminal).
+
+## Config
+- The configurations can be changed via .env file. It allows you to run the application on different port, change credentials etc.
 
 ## Commands
-- npm run start-dev
-- npm run start
-- npm run lint
-- npm run lint-fix
+- docker-compose up
+- docker-compose down
 
 ## Documentation details
-- https://pdeets.atlassian.net/wiki/spaces/PSPIEL/pages/9732097/Backend+Api+details?parentProduct=JSW&initialAllowedFeatures=byline-contributors.byline-extensions.page-comments.edit.delete.page-reactions&locale=en-US#Endpoint-details
+- The docks will be at http://www.localhost:5000/v2/api-docs once the docker-compose command spin up the required containers.
 
 ## Environment
 - Node.js 18.x
 - Express
-- Eslint
-
-## Development Notes
-- Always run "npm run lint" && "npm run lint-fix" commands before pushing the commit. This is to mainly maintain overall code style in the project.
+- PostgreSQL
+- Redis
+- Docker
